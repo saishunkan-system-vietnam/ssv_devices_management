@@ -11,7 +11,7 @@
 
 v.v..
 
-##Y êu cầu môi trường phát triển
+## Yêu cầu môi trường phát triển
 PHP 5.6 hoặc cao hơn
 
 CakePHP 3.7
