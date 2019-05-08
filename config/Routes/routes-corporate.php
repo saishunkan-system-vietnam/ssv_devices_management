@@ -1,6 +1,5 @@
 <?php
 
-include('Routes/routes-corporate.php');
 /**
  * Routes configuration
  *
@@ -105,3 +104,16 @@ Router::scope('/', function (RouteBuilder $routes) {
  * });
  * ```
  */
+Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
+    /**
+     * Here, we are connecting '/' (base path) to a controller called 'Pages',
+     * its action called 'display', and we pass a param to select the view file
+     * to use (in this case, src/Template/Pages/home.ctp)...
+     */
+
+    // Users
+    $routes->connect('user', ['controller' => 'Users', 'action' => 'index']);
+    $routes->connect('bar', ['controller' => 'Foo', 'action' => 'bar']);
+
+    // $routes->connect('/schedules/', ['controller' => 'Admin/Schedules', 'action' => 'index']);
+});
