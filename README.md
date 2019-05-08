@@ -1,6 +1,6 @@
-#Phần mềm quản lý thiết bị.
+# Phần mềm quản lý thiết bị.
 
-##Mục đích
+## Mục đích
 1. Giám sát, quản lý thông tin, tình trạng của các thiết bị hiện có trong công ty.
 
 2. Thực hiện tạo request->duyệt->bàn giao->trả thiết bị khi cần mượn thiết bị để thực hiện các công việc trong dự án.
@@ -11,7 +11,7 @@
 
 v.v..
 
-##Yêu cầu môi trường phát triển
+##Y êu cầu môi trường phát triển
 PHP 5.6 hoặc cao hơn
 
 CakePHP 3.7
