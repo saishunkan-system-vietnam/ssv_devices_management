@@ -1,5 +1,5 @@
 <?php
-
+include('Routes/routes-corporate.php');
 /**
  * Routes configuration
  *
@@ -104,5 +104,3 @@ Router::scope('/', function (RouteBuilder $routes) {
  * });
  * ```
  */
-
-include('Routes/routes-corporate.php');

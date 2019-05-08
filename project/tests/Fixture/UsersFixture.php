@@ -25,6 +25,7 @@ class UsersFixture extends TestFixture
         'created_time' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'update_time' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'is_deleted' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
+        'password' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -50,9 +51,10 @@ class UsersFixture extends TestFixture
                 'level' => 1,
                 'created_user' => 'Lorem ipsum dolor sit amet',
                 'update_user' => 'Lorem ipsum dolor sit amet',
-                'created_time' => '2019-05-08 02:56:35',
-                'update_time' => '2019-05-08 02:56:35',
-                'is_deleted' => 1
+                'created_time' => '2019-05-08 10:07:29',
+                'update_time' => '2019-05-08 10:07:29',
+                'is_deleted' => 1,
+                'password' => 'Lorem ipsum dolor sit amet'
             ],
         ];
         parent::init();

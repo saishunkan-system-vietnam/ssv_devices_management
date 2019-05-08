@@ -91,6 +91,12 @@ class UsersTable extends Table
             ->boolean('is_deleted')
             ->allowEmptyString('is_deleted', false);
 
+        $validator
+            ->scalar('password')
+            ->maxLength('password', 255)
+            ->requirePresence('password', 'create')
+            ->allowEmptyString('password', false);
+
         return $validator;
     }
 }

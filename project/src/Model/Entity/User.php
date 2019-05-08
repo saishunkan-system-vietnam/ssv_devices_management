@@ -16,6 +16,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime|null $created_time
  * @property \Cake\I18n\FrozenTime|null $update_time
  * @property bool $is_deleted
+ * @property string $password
  */
 class User extends Entity
 {
@@ -37,6 +38,16 @@ class User extends Entity
         'update_user' => true,
         'created_time' => true,
         'update_time' => true,
-        'is_deleted' => true
+        'is_deleted' => true,
+        'password' => true
+    ];
+
+    /**
+     * Fields that are excluded from JSON versions of the entity.
+     *
+     * @var array
+     */
+    protected $_hidden = [
+        'password'
     ];
 }

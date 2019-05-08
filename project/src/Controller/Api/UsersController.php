@@ -3,6 +3,7 @@ namespace App\Controller\Api;
 
 use App\Controller\AppController;
 use RestApi\Controller\ApiController;
+use RestApi\Utility\JwtToken;
 
 /**
  * Users Controller
