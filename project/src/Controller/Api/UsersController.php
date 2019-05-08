@@ -38,7 +38,7 @@ class UsersController extends ApiController
      * @return void|\Cake\Network\Response
      */
     public function login()
-    {die('a');
+    {
         $this->request->allowMethod('post');
 
         /**
