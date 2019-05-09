@@ -9,6 +9,22 @@
 
 return [
     'ApiRequest' => [
+        'debug' => false,
+        'responseType' => 'json',
+        'xmlResponseRootNode' => 'response',
+        'responseFormat' => [
+            'statusKey' => 'status',
+            'statusOkText' => 'OK',
+            'statusNokText' => 'NOK',
+            'resultKey' => 'payload',
+            'messageKey' => 'message',
+            'defaultMessageText' => 'Empty response!',
+            'errorKey' => 'error',
+            'defaultErrorText' => 'Unknown request!'
+        ],
+        'log' => true,
+        'logOnlyErrors' => true,
+        'logOnlyErrorCodes' => [404, 500],
         'jwtAuth' => [
             'enabled' => true,
             'cypherKey' => 'R1a#2%dY2fX@3g8r5&s4Kf6*sd(5dHs!5gD4s',
@@ -20,7 +36,6 @@ return [
             'allowedMethods' => ['GET', 'POST', 'OPTIONS'],
             'allowedHeaders' => ['Content-Type, Authorization, Accept, Origin'],
             'maxAge' => 2628000
-        ],
-        'log' => true,
+        ]
     ]
 ];

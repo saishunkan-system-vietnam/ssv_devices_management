@@ -2,7 +2,9 @@
 namespace App\Controller\Api;
 
 use App\Controller\AppController;
+use Cake\Http\Client\Request;
 use RestApi\Controller\ApiController;
+use App\Controller\Api\ApisController;
 use RestApi\Utility\JwtToken;
 
 /**
@@ -14,6 +16,16 @@ use RestApi\Utility\JwtToken;
  */
 class UsersController extends ApiController
 {
+
+//    public function beforeFilter(Event $event)
+//    {
+//        parent::beforeFilter($event);
+//        // Allow users to register and logout.
+//        // You should not add the "login" action to allow list. Doing so would
+//        // cause problems with normal functioning of AuthComponent.
+//        $this->Auth->allow(['add', 'logout']);
+//    }
+
     /**
      * Index method
      *
@@ -40,17 +52,33 @@ class UsersController extends ApiController
      */
     public function login()
     {
-        $this->request->allowMethod('post');
+        //if ($this->getRequest()->is(['post'])) {
 
-        /**
-         * process your data and validate it against database table
-         */
+//            $user = $this->Auth->identify();
+//            if ($user) {
+//                $this->Auth->setUser($user);
+//                return $this->redirect($this->Auth->redirectUrl());
+//            }
+//            $this->Flash->error(__('Invalid username or password, try again'));
 
-        // generate token if valid user
-        $payload = ['email' => 'hunght1188@gmail', 'name' => 'hunght'];
+            /**
+             * process your data and validate it against database table
+             */
 
-        $this->apiResponse['token'] = JwtToken::generateToken($payload);
-        $this->apiResponse['message'] = 'Logged in successfully.';
+            // generate token if valid user
+            $payload = ['email' => 'hunght1188@gmail', 'name' => 'hunght'];
+
+            $this->apiResponse['token'] = JwtToken::generateToken($payload);
+            $this->apiResponse['message'] = 'Logged in successfully.';
+
+            //$this->Flash->error(__('Invalid username or password, try again'));
+        //}
+
+    }
+
+    public function logout()
+    {
+        return $this->redirect($this->Auth->logout());
     }
 
     /**

@@ -92,11 +92,24 @@ class UsersTable extends Table
             ->allowEmptyString('is_deleted', false);
 
         $validator
-            ->scalar('password')
-            ->maxLength('password', 255)
-            ->requirePresence('password', 'create')
-            ->allowEmptyString('password', false);
+            ->email('email')
+            ->requirePresence('email', 'create')
+            ->allowEmptyString('email', false);
 
         return $validator;
+    }
+
+    /**
+     * Returns a rules checker object that will be used for validating
+     * application integrity.
+     *
+     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
+     * @return \Cake\ORM\RulesChecker
+     */
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->isUnique(['email']));
+
+        return $rules;
     }
 }
