@@ -19,7 +19,6 @@ class BorrowController extends AppController
     public function index()
     {
         $borrow = $this->paginate($this->Borrow);
-
         $this->set(compact('borrow'));
     }
 

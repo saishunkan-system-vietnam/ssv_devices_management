@@ -2,7 +2,7 @@
 
 namespace App\Controller\Api;
 
-use App\Controller\AppController;
+
 use RestApi\Controller\ApiController;
 
 /**
@@ -21,7 +21,7 @@ class CategoriesController extends ApiController {
      */
     public function index() {
         $categories = $this->Categories->find('all')->where(['is_deleted' => 0])->toArray();
-        $this->apiResponse['lstCategories'] = $categories;
+        $this->apiResponse['lstCategories'] = $categories;         
     }
 
     /**
@@ -62,17 +62,23 @@ class CategoriesController extends ApiController {
 //            $this->Flash->error(__('The category could not be saved. Please, try again.'));
 //        }
 //        $this->set(compact('category'));       
-
-         $category = $this->Categories->newEntity();
+        $result = [];
+        $category = $this->Categories->newEntity();
         if ($this->getRequest()->is('post')) {
             $category = $this->Categories->patchEntity($category, $this->getRequest()->getData());
-            if ($this->Categories->save($category)) {
-                $result = 1;                   
-            } else {                 
-                $result = 0;
-            }           
+            $validate = $this->Categories->newEntity($this->getRequest()->getData());
+            $validateError = $validate->getErrors();
+            if (empty($validateError)) {
+                if ($this->Categories->save($category)) {
+                    $result['add'] = 1;
+                } else {
+                    $result['add'] = 0;
+                }
+            } else {
+                $result["validate"] = $validateError;
+            }
         }
-         $this->apiResponse['add'] = $result;
+        $this->apiResponse['result'] = $result;
     }
 
     /**
@@ -83,19 +89,25 @@ class CategoriesController extends ApiController {
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function edit($id = null) {
+        $result = [];
         $category = $this->Categories->get($id, [
             'contain' => []
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $category = $this->Categories->patchEntity($category, $this->request->getData());
-            if ($this->Categories->save($category)) {
-                $this->Flash->success(__('The category has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+            $validate = $this->Categories->newEntity($this->getRequest()->getData());
+            $validateError = $validate->getErrors();
+            if (empty($validateError)) {
+                $category = $this->Categories->patchEntity($category, $this->request->getData());
+                if ($this->Categories->save($category)) {
+                    $result['update'] = 1;
+                } else {
+                    $result['update'] = 0;
+                }
+            } else {
+                $result["validate"] = $validateError;
             }
-            $this->Flash->error(__('The category could not be saved. Please, try again.'));
         }
-        $this->set(compact('category'));
+        $this->apiResponse['result'] = $result;
     }
 
     /**
@@ -106,15 +118,20 @@ class CategoriesController extends ApiController {
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null) {
-        $this->request->allowMethod(['post', 'delete']);
-        $category = $this->Categories->get($id);
-        if ($this->Categories->delete($category)) {
-            $this->Flash->success(__('The category has been deleted.'));
-        } else {
-            $this->Flash->error(__('The category could not be deleted. Please, try again.'));
+        $result = [];
+        $category = $this->Categories->get($id, [
+            'contain' => []
+        ]);
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $category = $this->Categories->patchEntity($category, $this->request->getData());
+            $category->is_deleted=1;
+            if ($this->Categories->save($category)) {
+                $result['delete'] = 1;
+            } else {
+                $result['delete'] = 0;
+            }
         }
-
-        return $this->redirect(['action' => 'index']);
+        $this->apiResponse['result'] = $result;
     }
 
 }
