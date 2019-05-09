@@ -18,6 +18,7 @@ CakePHP 3.7
 
 MySql 8
 
+Reactjs 16.8
 
 # CakePHP Application Skeleton
 
