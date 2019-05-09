@@ -55,7 +55,8 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
      */
 
     // Users
-    $routes->connect('user', ['controller' => 'Users', 'action' => 'index', 'allowWithoutToken' => false]);
+    $routes->connect('user', ['controller' => 'Users', 'action' => 'index', 'allowWithoutToken' => true]);
+    $routes->connect('user/profile', ['controller' => 'Users', 'action' => 'updateProfile', 'allowWithoutToken' => true]);
     $routes->connect('user/login', ['controller' => 'Users', 'action' => 'login', 'allowWithoutToken' => true]);
 
     // $routes->connect('/schedules/', ['controller' => 'Admin/Schedules', 'action' => 'index']);

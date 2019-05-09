@@ -2,10 +2,13 @@
 namespace App\Controller\Api;
 
 use App\Controller\AppController;
+use App\Model\Entity\User;
 use Cake\Http\Client\Request;
 use RestApi\Controller\ApiController;
 use App\Controller\Api\ApisController;
 use RestApi\Utility\JwtToken;
+use Cake\Http\Client;
+use Cake\Core\Configure;
 
 /**
  * Users Controller
@@ -16,6 +19,12 @@ use RestApi\Utility\JwtToken;
  */
 class UsersController extends ApiController
 {
+
+    public function initialize()
+    {
+        parent::initialize();
+        $this->loadComponent('RequestHandler');
+    }
 
 //    public function beforeFilter(Event $event)
 //    {
@@ -37,6 +46,7 @@ class UsersController extends ApiController
         $this->httpStatusCode = 200;
         $users = $this->Users
             ->find('all')
+            ->where(['is_deleted' => 0])
             ->toArray();
 
         // Set the response
@@ -52,27 +62,37 @@ class UsersController extends ApiController
      */
     public function login()
     {
-        //if ($this->getRequest()->is(['post'])) {
-
-//            $user = $this->Auth->identify();
-//            if ($user) {
-//                $this->Auth->setUser($user);
-//                return $this->redirect($this->Auth->redirectUrl());
-//            }
-//            $this->Flash->error(__('Invalid username or password, try again'));
-
-            /**
-             * process your data and validate it against database table
-             */
-
-            // generate token if valid user
-            $payload = ['email' => 'hunght1188@gmail', 'name' => 'hunght'];
-
-            $this->apiResponse['token'] = JwtToken::generateToken($payload);
-            $this->apiResponse['message'] = 'Logged in successfully.';
-
-            //$this->Flash->error(__('Invalid username or password, try again'));
-        //}
+        if ($this->getRequest()->is(['post'])) {
+            $request = $this->getRequest()->getData();
+            $url = Configure::read('User.Url_AccessUser');
+            $username = $request['username'];
+            $pwd = $request['password'];
+            $http = new Client();
+            $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
+            $data = json_decode($results->body);
+            if(!empty($data->success) && $data->success == true){
+                $user = $this->Auth->identify();
+                if ($user) {
+                    $this->Auth->setUser($user);
+                }
+                $userdata = $this->Users->find()
+                    ->where(['is_deleted' => 0, 'user_name' => $username])
+                    ->first();
+                if($userdata->id) {
+                    // generate token if valid user
+                    $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
+                    $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                    // redirect to dashboard
+                } else {
+                    // generate token if valid user
+                    $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
+                    $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                    //$this->redirect(array('controller' => 'Users', 'action' => 'updateProfile'), 301);
+                }
+            } else {
+                // login error
+            }
+        }
 
     }
 
@@ -159,5 +179,9 @@ class UsersController extends ApiController
         }
 
         return $this->redirect(['action' => 'index']);
+    }
+
+    public function updateProfile(?int $id = null){
+        
     }
 }
