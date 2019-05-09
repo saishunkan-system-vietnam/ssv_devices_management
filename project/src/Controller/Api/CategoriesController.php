@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Controller\Api;
 
 use App\Controller\AppController;
+use RestApi\Controller\ApiController;
 
 /**
  * Categories Controller
@@ -10,18 +12,16 @@ use App\Controller\AppController;
  *
  * @method \App\Model\Entity\Category[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class CategoriesController extends AppController
-{
+class CategoriesController extends ApiController {
+
     /**
      * Index method
      *
      * @return \Cake\Http\Response|void
      */
-    public function index()
-    {
-        $categories = $this->paginate($this->Categories);
-
-        $this->set(compact('categories'));
+    public function index() {
+        $categories = $this->Categories->find('all')->where(['is_deleted' => 0])->toArray();
+        $this->apiResponse['lstCategories'] = $categories;
     }
 
     /**
@@ -31,13 +31,14 @@ class CategoriesController extends AppController
      * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
-    {
-        $category = $this->Categories->get($id, [
-            'contain' => []
-        ]);
-
-        $this->set('category', $category);
+    public function view($id = null) {
+//        $category = $this->Categories->get($id, [
+//            'contain' => []
+//        ]);
+//
+//        $this->set('category', $category);         
+        $category = $this->Categories->find('all')->where(['is_deleted' => 0, 'id' => $id])->toArray();
+        $this->apiResponse['lstCategories'] = $category;
     }
 
     /**
@@ -45,19 +46,33 @@ class CategoriesController extends AppController
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add()
-    {
-        $category = $this->Categories->newEntity();
-        if ($this->request->is('post')) {
-            $category = $this->Categories->patchEntity($category, $this->request->getData());
-            if ($this->Categories->save($category)) {
-                $this->Flash->success(__('The category has been saved.'));
+    public function add() {
+//        $result=[];
+//        $category = $this->Categories->newEntity();
+//        if ($this->getRequest()->is('post')) {
+//            $category = $this->Categories->patchEntity($category, $this->getRequest()->getData());
+//            var_dump($category);die;
+//            if ($this->Categories->save($category)) {
+//                $this->Flash->success(__('The category has been saved.'));
+//                $result['add']=1;
+//                return $this->redirect(['action' => 'index']);
+//            }  else {
+//                $result['add']=0;
+//            }
+//            $this->Flash->error(__('The category could not be saved. Please, try again.'));
+//        }
+//        $this->set(compact('category'));       
 
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The category could not be saved. Please, try again.'));
+         $category = $this->Categories->newEntity();
+        if ($this->getRequest()->is('post')) {
+            $category = $this->Categories->patchEntity($category, $this->getRequest()->getData());
+            if ($this->Categories->save($category)) {
+                $result = 1;                   
+            } else {                 
+                $result = 0;
+            }           
         }
-        $this->set(compact('category'));
+         $this->apiResponse['add'] = $result;
     }
 
     /**
@@ -67,8 +82,7 @@ class CategoriesController extends AppController
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null)
-    {
+    public function edit($id = null) {
         $category = $this->Categories->get($id, [
             'contain' => []
         ]);
@@ -91,8 +105,7 @@ class CategoriesController extends AppController
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete($id = null)
-    {
+    public function delete($id = null) {
         $this->request->allowMethod(['post', 'delete']);
         $category = $this->Categories->get($id);
         if ($this->Categories->delete($category)) {
@@ -103,4 +116,5 @@ class CategoriesController extends AppController
 
         return $this->redirect(['action' => 'index']);
     }
+
 }

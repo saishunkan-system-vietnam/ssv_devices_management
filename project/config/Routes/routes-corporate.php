@@ -56,8 +56,16 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
 
     // Users
     $routes->connect('user', ['controller' => 'Users', 'action' => 'index', 'allowWithoutToken' => true]);
-    $routes->connect('user/profile', ['controller' => 'Users', 'action' => 'updateProfile', 'allowWithoutToken' => true]);
     $routes->connect('user/login', ['controller' => 'Users', 'action' => 'login', 'allowWithoutToken' => true]);
+    
+    
+    
+    // Categories
+    $routes->connect('category', ['controller' => 'Categories', 'action' => 'index', 'allowWithoutToken' => true]);
+    $routes->connect('category/view/*', ['controller' => 'Categories', 'action' => 'view', 'allowWithoutToken' => true]);
+    $routes->connect('category/add', ['controller' => 'Categories', 'action' => 'add', 'allowWithoutToken' => true]);
+    $routes->connect('category/edit', ['controller' => 'Categories', 'action' => 'edit', 'allowWithoutToken' => true]);
+    $routes->connect('category/delete', ['controller' => 'Categories', 'action' => 'delete', 'allowWithoutToken' => true]);
 
     // $routes->connect('/schedules/', ['controller' => 'Admin/Schedules', 'action' => 'index']);
 });
