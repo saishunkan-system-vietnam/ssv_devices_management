@@ -19,6 +19,10 @@ CakePHP 3.7
 MySql 8
 
 Reactjs 16.8
+<<<<<<< HEAD
+=======
+
+>>>>>>> 78a3179c304c5bc78d097ffbb1b78e2b45d2d27a
 
 # CakePHP Application Skeleton
 
