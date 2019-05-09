@@ -44,11 +44,25 @@ class AppController extends Controller
             'enableBeforeRedirect' => false,
         ]);
         $this->loadComponent('Flash');
+        $this->loadComponent('Csrf');
+        $this->loadComponent('Auth', [
+            'authorize' => 'Controller',
+            'unauthorizedRedirect' => $this->referer(),
+        ]);
+        $this->Auth->allow(['display', 'password', 'reset', 'logout']); // Allow everyone access to specific actions
 
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
          */
         //$this->loadComponent('Security');
+    }
+
+    public function isAuthorized($user)
+    {
+        if (in_array($user['role'], ['Admin', 'User'])) { // Don't give any access to "Disabled" user accounts
+            return true;
+        }
+        return false;
     }
 }

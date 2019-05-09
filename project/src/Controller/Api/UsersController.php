@@ -19,22 +19,6 @@ use Cake\Core\Configure;
  */
 class UsersController extends ApiController
 {
-
-    public function initialize()
-    {
-        parent::initialize();
-        $this->loadComponent('RequestHandler');
-    }
-
-//    public function beforeFilter(Event $event)
-//    {
-//        parent::beforeFilter($event);
-//        // Allow users to register and logout.
-//        // You should not add the "login" action to allow list. Doing so would
-//        // cause problems with normal functioning of AuthComponent.
-//        $this->Auth->allow(['add', 'logout']);
-//    }
-
     /**
      * Index method
      *
@@ -71,23 +55,19 @@ class UsersController extends ApiController
             $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
             $data = json_decode($results->body);
             if(!empty($data->success) && $data->success == true){
-                $user = $this->Auth->identify();
-                if ($user) {
-                    $this->Auth->setUser($user);
-                }
                 $userdata = $this->Users->find()
                     ->where(['is_deleted' => 0, 'user_name' => $username])
                     ->first();
                 if($userdata->id) {
-                    // generate token if valid user
-                    $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
-                    $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                    $this->httpStatusCode = 200;
+                    // Set the response
+                    $this->apiResponse['user'] = $userdata;
                     // redirect to dashboard
                 } else {
-                    // generate token if valid user
-                    $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
-                    $this->apiResponse['token'] = JwtToken::generateToken($payload);
-                    //$this->redirect(array('controller' => 'Users', 'action' => 'updateProfile'), 301);
+                    $this->Session->write('User.username', $userdata);
+                    $this->httpStatusCode = 200;
+                    // Set the response
+                    $this->apiResponse['user'] = 'new user';
                 }
             } else {
                 // login error
@@ -181,7 +161,34 @@ class UsersController extends ApiController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function updateProfile(?int $id = null){
-        
+    public function updateProfile(){
+        if ($this->getRequest()->is(['post'])) {
+            $request = $this->getRequest()->getData();
+            $session = $this->getRequest()->getSession();
+            $user_name = $request['user_name'];
+            if ($session->check('User.username')) {
+                $user_name = $session->read('User.username');
+            } else {
+                //$this->Flash->error(__('The user could not empty'));
+            }
+            $user = $this->Users->newEntity();
+            $user->user_name = $user_name;
+            $user->full_name = $request['full_name'];
+            $user->email = $request['email'];
+            $user->position = 'Programmer';
+            $user->level = (int)1;
+            $user->created_time = date('Y-m-d H:i:s');
+            $user->update_time = date('Y-m-d H:i:s');
+            $user->is_deleted = (int)0;
+            if($this->Users->save($user)){
+                $this->httpStatusCode = 200;
+                // Set the response
+                $this->apiResponse['user'] = 'The user has been saved.';
+            } else {
+                $this->httpStatusCode = 901;
+                // Set the response
+                $this->apiResponse['user'] = 'The user could not be saved. Please, try again.';
+            }
+        }
     }
 }

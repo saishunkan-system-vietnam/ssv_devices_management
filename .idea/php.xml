@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/project/vendor/phar-io/version" />
+      <path value="$PROJECT_DIR$/project/vendor/jasny/twig-extensions" />
+      <path value="$PROJECT_DIR$/project/vendor/phar-io/manifest" />
+      <path value="$PROJECT_DIR$/project/vendor/m1/env" />
+      <path value="$PROJECT_DIR$/project/vendor/josegonzalez/dotenv" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/diff" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/version" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/resource-operations" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/code-unit-reverse-lookup" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/object-enumerator" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/object-reflector" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/exporter" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/recursion-context" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/finder" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/comparator" />
+      <path value="$PROJECT_DIR$/project/vendor/ajgl/breakpoint-twig-extension" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/yaml" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/environment" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/config" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/filesystem" />
+      <path value="$PROJECT_DIR$/project/vendor/sebastian/global-state" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/polyfill-php72" />
+      <path value="$PROJECT_DIR$/project/vendor/composer" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/contracts" />
+      <path value="$PROJECT_DIR$/project/vendor/cakephp/chronos" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/var-dumper" />
+      <path value="$PROJECT_DIR$/project/vendor/cakephp/debug_kit" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/polyfill-mbstring" />
+      <path value="$PROJECT_DIR$/project/vendor/cakephp/migrations" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/process" />
+      <path value="$PROJECT_DIR$/project/vendor/jakub-onderka/php-console-highlighter" />
+      <path value="$PROJECT_DIR$/project/vendor/cakephp/bake" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/project/vendor/jakub-onderka/php-console-color" />
+      <path value="$PROJECT_DIR$/project/vendor/cakephp/cakephp" />
+      <path value="$PROJECT_DIR$/project/vendor/cakephp/plugin-installer" />
+      <path value="$PROJECT_DIR$/project/vendor/symfony/console" />
+      <path value="$PROJECT_DIR$/project/vendor/cakephp/cakephp-codesniffer" />
+      <path value="$PROJECT_DIR$/project/vendor/theseer/tokenizer" />
+      <path value="$PROJECT_DIR$/project/vendor/squizlabs/php_codesniffer" />
+      <path value="$PROJECT_DIR$/project/vendor/twig/twig" />
+      <path value="$PROJECT_DIR$/project/vendor/phpdocumentor/reflection-common" />
+      <path value="$PROJECT_DIR$/project/vendor/phpdocumentor/reflection-docblock" />
+      <path value="$PROJECT_DIR$/project/vendor/phpdocumentor/type-resolver" />
+      <path value="$PROJECT_DIR$/project/vendor/asm89/twig-cache-extension" />
+      <path value="$PROJECT_DIR$/project/vendor/psy/psysh" />
+      <path value="$PROJECT_DIR$/project/vendor/aptoma/twig-markdown" />
+      <path value="$PROJECT_DIR$/project/vendor/multidots/cakephp-rest-api" />
+      <path value="$PROJECT_DIR$/project/vendor/wyrihaximus/twig-view" />
+      <path value="$PROJECT_DIR$/project/vendor/myclabs/deep-copy" />
+      <path value="$PROJECT_DIR$/project/vendor/seld/phar-utils" />
+      <path value="$PROJECT_DIR$/project/vendor/webmozart/assert" />
+      <path value="$PROJECT_DIR$/project/vendor/seld/jsonlint" />
+      <path value="$PROJECT_DIR$/project/vendor/dnoegel/php-xdg-base-dir" />
+      <path value="$PROJECT_DIR$/project/vendor/umpirsky/twig-php-function" />
+      <path value="$PROJECT_DIR$/project/vendor/zendframework/zend-diactoros" />
+      <path value="$PROJECT_DIR$/project/vendor/nikic/php-parser" />
+      <path value="$PROJECT_DIR$/project/vendor/psr/log" />
+      <path value="$PROJECT_DIR$/project/vendor/psr/simple-cache" />
+      <path value="$PROJECT_DIR$/project/vendor/psr/http-message" />
+      <path value="$PROJECT_DIR$/project/vendor/firebase/php-jwt" />
+      <path value="$PROJECT_DIR$/project/vendor/friendsofcake/crud" />
+      <path value="$PROJECT_DIR$/project/vendor/phpspec/prophecy" />
+      <path value="$PROJECT_DIR$/project/vendor/phpunit/php-code-coverage" />
+      <path value="$PROJECT_DIR$/project/vendor/jdorn/sql-formatter" />
+      <path value="$PROJECT_DIR$/project/vendor/phpunit/phpunit" />
+      <path value="$PROJECT_DIR$/project/vendor/phpunit/php-token-stream" />
+      <path value="$PROJECT_DIR$/project/vendor/phpunit/phpunit-mock-objects" />
+      <path value="$PROJECT_DIR$/project/vendor/phpunit/php-timer" />
+      <path value="$PROJECT_DIR$/project/vendor/phpunit/php-text-template" />
+      <path value="$PROJECT_DIR$/project/vendor/mobiledetect/mobiledetectlib" />
+      <path value="$PROJECT_DIR$/project/vendor/phpunit/php-file-iterator" />
+      <path value="$PROJECT_DIR$/project/vendor/doctrine/instantiator" />
+      <path value="$PROJECT_DIR$/project/vendor/aura/intl" />
+      <path value="$PROJECT_DIR$/project/vendor/robmorgan/phinx" />
+      <path value="$PROJECT_DIR$/project/vendor/justinrainbow/json-schema" />
+    </include_path>
+  </component>
+  <component name="PhpUnit">
+    <phpunit_settings>
+      <PhpUnitSettings load_method="CUSTOM_LOADER" custom_loader_path="$PROJECT_DIR$/project/vendor/autoload.php" />
+    </phpunit_settings>
+  </component>
+</project>
