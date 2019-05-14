@@ -66,7 +66,7 @@ class UsersController extends ApiController
             $session = $this->getRequest()->getSession();
             $url = Configure::read('User.Url_AccessUser');
             $username = $request['username'];
-            $pwd = $request['password'];
+            $pwd = $request['passwd'];
             $http = new Client();
             $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
             $data = json_decode($results->body);
