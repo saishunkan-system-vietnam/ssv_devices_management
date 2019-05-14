@@ -46,6 +46,12 @@ use Cake\Routing\Route\DashedRoute;
  */
 Router::defaultRouteClass(DashedRoute::class);
 Router::extensions(['json', 'xml']);
+Router::scope('/auth/', function (RouteBuilder $routes) {
+
+    //login route
+    $routes->connect('signin', ['controller' => 'Auth', 'action' => 'signin']);
+    $routes->connect('signout', ['controller' => 'Auth', 'action' => 'signout']);
+});
 Router::scope('/', function (RouteBuilder $routes) {
     // Register scoped middleware for in scopes.
     $routes->registerMiddleware('csrf', new CsrfProtectionMiddleware([

@@ -9,6 +9,7 @@ use App\Controller\Api\ApisController;
 use RestApi\Utility\JwtToken;
 use Cake\Http\Client;
 use Cake\Core\Configure;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * Users Controller
@@ -19,13 +20,15 @@ use Cake\Core\Configure;
  */
 class UsersController extends ApiController
 {
+    private $login;
+    protected $connection;
 
     public function initialize()
     {
         parent::initialize();
 
-//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
-//        $this->connection = ConnectionManager::get('default');
+        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+        $this->connection = ConnectionManager::get('default');
 
         $this->loadComponent('User');
         $this->loadModel('Users');
@@ -75,27 +78,25 @@ class UsersController extends ApiController
                     if ($userdata->id) {
                         $this->responseCode = 200;
                         // Set the response
-                        $this->apiResponse['user'] = $userdata;
+                        $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
+
+                        $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                        $this->apiResponse['message'] = 'Logged in successfully.';
                         // redirect to dashboard
                     } else {
                         $session->write('User.username', $userdata);
                         $this->responseCode = 902;
                         // Set the response
-                        $this->apiResponse['user'] = 'new user';
+                        $this->apiResponse['message'] = 'New user';
                     }
                 } else {
                     $this->responseCode = 901;
                     // Set the response
-                    $this->apiResponse['user'] = 'Wrong user name or passwork';
+                    $this->apiResponse['message'] = 'Wrong user name or passwork';
                 }
             }
         }
 
-    }
-
-    public function logout()
-    {
-        return $this->redirect($this->Auth->logout());
     }
 
     /**
@@ -113,11 +114,11 @@ class UsersController extends ApiController
         if (!empty($user)) {
             $this->responseCode = 200;
             // Set the response
-            $this->apiResponse['user'] = $user;
+            $this->apiResponse['lstUser'] = $user;
         } else {
             $this->responseCode = 901;
             // Set the response
-            $this->apiResponse['user'] = 'There is no data, please check again.';
+            $this->apiResponse['message'] = 'There is no data, please check again.';
         }
     }
 
@@ -180,11 +181,11 @@ class UsersController extends ApiController
             if ($result) {
                 $this->responseCode = 200;
                 // Set the response
-                $this->apiResponse['user'] = 'The user has been deleted';
+                $this->apiResponse['message'] = 'The user has been deleted';
             } else {
                 $this->responseCode = 901;
                 // Set the response
-                $this->apiResponse['user'] = 'The user could not be deleted. Please, try again.';
+                $this->apiResponse['message'] = 'The user could not be deleted. Please, try again.';
             }
         }
     }
@@ -211,11 +212,15 @@ class UsersController extends ApiController
             if($this->Users->save($user)){
                 $this->responseCode = 200;
                 // Set the response
-                $this->apiResponse['user'] = 'The user has been saved.';
+                $payload = ['email' => $user->email, 'name' => $user->user_name];
+
+                $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                // Set the response
+                $this->apiResponse['message'] = 'The user has been saved.';
             } else {
                 $this->responseCode = 901;
                 // Set the response
-                $this->apiResponse['user'] = 'The user could not be saved. Please, try again.';
+                $this->apiResponse['message'] = 'The user could not be saved. Please, try again.';
             }
         }
     }
