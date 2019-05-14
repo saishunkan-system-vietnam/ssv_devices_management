@@ -20,7 +20,7 @@ class CategoriesController extends AppController
     public function index()
     {
         $categories = $this->paginate($this->Categories);
-
+        
         $this->set(compact('categories'));
     }
 
