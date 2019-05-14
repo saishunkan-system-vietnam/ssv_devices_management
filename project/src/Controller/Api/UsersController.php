@@ -23,17 +23,13 @@ class UsersController extends ApiController
     public function initialize()
     {
         parent::initialize();
-        $this->loadComponent('RequestHandler');
-    }
 
-//    public function beforeFilter(Event $event)
-//    {
-//        parent::beforeFilter($event);
-//        // Allow users to register and logout.
-//        // You should not add the "login" action to allow list. Doing so would
-//        // cause problems with normal functioning of AuthComponent.
-//        $this->Auth->allow(['add', 'logout']);
-//    }
+//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+//        $this->connection = ConnectionManager::get('default');
+
+        $this->loadComponent('User');
+        $this->loadModel('Users');
+    }
 
     /**
      * Index method
@@ -64,33 +60,34 @@ class UsersController extends ApiController
     {
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
+            $session = $this->getRequest()->getSession();
             $url = Configure::read('User.Url_AccessUser');
             $username = $request['username'];
             $pwd = $request['password'];
             $http = new Client();
             $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
             $data = json_decode($results->body);
-            if(!empty($data->success) && $data->success == true){
-                $user = $this->Auth->identify();
-                if ($user) {
-                    $this->Auth->setUser($user);
-                }
+            if(!empty($data->success) && $data->success == true) {
                 $userdata = $this->Users->find()
                     ->where(['is_deleted' => 0, 'user_name' => $username])
                     ->first();
-                if($userdata->id) {
-                    // generate token if valid user
-                    $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
-                    $this->apiResponse['token'] = JwtToken::generateToken($payload);
-                    // redirect to dashboard
+                if (!empty($userdata)) {
+                    if ($userdata->id) {
+                        $this->responseCode = 200;
+                        // Set the response
+                        $this->apiResponse['user'] = $userdata;
+                        // redirect to dashboard
+                    } else {
+                        $session->write('User.username', $userdata);
+                        $this->responseCode = 902;
+                        // Set the response
+                        $this->apiResponse['user'] = 'new user';
+                    }
                 } else {
-                    // generate token if valid user
-                    $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
-                    $this->apiResponse['token'] = JwtToken::generateToken($payload);
-                    //$this->redirect(array('controller' => 'Users', 'action' => 'updateProfile'), 301);
+                    $this->responseCode = 901;
+                    // Set the response
+                    $this->apiResponse['user'] = 'Wrong user name or passwork';
                 }
-            } else {
-                // login error
             }
         }
 
@@ -113,8 +110,15 @@ class UsersController extends ApiController
         $user = $this->Users->get($id, [
             'contain' => []
         ]);
-
-        $this->set('user', $user);
+        if (!empty($user)) {
+            $this->responseCode = 200;
+            // Set the response
+            $this->apiResponse['user'] = $user;
+        } else {
+            $this->responseCode = 901;
+            // Set the response
+            $this->apiResponse['user'] = 'There is no data, please check again.';
+        }
     }
 
     /**
@@ -170,18 +174,49 @@ class UsersController extends ApiController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $user = $this->Users->get($id);
-        if ($this->Users->delete($user)) {
-            $this->Flash->success(__('The user has been deleted.'));
-        } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
+        if ($this->getRequest()->isPost()) {
+            $id = $this->getRequest()->getData('id');
+            $result = $this->User->deleteUser($id);
+            if ($result) {
+                $this->responseCode = 200;
+                // Set the response
+                $this->apiResponse['user'] = 'The user has been deleted';
+            } else {
+                $this->responseCode = 901;
+                // Set the response
+                $this->apiResponse['user'] = 'The user could not be deleted. Please, try again.';
+            }
         }
-
-        return $this->redirect(['action' => 'index']);
     }
 
-    public function updateProfile(?int $id = null){
-        
+    public function updateProfile(){
+        if ($this->getRequest()->is(['post'])) {
+            $request = $this->getRequest()->getData();
+            $session = $this->getRequest()->getSession();
+            $user_name = $request['user_name'];
+            if ($session->check('User.username')) {
+                $user_name = $session->read('User.username');
+            } else {
+                //$this->Flash->error(__('The user could not empty'));
+            }
+            $user = $this->Users->newEntity();
+            $user->user_name = $user_name;
+            $user->full_name = $request['full_name'];
+            $user->email = $request['email'];
+            $user->position = 'Programmer';
+            $user->level = (int)1;
+            $user->created_time = date('Y-m-d H:i:s');
+            $user->update_time = date('Y-m-d H:i:s');
+            $user->is_deleted = (int)0;
+            if($this->Users->save($user)){
+                $this->responseCode = 200;
+                // Set the response
+                $this->apiResponse['user'] = 'The user has been saved.';
+            } else {
+                $this->responseCode = 901;
+                // Set the response
+                $this->apiResponse['user'] = 'The user could not be saved. Please, try again.';
+            }
+        }
     }
 }
