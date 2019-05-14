@@ -19,6 +19,8 @@ class CategoriesController extends ApiController {
      *
      * @return \Cake\Http\Response|void
      */
+    
+    //function get list category
     public function index() {
         $categories = $this->Categories->find('all')->where(['is_deleted' => 0])->toArray();
         $this->apiResponse['lstCategories'] = $categories;         
@@ -31,12 +33,9 @@ class CategoriesController extends ApiController {
      * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null) {
-//        $category = $this->Categories->get($id, [
-//            'contain' => []
-//        ]);
-//
-//        $this->set('category', $category);         
+    
+    //function view category
+    public function view($id = null) {        
         $category = $this->Categories->find('all')->where(['is_deleted' => 0, 'id' => $id])->toArray();
         $this->apiResponse['lstCategories'] = $category;
     }
@@ -46,22 +45,9 @@ class CategoriesController extends ApiController {
      *
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
-    public function add() {
-//        $result=[];
-//        $category = $this->Categories->newEntity();
-//        if ($this->getRequest()->is('post')) {
-//            $category = $this->Categories->patchEntity($category, $this->getRequest()->getData());
-//            var_dump($category);die;
-//            if ($this->Categories->save($category)) {
-//                $this->Flash->success(__('The category has been saved.'));
-//                $result['add']=1;
-//                return $this->redirect(['action' => 'index']);
-//            }  else {
-//                $result['add']=0;
-//            }
-//            $this->Flash->error(__('The category could not be saved. Please, try again.'));
-//        }
-//        $this->set(compact('category'));       
+    
+    //function add category
+    public function add() {    
         $result = [];
         $category = $this->Categories->newEntity();
         if ($this->getRequest()->is('post')) {
@@ -88,11 +74,11 @@ class CategoriesController extends ApiController {
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    
+    //function update category
     public function edit($id = null) {
         $result = [];
-        $category = $this->Categories->get($id, [
-            'contain' => []
-        ]);
+        $category = $this->Categories->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $validate = $this->Categories->newEntity($this->getRequest()->getData());
             $validateError = $validate->getErrors();
@@ -117,13 +103,12 @@ class CategoriesController extends ApiController {
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
+    
+    //function delete category
     public function delete($id = null) {
         $result = [];
-        $category = $this->Categories->get($id, [
-            'contain' => []
-        ]);
+        $category = $this->Categories->get($id);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $category = $this->Categories->patchEntity($category, $this->request->getData());
             $category->is_deleted=1;
             if ($this->Categories->save($category)) {
                 $result['delete'] = 1;
