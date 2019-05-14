@@ -65,5 +65,6 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     // $routes->connect('/schedules/', ['controller' => 'Admin/Schedules', 'action' => 'index']);
     $routes->connect('borrow', ['controller' => 'Borrow', 'action' => 'index', 'allowWithoutToken' => true]);
     $routes->connect('borrow/view/*', ['controller' => 'Borrow', 'action' => 'view', 'allowWithoutToken' => true]);
+    $routes->connect('borrow/add/*', ['controller' => 'Borrow', 'action' => 'add', 'allowWithoutToken' => true]);
     
 });
