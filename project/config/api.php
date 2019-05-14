@@ -15,6 +15,7 @@ return [
         'responseFormat' => [
             'statusKey' => 'status',
             'statusOkText' => 'OK',
+            'statusCode' => 'code',
             'statusNokText' => 'NOK',
             'resultKey' => 'payload',
             'messageKey' => 'message',

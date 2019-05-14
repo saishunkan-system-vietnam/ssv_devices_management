@@ -19,6 +19,18 @@ use Cake\Core\Configure;
  */
 class UsersController extends ApiController
 {
+
+    public function initialize()
+    {
+        parent::initialize();
+
+//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+//        $this->connection = ConnectionManager::get('default');
+
+        $this->loadComponent('User');
+        $this->loadModel('Users');
+    }
+
     /**
      * Index method
      *
@@ -48,29 +60,34 @@ class UsersController extends ApiController
     {
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
+            $session = $this->getRequest()->getSession();
             $url = Configure::read('User.Url_AccessUser');
             $username = $request['username'];
             $pwd = $request['password'];
             $http = new Client();
             $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
             $data = json_decode($results->body);
-            if(!empty($data->success) && $data->success == true){
+            if(!empty($data->success) && $data->success == true) {
                 $userdata = $this->Users->find()
                     ->where(['is_deleted' => 0, 'user_name' => $username])
                     ->first();
-                if($userdata->id) {
-                    $this->httpStatusCode = 200;
-                    // Set the response
-                    $this->apiResponse['user'] = $userdata;
-                    // redirect to dashboard
+                if (!empty($userdata)) {
+                    if ($userdata->id) {
+                        $this->responseCode = 200;
+                        // Set the response
+                        $this->apiResponse['user'] = $userdata;
+                        // redirect to dashboard
+                    } else {
+                        $session->write('User.username', $userdata);
+                        $this->responseCode = 902;
+                        // Set the response
+                        $this->apiResponse['user'] = 'new user';
+                    }
                 } else {
-                    $this->Session->write('User.username', $userdata);
-                    $this->httpStatusCode = 200;
+                    $this->responseCode = 901;
                     // Set the response
-                    $this->apiResponse['user'] = 'new user';
+                    $this->apiResponse['user'] = 'Wrong user name or passwork';
                 }
-            } else {
-                // login error
             }
         }
 
@@ -93,8 +110,15 @@ class UsersController extends ApiController
         $user = $this->Users->get($id, [
             'contain' => []
         ]);
-
-        $this->set('user', $user);
+        if (!empty($user)) {
+            $this->responseCode = 200;
+            // Set the response
+            $this->apiResponse['user'] = $user;
+        } else {
+            $this->responseCode = 901;
+            // Set the response
+            $this->apiResponse['user'] = 'There is no data, please check again.';
+        }
     }
 
     /**
@@ -150,15 +174,19 @@ class UsersController extends ApiController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $user = $this->Users->get($id);
-        if ($this->Users->delete($user)) {
-            $this->Flash->success(__('The user has been deleted.'));
-        } else {
-            $this->Flash->error(__('The user could not be deleted. Please, try again.'));
+        if ($this->getRequest()->isPost()) {
+            $id = $this->getRequest()->getData('id');
+            $result = $this->User->deleteUser($id);
+            if ($result) {
+                $this->responseCode = 200;
+                // Set the response
+                $this->apiResponse['user'] = 'The user has been deleted';
+            } else {
+                $this->responseCode = 901;
+                // Set the response
+                $this->apiResponse['user'] = 'The user could not be deleted. Please, try again.';
+            }
         }
-
-        return $this->redirect(['action' => 'index']);
     }
 
     public function updateProfile(){
@@ -181,11 +209,11 @@ class UsersController extends ApiController
             $user->update_time = date('Y-m-d H:i:s');
             $user->is_deleted = (int)0;
             if($this->Users->save($user)){
-                $this->httpStatusCode = 200;
+                $this->responseCode = 200;
                 // Set the response
                 $this->apiResponse['user'] = 'The user has been saved.';
             } else {
-                $this->httpStatusCode = 901;
+                $this->responseCode = 901;
                 // Set the response
                 $this->apiResponse['user'] = 'The user could not be saved. Please, try again.';
             }
