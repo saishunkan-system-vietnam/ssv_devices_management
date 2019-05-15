@@ -67,6 +67,11 @@ class UsersController extends ApiController
             $url = Configure::read('User.Url_AccessUser');
             $username = $request['username'];
             $pwd = $request['passwd'];
+            if(empty($username) || empty($pwd)){
+                $this->responseCode = 903;
+                // Set the response
+                $this->apiResponse['message'] = 'Username or Password can not empty!';
+            }
             $http = new Client();
             $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
             $data = json_decode($results->body);
@@ -92,7 +97,7 @@ class UsersController extends ApiController
                 } else {
                     $this->responseCode = 901;
                     // Set the response
-                    $this->apiResponse['message'] = 'Wrong user name or passwork';
+                    $this->apiResponse['message'] = 'Wrong user name or password';
                 }
             }
         }
@@ -108,9 +113,14 @@ class UsersController extends ApiController
      */
     public function view($id = null)
     {
-        $user = $this->Users->get($id, [
-            'contain' => []
-        ]);
+        if(empty($id)){
+            $this->responseCode = 903;
+            // Set the response
+            $this->apiResponse['message'] = 'Not found data.';
+        }
+        $user = $this->Users->find()
+            ->where(['is_deleted' => 0, 'id' => $id])
+            ->first();
         if (!empty($user)) {
             $this->responseCode = 200;
             // Set the response
@@ -195,6 +205,12 @@ class UsersController extends ApiController
             $request = $this->getRequest()->getData();
             $session = $this->getRequest()->getSession();
             $user_name = $request['user_name'];
+            if(empty($user_name) || empty($request['full_name']) || empty($request['email'])) {
+                $this->responseCode = 903;
+                // Set the response
+                return $this->apiResponse['message'] = 'Data can not empty!';
+
+            }
             if ($session->check('User.username')) {
                 $user_name = $session->read('User.username');
             } else {

@@ -128,6 +128,16 @@ class AuthController extends AppController
         $this->autoRender = false;
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
+            if(empty($request['user_name'])) {
+                $args = [
+                    '0' => 903,
+                    'status' => 'OK',
+                    'payload' => [
+                        'message' => 'Username can not empty!'
+                    ]
+                ];
+                echo json_encode($args);die;
+            }
             $user = $this->Users->find()
                 ->where(['is_deleted' => 0, 'user_name' => $request['user_name']])
                 ->first();
