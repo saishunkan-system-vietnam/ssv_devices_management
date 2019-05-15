@@ -14,7 +14,7 @@ function Login(props) {
             if (responseJson['0'] === 200) {
                 props.history.push('/dashboard');
             } else if(responseJson['0'] === 902) {
-                props.history.push('/users');
+                props.history.push('/user/update');
             } else {
                 props.history.push('/');
             }
