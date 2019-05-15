@@ -68,7 +68,7 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('borrow', ['controller' => 'Borrow', 'action' => 'index', 'allowWithoutToken' => true]);
     $routes->connect('borrow/view/:id', ['controller' => 'Borrow', 'action' => 'view', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
     $routes->connect('borrow/add', ['controller' => 'Borrow', 'action' => 'add', 'allowWithoutToken' => true]);
-    $routes->connect('borrow/edit/:id', ['controller' => 'Borrow', 'action' => 'editBorrowDevices', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('borrow/edit/:id', ['controller' => 'Borrow', 'action' => 'edit', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
     $routes->connect('borrow/delete/:id', ['controller' => 'Borrow', 'action' => 'delete', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
     
 });

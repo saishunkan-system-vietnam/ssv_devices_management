@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use RestApi\Controller\ApiController;
 use \Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
+use Cake\Mailer\Email;
 
 /**
  * Borrow Controller
@@ -91,14 +92,15 @@ class BorrowController extends ApiController {
 
             if ($this->getRequest()->is('post')) {
                 $request = $this->getRequest()->getData();
-
+                
                 $borrowDevices = $this->BorrowDevices->newEntity();
                 $borrowDevices->borrower_id = (isset($request['borrower_id'])) ? $request['borrower_id'] : '';
                 $borrowDevices->approved_id = (isset($request['approved_id'])) ? $request['approved_id'] : '';
                 $borrowDevices->handover_id = (isset($request['handover_id'])) ? $request['handover_id'] : '';
                 $borrowDevices->borrow_reason = (isset($request['borrow_reason'])) ? $request['borrow_reason'] : '';
                 $borrowDevices->return_reason = (isset($request['return_reason'])) ? $request['return_reason'] : '';
-                $borrowDevices->status = (isset($request['status'])) ? $request['status'] : '';
+                //$borrowDevices->status = (isset($request['status'])) ? $request['status'] : '';
+                $borrowDevices->status = 0;
                 $borrowDevices->borrow_date = (isset($request['borrow_date'])) ? $request['borrow_date'] : '';
                 $borrowDevices->approved_date = (isset($request['approved_date'])) ? $request['approved_date'] : '';
                 $borrowDevices->delivery_date = (isset($request['delivery_date'])) ? $request['delivery_date'] : '';
@@ -117,7 +119,8 @@ class BorrowController extends ApiController {
                 $borrowDevicesDetail->device_id = (isset($request['device_id'])) ? $request['device_id'] : '';
                 $borrowDevicesDetail->borrow_reason = (isset($request['borrow_reason'])) ? $request['borrow_reason'] : '';
                 $borrowDevicesDetail->return_reason = (isset($request['return_reason'])) ? $request['return_reason'] : '';
-                $borrowDevicesDetail->status = (isset($request['status'])) ? $request['status'] : '';
+                //$borrowDevicesDetail->status = (isset($request['status'])) ? $request['status'] : '';
+                $borrowDevicesDetail->status=0;
                 $borrowDevicesDetail->borrow_date = (isset($request['borrow_date'])) ? $request['borrow_date'] : '';
                 $borrowDevicesDetail->approved_date = (isset($request['approved_date'])) ? $request['approved_date'] : '';
                 $borrowDevicesDetail->delivery_date = (isset($request['delivery_date'])) ? $request['delivery_date'] : '';
@@ -127,7 +130,7 @@ class BorrowController extends ApiController {
                 $borrowDevicesDetail->is_deleted = 0;
                 $this->BorrowDevicesDetail->save($borrowDevicesDetail);
 
-                $conn->commit();
+                $conn->commit();              
 
                 // Set the HTTP status code. By default, it is set to 200
                 $this->responseCode = 200;
@@ -151,7 +154,17 @@ class BorrowController extends ApiController {
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit($id = null) {
+    public function edit($id = null) {    
+        $email = new Email();
+         $email->setFrom('hoangnguyen03091998@gmail.com')
+                         ->addTo(['hoangnguyenit98@gmail.com' => 'My Website'])
+                         ->setSubject('Contact')
+                         ->setSender('hoangnguyenit98@gmail.com', 'Notification export report!')
+                         ->setEmailFormat('html')
+                         ->setTemplate('report')
+                         ->setViewVars(['key' => 'value'])
+                         ->send();
+         die('a');
         $borrowDevices = $this->BorrowDevices
                 ->find('all')
                 ->where(['id' => $id])
@@ -172,9 +185,9 @@ class BorrowController extends ApiController {
                     $this->BorrowDevices->save($borrowDevices);
                     $borrowDevicesDetail = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $this->getRequest()->getData());
                     $borrowDevicesDetail->update_time = $this->dateNow;
-                    $this->BorrowDevicesDetail->save($borrowDevicesDetail);
-                    $conn->commit();
-
+                    $this->BorrowDevicesDetail->save($borrowDevicesDetail);                    
+                    $conn->commit(); 
+                    
                     // Set the HTTP status code. By default, it is set to 200
                     $this->responseCode = 200;
 
