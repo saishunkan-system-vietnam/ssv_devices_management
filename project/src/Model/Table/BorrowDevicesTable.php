@@ -127,12 +127,12 @@ class BorrowDevicesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
-    {
-        $rules->add($rules->existsIn(['borrower_id'], 'Borrowers'));
-        $rules->add($rules->existsIn(['approved_id'], 'Approveds'));
-        $rules->add($rules->existsIn(['handover_id'], 'Handovers'));
-
-        return $rules;
-    }
+//    public function buildRules(RulesChecker $rules)
+//    {
+//        $rules->add($rules->existsIn(['borrower_id'], 'Borrowers'));
+//        $rules->add($rules->existsIn(['approved_id'], 'Approveds'));
+//        $rules->add($rules->existsIn(['handover_id'], 'Handovers'));
+//
+//        return $rules;
+//    }
 }
