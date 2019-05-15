@@ -9,6 +9,7 @@ use App\Controller\Api\ApisController;
 use RestApi\Utility\JwtToken;
 use Cake\Http\Client;
 use Cake\Core\Configure;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * Users Controller
@@ -19,13 +20,15 @@ use Cake\Core\Configure;
  */
 class UsersController extends ApiController
 {
+    private $login;
+    protected $connection;
 
     public function initialize()
     {
         parent::initialize();
 
-//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
-//        $this->connection = ConnectionManager::get('default');
+        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+        $this->connection = ConnectionManager::get('default');
 
         $this->loadComponent('User');
         $this->loadModel('Users');
@@ -63,7 +66,12 @@ class UsersController extends ApiController
             $session = $this->getRequest()->getSession();
             $url = Configure::read('User.Url_AccessUser');
             $username = $request['username'];
-            $pwd = $request['password'];
+            $pwd = $request['passwd'];
+            if(empty($username) || empty($pwd)){
+                $this->responseCode = 903;
+                // Set the response
+                $this->apiResponse['message'] = 'Username or Password can not empty!';
+            }
             $http = new Client();
             $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
             $data = json_decode($results->body);
@@ -75,27 +83,25 @@ class UsersController extends ApiController
                     if ($userdata->id) {
                         $this->responseCode = 200;
                         // Set the response
-                        $this->apiResponse['user'] = $userdata;
+                        $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
+
+                        $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                        $this->apiResponse['message'] = 'Logged in successfully.';
                         // redirect to dashboard
                     } else {
                         $session->write('User.username', $userdata);
                         $this->responseCode = 902;
                         // Set the response
-                        $this->apiResponse['user'] = 'new user';
+                        $this->apiResponse['message'] = 'New user';
                     }
                 } else {
                     $this->responseCode = 901;
                     // Set the response
-                    $this->apiResponse['user'] = 'Wrong user name or passwork';
+                    $this->apiResponse['message'] = 'Wrong user name or password';
                 }
             }
         }
 
-    }
-
-    public function logout()
-    {
-        return $this->redirect($this->Auth->logout());
     }
 
     /**
@@ -107,17 +113,22 @@ class UsersController extends ApiController
      */
     public function view($id = null)
     {
-        $user = $this->Users->get($id, [
-            'contain' => []
-        ]);
+        if(empty($id)){
+            $this->responseCode = 903;
+            // Set the response
+            $this->apiResponse['message'] = 'Not found data.';
+        }
+        $user = $this->Users->find()
+            ->where(['is_deleted' => 0, 'id' => $id])
+            ->first();
         if (!empty($user)) {
             $this->responseCode = 200;
             // Set the response
-            $this->apiResponse['user'] = $user;
+            $this->apiResponse['lstUser'] = $user;
         } else {
             $this->responseCode = 901;
             // Set the response
-            $this->apiResponse['user'] = 'There is no data, please check again.';
+            $this->apiResponse['message'] = 'There is no data, please check again.';
         }
     }
 
@@ -180,11 +191,11 @@ class UsersController extends ApiController
             if ($result) {
                 $this->responseCode = 200;
                 // Set the response
-                $this->apiResponse['user'] = 'The user has been deleted';
+                $this->apiResponse['message'] = 'The user has been deleted';
             } else {
                 $this->responseCode = 901;
                 // Set the response
-                $this->apiResponse['user'] = 'The user could not be deleted. Please, try again.';
+                $this->apiResponse['message'] = 'The user could not be deleted. Please, try again.';
             }
         }
     }
@@ -194,6 +205,12 @@ class UsersController extends ApiController
             $request = $this->getRequest()->getData();
             $session = $this->getRequest()->getSession();
             $user_name = $request['user_name'];
+            if(empty($user_name) || empty($request['full_name']) || empty($request['email'])) {
+                $this->responseCode = 903;
+                // Set the response
+                return $this->apiResponse['message'] = 'Data can not empty!';
+
+            }
             if ($session->check('User.username')) {
                 $user_name = $session->read('User.username');
             } else {
@@ -211,11 +228,15 @@ class UsersController extends ApiController
             if($this->Users->save($user)){
                 $this->responseCode = 200;
                 // Set the response
-                $this->apiResponse['user'] = 'The user has been saved.';
+                $payload = ['email' => $user->email, 'name' => $user->user_name];
+
+                $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                // Set the response
+                $this->apiResponse['message'] = 'The user has been saved.';
             } else {
                 $this->responseCode = 901;
                 // Set the response
-                $this->apiResponse['user'] = 'The user could not be saved. Please, try again.';
+                $this->apiResponse['message'] = 'The user could not be saved. Please, try again.';
             }
         }
     }

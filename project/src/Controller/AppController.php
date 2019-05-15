@@ -46,10 +46,11 @@ class AppController extends Controller
         $this->loadComponent('Flash');
         $this->loadComponent('Csrf');
         $this->loadComponent('Auth', [
-            'authorize' => 'Controller',
-            'unauthorizedRedirect' => $this->referer(),
+            'loginAction' =>  [
+                'controller' =>'Auth',
+                'action' =>'signin'
+            ]
         ]);
-        $this->Auth->allow(['display', 'password', 'reset', 'logout']); // Allow everyone access to specific actions
 
         /*
          * Enable the following component for recommended CakePHP security settings.
@@ -65,4 +66,5 @@ class AppController extends Controller
         }
         return false;
     }
+
 }

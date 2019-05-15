@@ -55,12 +55,12 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
      */
 
     // Users
-    $routes->connect('user', ['controller' => 'Users', 'action' => 'index', 'allowWithoutToken' => true]);
+    $routes->connect('user', ['controller' => 'Users', 'action' => 'index', 'allowWithoutToken' => false]);
     $routes->connect('user/profile', ['controller' => 'Users', 'action' => 'updateProfile', 'allowWithoutToken' => true]);
     $routes->connect('user/login', ['controller' => 'Users', 'action' => 'login', 'allowWithoutToken' => true]);
-    $routes->connect('user/delete', ['controller' => 'Users', 'action' => 'delete', 'allowWithoutToken' => true]);
-    $routes->connect('user/show/:id', ['controller' => 'Users', 'action' => 'view', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
-    $routes->connect('user/update', ['controller' => 'Users', 'action' => 'edit', 'allowWithoutToken' => true]);
+    $routes->connect('user/delete', ['controller' => 'Users', 'action' => 'delete', 'allowWithoutToken' => false]);
+    $routes->connect('user/show/:id', ['controller' => 'Users', 'action' => 'view', 'allowWithoutToken' => false], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('user/update', ['controller' => 'Users', 'action' => 'edit', 'allowWithoutToken' => false]);
 
     // $routes->connect('/schedules/', ['controller' => 'Admin/Schedules', 'action' => 'index']);
     

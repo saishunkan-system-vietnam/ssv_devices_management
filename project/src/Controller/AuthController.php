@@ -2,6 +2,9 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Event\Event;
+use App\Model\Entity\User;
+use Cake\Http\Response;
 
 /**
  * Auth Controller
@@ -11,6 +14,22 @@ use App\Controller\AppController;
  */
 class AuthController extends AppController
 {
+    public function initialize()
+    {
+        parent::initialize();
+        $this->loadModel('Users');
+    }
+    public function beforeFilter(Event $event)
+    {
+        parent::beforeFilter($event);
+        if ($this->getRequest()->getParam('action') === 'signin') {
+            $this->getEventManager()->off($this->Csrf);
+        }
+        if ($this->getRequest()->getParam('action') === 'signout') {
+            $this->getEventManager()->off($this->Csrf);
+        }
+    }
+
     /**
      * Index method
      *
@@ -103,15 +122,72 @@ class AuthController extends AppController
         return $this->redirect(['action' => 'index']);
     }
 
-    public function login()
+    public function signin()
     {
+        $this->layout = false;
+        $this->autoRender = false;
         if ($this->getRequest()->is('post')) {
-            $user = $this->Auth->identify();
-            if ($user && $user['role'] != 'Disabled') { // Don't allow "Disabled" users to log in
-                $this->Auth->setUser($user);
-                return $this->redirect($this->Auth->redirectUrl());
+            $request = $this->getRequest()->getData();
+            if(empty($request['user_name'])) {
+                $args = [
+                    '0' => 903,
+                    'status' => 'OK',
+                    'payload' => [
+                        'message' => 'Username can not empty!'
+                    ]
+                ];
+                echo json_encode($args);die;
             }
-            $this->Flash->error('Your username or password is incorrect.');
+            $user = $this->Users->find()
+                ->where(['is_deleted' => 0, 'user_name' => $request['user_name']])
+                ->first();
+            //$user = $this->Auth->identify();
+            if ($user) { // Don't allow "Disabled" users to log in
+                $this->Auth->setUser($user);
+                $args = [
+                  '0' => 200,
+                  'status' => 'OK',
+                  'payload' => [
+                      'message' => 'login success'
+                  ]
+                ];
+
+                echo json_encode($args);
+            } else {
+                $args = [
+                    '0' => 901,
+                    'status' => 'OK',
+                    'payload' => [
+                        'message' => 'login error'
+                    ]
+                ];
+                echo json_encode($args);
+            }
+        }
+    }
+
+    public function signout()
+    {
+        $this->autoRender = false;
+        if($this->Auth->logout()){
+            $args = [
+                '0' => 200,
+                'status' => 'OK',
+                'payload' => [
+                    'message' => 'logout success'
+                ]
+            ];
+
+            echo json_encode($args);
+        } else {
+            $args = [
+                '0' => 901,
+                'status' => 'OK',
+                'payload' => [
+                    'message' => 'logout error'
+                ]
+            ];
+            echo json_encode($args);
         }
     }
 }

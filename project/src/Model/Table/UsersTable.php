@@ -51,7 +51,7 @@ class UsersTable extends Table
             ->scalar('user_name')
             ->maxLength('user_name', 100)
             ->requirePresence('user_name', 'create')
-            ->allowEmptyString('user_name', false);
+            ->notEmpty('user_name', 'A username is required');
 
         $validator
             ->scalar('full_name')
