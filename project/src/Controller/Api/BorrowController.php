@@ -5,7 +5,6 @@ namespace App\Controller\Api;
 use RestApi\Controller\ApiController;
 use \Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
-use App\Model\Entity\BorrowDevice;
 
 /**
  * Borrow Controller
@@ -22,18 +21,21 @@ class BorrowController extends ApiController {
      */
     private $BorrowDevices;
     private $BorrowDevicesDetail;
+    private $dateNow;
 
     public function initialize() {
         parent::initialize();
         $this->BorrowDevices = TableRegistry::getTableLocator()->get('BorrowDevices');
         $this->BorrowDevicesDetail = TableRegistry::getTableLocator()->get('BorrowDevicesDetail');
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $this->dateNow = date('Y-m-d H-i:s');
     }
 
     //get list BorrowDevices
     public function index() {
 
         // Set the HTTP status code. By default, it is set to 200
-        $this->httpStatusCode = 200;
+        $this->responseCode = 200;
         $borrowDevices = $this->BorrowDevices
                 ->find('all')
                 ->where(['is_deleted' => 0])
@@ -51,13 +53,16 @@ class BorrowController extends ApiController {
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function view($id = null) {
-        $borrowDevices = $this->get($id, [
-            'contain' => []
-        ]);
+
+        $borrowDevices = $this->BorrowDevices
+                ->find('all')
+                ->where(['id' => $id])
+                ->toArray();
+
         if (!empty($borrowDevices)) {
 
             // Set the HTTP status code. By default, it is set to 200
-            $this->httpStatusCode = 200;
+            $this->responseCode = 200;
             $borrowDevicesDetail = $this->BorrowDevicesDetail
                     ->find('all')
                     ->where(['borrow_device_id' => $id, 'is_deleted' => 0])
@@ -67,8 +72,7 @@ class BorrowController extends ApiController {
             $this->apiResponse['lstBorrowDevices'] = $borrowDevices;
             $this->apiResponse['lstBorrowDevicesDetail'] = $borrowDevicesDetail;
         } else {
-            // Set the HTTP status code. By default, it is set to 200
-            $this->httpStatusCode = 901;
+            $this->responseCode = 901;
 
             //set the response   
             $this->apiResponse['lstBorrowDevices'] = 'There is no data, please check again.';
@@ -81,14 +85,13 @@ class BorrowController extends ApiController {
      * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
      */
     public function add() {
-        $checkUpdate = true;
         $conn = ConnectionManager::get('default');
         try {
             $conn->begin();
-          
+
             if ($this->getRequest()->is('post')) {
                 $request = $this->getRequest()->getData();
-               
+
                 $borrowDevices = $this->BorrowDevices->newEntity();
                 $borrowDevices->borrower_id = (isset($request['borrower_id'])) ? $request['borrower_id'] : '';
                 $borrowDevices->approved_id = (isset($request['approved_id'])) ? $request['approved_id'] : '';
@@ -100,20 +103,17 @@ class BorrowController extends ApiController {
                 $borrowDevices->approved_date = (isset($request['approved_date'])) ? $request['approved_date'] : '';
                 $borrowDevices->delivery_date = (isset($request['delivery_date'])) ? $request['delivery_date'] : '';
                 $borrowDevices->return_date = (isset($request['return_date'])) ? $request['return_date'] : '';
-                $borrowDevices->created_user = (isset($request['created_user'])) ? $request['created_user'] : '';
-                $borrowDevices->update_user = (isset($request['update_user'])) ? $request['update_user'] : '';
-                $borrowDevices->created_time = (isset($request['created_time'])) ? $request['created_time'] : '';
-                $borrowDevices->update_time = (isset($request['update_time'])) ? $request['update_time'] : '';
+                $borrowDevices->created_user = 1;
+                $borrowDevices->update_user = 1;
                 $borrowDevices->is_deleted = 0;
                 $this->BorrowDevices->save($borrowDevices);
-                    
-                //get id of borrow devices max
-                $borrowDevicesId=  $this->BorrowDevices
+
+                //get id of borrow devices new
+                $borrowDevicesNew = $this->BorrowDevices
                         ->find('all')
                         ->max('id');
-
                 $borrowDevicesDetail = $this->BorrowDevicesDetail->newEntity();
-                $borrowDevicesDetail->borrow_device_id = $borrowDevicesId;
+                $borrowDevicesDetail->borrow_device_id = $borrowDevicesNew['id'];
                 $borrowDevicesDetail->device_id = (isset($request['device_id'])) ? $request['device_id'] : '';
                 $borrowDevicesDetail->borrow_reason = (isset($request['borrow_reason'])) ? $request['borrow_reason'] : '';
                 $borrowDevicesDetail->return_reason = (isset($request['return_reason'])) ? $request['return_reason'] : '';
@@ -122,19 +122,26 @@ class BorrowController extends ApiController {
                 $borrowDevicesDetail->approved_date = (isset($request['approved_date'])) ? $request['approved_date'] : '';
                 $borrowDevicesDetail->delivery_date = (isset($request['delivery_date'])) ? $request['delivery_date'] : '';
                 $borrowDevicesDetail->return_date = (isset($request['return_date'])) ? $request['return_date'] : '';
-                $borrowDevicesDetail->created_user = (isset($request['created_user'])) ? $request['created_user'] : '';
-                $borrowDevicesDetail->update_user = (isset($request['update_user'])) ? $request['update_user'] : '';
-                $borrowDevicesDetail->created_time = (isset($request['created_time'])) ? $request['created_time'] : '';
-                $borrowDevicesDetail->update_time = (isset($request['update_time'])) ? $request['update_time'] : '';
+                $borrowDevicesDetail->created_user = 1;
+                $borrowDevicesDetail->update_user = 1;
                 $borrowDevicesDetail->is_deleted = 0;
-
                 $this->BorrowDevicesDetail->save($borrowDevicesDetail);
+
                 $conn->commit();
-            } 
+
+                // Set the HTTP status code. By default, it is set to 200
+                $this->responseCode = 200;
+
+                //set the response  
+                $this->apiResponse['BorrowDevice'] = 'The Borrow device has been saved.';
+            }
         } catch (Exception $ex) {
-             $conn->rollback();
+            $conn->rollback();
+            $this->responseCode = 901;
+
+            //set the response   
+            $this->apiResponse['BorrowDevice'] = 'The Borrow device could not be saved. Please, try again.';
         }
-        
     }
 
     /**
@@ -145,19 +152,48 @@ class BorrowController extends ApiController {
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function edit($id = null) {
-        $borrow = $this->Borrow->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $borrow = $this->Borrow->patchEntity($borrow, $this->request->getData());
-            if ($this->Borrow->save($borrow)) {
-                $this->Flash->success(__('The borrow has been saved.'));
+        $borrowDevices = $this->BorrowDevices
+                ->find('all')
+                ->where(['id' => $id])
+                ->first();
 
-                return $this->redirect(['action' => 'index']);
+        $borrowDevicesDetail = $this->BorrowDevicesDetail
+                ->find('all')
+                ->where(['borrow_device_id' => $id])
+                ->first();
+
+        if (!empty($borrowDevices)) {
+            if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+                $conn = ConnectionManager::get('default');
+                try {
+                    $conn->begin();
+                    $borrowDevices = $this->BorrowDevices->patchEntity($borrowDevices, $this->getRequest()->getData());
+                    $borrowDevices->update_time = $this->dateNow;
+                    $this->BorrowDevices->save($borrowDevices);
+                    $borrowDevicesDetail = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $this->getRequest()->getData());
+                    $borrowDevicesDetail->update_time = $this->dateNow;
+                    $this->BorrowDevicesDetail->save($borrowDevicesDetail);
+                    $conn->commit();
+
+                    // Set the HTTP status code. By default, it is set to 200
+                    $this->responseCode = 200;
+
+                    //set the response  
+                    $this->apiResponse['BorrowDevice'] = 'The borrow devices has been saved.';
+                } catch (Exception $ex) {
+                    $conn->rollback();
+                    $this->responseCode = 901;
+
+                    //set the response   
+                    $this->apiResponse['BorrowDevice'] = 'The Borrow device could not be saved. Please, try again.';
+                }
             }
-            $this->Flash->error(__('The borrow could not be saved. Please, try again.'));
+        } else {
+            $this->responseCode = 901;
+
+            //set the response   
+            $this->apiResponse['BorrowDevice'] = 'borrow devices could not be found. Please, try again.';
         }
-        $this->set(compact('borrow'));
     }
 
     /**
@@ -168,15 +204,50 @@ class BorrowController extends ApiController {
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
     public function delete($id = null) {
-        $this->request->allowMethod(['post', 'delete']);
-        $borrow = $this->Borrow->get($id);
-        if ($this->Borrow->delete($borrow)) {
-            $this->Flash->success(__('The borrow has been deleted.'));
-        } else {
-            $this->Flash->error(__('The borrow could not be deleted. Please, try again.'));
-        }
+        $borrowDevices = $this->BorrowDevices
+                ->find('all')
+                ->where(['id' => $id])
+                ->first();
 
-        return $this->redirect(['action' => 'index']);
+        $borrowDevicesDetail = $this->BorrowDevicesDetail
+                ->find('all')
+                ->where(['borrow_device_id' => $id, 'is_deleted' => 0])
+                ->first();
+
+        if (!empty($borrowDevices)) {
+            if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+                $conn = ConnectionManager::get('default');
+                try {
+                    $conn->begin();
+                    $borrowDevices = $this->BorrowDevices->patchEntity($borrowDevices, $this->getRequest()->getData());
+                    $borrowDevices->update_time = $this->dateNow;
+                    $borrowDevices->is_deleted = 1;
+                    $this->BorrowDevices->save($borrowDevices);
+                    $borrowDevicesDetail = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $this->getRequest()->getData());
+                    $borrowDevicesDetail->update_time = $this->dateNow;
+                    $borrowDevicesDetail->is_deleted = 1;
+                    $this->BorrowDevicesDetail->save($borrowDevicesDetail);
+                    $conn->commit();
+
+                    // Set the HTTP status code. By default, it is set to 200
+                    $this->responseCode = 200;
+
+                    //set the response  
+                    $this->apiResponse['BorrowDevice'] = 'The borrow devices has been deleted.';
+                } catch (Exception $ex) {
+                    $conn->rollback();
+                    $this->responseCode = 901;
+
+                    //set the response   
+                    $this->apiResponse['BorrowDevice'] = 'The Borrow device could not be saved. Please, try again.';
+                }
+            }
+        } else {
+            $this->responseCode = 901;
+
+            //set the response   
+            $this->apiResponse['BorrowDevice'] = 'borrow devices could not be found. Please, try again.';
+        }
     }
 
 }
