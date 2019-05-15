@@ -1,7 +1,8 @@
-import  constants from '../contants';
+import constants from '../contants';
+
 function signin(params) {
     const url = constants.Url + '/api/v1/user/login';
-    fetch(url, {
+   return   fetch(url, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
@@ -14,13 +15,11 @@ function signin(params) {
         })
     }).then(response => {
         return response.json();
-  }).then(responseJson => {
-      console.log(JSON.stringify(responseJson['0']));
-  }).catch(err => {
-      console.log(err);
-});
+    }).catch(err => {
+        console.log(err);
+    });
 }
 
-export  default  {
-    signin : signin
+export default {
+    signin: signin
 }

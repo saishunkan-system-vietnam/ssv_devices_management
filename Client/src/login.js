@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import  signin from './api/signin';
-function Login() {
+import React, {useState} from 'react';
+import signin from './api/signin';
+
+function Login(props) {
     const [username, setUserName] = useState('');
     const [passwd, setPasswd] = useState('');
 
@@ -9,69 +10,63 @@ function Login() {
         let params = {};
         params.username = username;
         params.passwd = passwd;
-        //console.log(JSON.stringify(params));
-        signin.signin(params);
+        signin.signin(params).then(responseJson => {
+            if (responseJson['0'] === 200) {
+                props.history.push('/dashboard');
+            } else if(responseJson['0'] === 902) {
+                props.history.push('/users');
+            } else {
+                props.history.push('/');
+            }
+        });
     }
 
-    function onChangeUsername(event){
+    function onChangeUsername(event) {
         setUserName(event.target.value);
     }
 
-    function onChangePassword(event){
+    function onChangePassword(event) {
         setPasswd(event.target.value);
     }
-    return (
-        <div class="page-wrapper">
-        <div class="page-content--bge5">
-        <div class="container">
-        <div class="login-wrap">
-        <div class="login-content">
-        <div class="login-logo">
-        <a href="#">
-        <img src="./images/icon/logo.png" alt="CoolAdmin" />
-        </a>
-        </div>
-        <div class="login-form">
-        <form action="" method="post">
-        <div class="form-group">
-        <label>Email Address</label>
-    <input class="au-input au-input--full" type="text" name="username" placeholder="Email"  onChange={(event) => {onChangeUsername(event)}} />
-        </div>
-        <div class="form-group">
-        <label>Password</label>
-        <input class="au-input au-input--full" type="password" name="passwd" placeholder="Password" onChange={(event) => {onChangePassword(event)}} />
-        </div>
-        <div class="login-checkbox">
-        <label>
-            <input type="checkbox" name="remember" />Remember Me
-        </label>
-    <label>
-    <a href="#">Forgotten Password?</a>
-    </label>
-    </div>
-    <button class="au-btn au-btn--block au-btn--green m-b-20" type="submit" onClick={(event) => {
-        handleLogin(event);
-    }}>sign in</button>
-        <div class="social-login-content">
-        <div class="social-button">
-        <button class="au-btn au-btn--block au-btn--blue m-b-20">sign in with facebook</button>
-    <button class="au-btn au-btn--block au-btn--blue2">sign in with twitter</button>
-    </div>
-    </div>
-    </form>
-    <div class="register-link">
-        <p>
-        Don't you have account?
-    <a href="#">Sign Up Here</a>
-    </p>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
 
-    </div>
+    return (
+        <div className="page-wrapper">
+            <div className="page-content--bge5">
+                <div className="container">
+                    <div className="login-wrap">
+                        <div className="login-content">
+                            <div className="login-logo">
+                                <img src="./images/icon/saishunkan-system-vietnam-logo.jpg" alt="CoolAdmin" />
+                            </div>
+                            <div className="login-form">
+                                <form action="" method="post">
+                                    <div className="form-group">
+                                        <label>User name</label>
+                                        <input className="au-input au-input--full" type="text" name="username"
+                                               placeholder="User name" onChange={(event) => {
+                                            onChangeUsername(event)
+                                        }}/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>Password</label>
+                                        <input className="au-input au-input--full" type="password" name="passwd"
+                                               placeholder="Password" onChange={(event) => {
+                                            onChangePassword(event)
+                                        }}/>
+                                    </div>
+                                    <button className="au-btn au-btn--block au-btn--green m-b-20" type="submit"
+                                            onClick={(event) => {
+                                                handleLogin(event);
+                                            }}>sign in
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     )
 }
 

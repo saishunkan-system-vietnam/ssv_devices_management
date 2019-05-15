@@ -1,14 +1,19 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
-import  ListUsers from  '../src/Component/Users/list';
-import  Login from '../src/login';
+import Login from '../src/login';
+import ListUsers from  '../src/Component/Users/list';
+import Dashboard from '../src/Component/Dashboard/index';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
   return (
-    <div className="App">
-        <ListUsers />
-        <Login />
-    </div>
+    <Router>
+        <div className="App">
+            <Route path="/" exact component={Login} />
+            <Route path="/dashboard" exact component={Dashboard} />
+            <Route path="/users" component={ListUsers} />
+        </div>
+    </Router>
   );
 }
 
