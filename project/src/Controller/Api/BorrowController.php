@@ -20,6 +20,7 @@ class BorrowController extends ApiController {
      *
      * @return \Cake\Http\Response|void
      */
+    private $Devices;
     private $BorrowDevices;
     private $BorrowDevicesDetail;
     private $dateNow;
@@ -29,6 +30,8 @@ class BorrowController extends ApiController {
         parent::initialize();
         $this->BorrowDevices = TableRegistry::getTableLocator()->get('BorrowDevices');
         $this->BorrowDevicesDetail = TableRegistry::getTableLocator()->get('BorrowDevicesDetail');
+        $this->Devices=  TableRegistry::getTableLocator()->get('Devices');
+        
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $this->dateNow = date('Y-m-d H-i:s');
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
@@ -57,7 +60,6 @@ class BorrowController extends ApiController {
             $this->responseCode = 903;
             // Set the response
             $this->apiResponse['message'] = 'Not found data.';
-            return;
         }
 
         $borrowDevices = $this->BorrowDevices
@@ -86,7 +88,7 @@ class BorrowController extends ApiController {
     }
 
     //function add borrow devices
-    // status: 0- mượn; 1- đang mượn; 2-trả; 3-xác nhận đã trả
+    // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
     public function add() {
         $conn = ConnectionManager::get('default');
         try {
@@ -122,8 +124,7 @@ class BorrowController extends ApiController {
                 $borrowDevices->approved_date = (isset($request['approved_date'])) ? $request['approved_date'] : '';
                 $borrowDevices->delivery_date = (isset($request['delivery_date'])) ? $request['delivery_date'] : '';
                 $borrowDevices->return_date = (isset($request['return_date'])) ? $request['return_date'] : '';
-                $borrowDevices->created_user = 1;
-                $borrowDevices->update_user = 1;
+                $borrowDevices->created_user = $this->login['id'];                
                 $borrowDevices->is_deleted = 0;
                 $this->BorrowDevices->save($borrowDevices);
 
@@ -142,13 +143,34 @@ class BorrowController extends ApiController {
                 $borrowDevicesDetail->approved_date = (isset($request['approved_date'])) ? $request['approved_date'] : '';
                 $borrowDevicesDetail->delivery_date = (isset($request['delivery_date'])) ? $request['delivery_date'] : '';
                 $borrowDevicesDetail->return_date = (isset($request['return_date'])) ? $request['return_date'] : '';
-                $borrowDevicesDetail->created_user = 1;
-                $borrowDevicesDetail->update_user = 1;
+                $borrowDevicesDetail->created_user = $this->login['id'];
+                $borrowDevicesDetail->update_user = $this->login['id'];
                 $borrowDevicesDetail->is_deleted = 0;
                 $this->BorrowDevicesDetail->save($borrowDevicesDetail);
-
+                 
                 $conn->commit();
-
+                
+                $device=  $this->Devices->get($borrowDevicesDetail->device_id);     
+                 // user nhan vien muon do
+                // team nhan vien
+                // ten thiet bi
+                // ly do muon thiet bi
+                
+                $borrowInfo = array(
+                    "user" => $this->login,
+                    "borrowDetail" => $borrowDevicesDetail,
+                    'device'=>$device
+                );
+                $email = new Email();
+                $email->setFrom('hoangnguyen03091998@gmail.com')
+                ->addTo(['hoangnguyenit98@gmail.com' => 'My Website'])
+                ->setSubject('Contact')
+                ->setSender('hoangnguyen03091998@gmail.com', 'Notification export report!')
+                ->setEmailFormat('html')
+                ->setTemplate('request_borrow')
+                ->setViewVars($borrowInfo)
+                ->send();
+                
                 // Set the HTTP status code. By default, it is set to 200
                 $this->responseCode = 200;
 
@@ -165,23 +187,11 @@ class BorrowController extends ApiController {
     }
 
     //function edit borrow devices
-    public function edit($id = null) {
-        $email = new Email();
-        $email->setFrom('hoangnguyen03091998@gmail.com')
-                ->addTo(['hoangnguyenit98@gmail.com' => 'My Website'])
-                ->setSubject('Contact')
-                ->setSender('hoangnguyen03091998@gmail.com', 'Notification export report!')
-                ->setEmailFormat('html')
-                ->setTemplate('report')
-                ->setViewVars(['key' => 'value'])
-                ->send();
-        die('a');
-        
+    public function edit($id = null) {        
          if (empty($id)) {
             $this->responseCode = 903;
             // Set the response
             $this->apiResponse['message'] = 'Not found data.';
-            return;
         }
         
         $borrowDevices = $this->BorrowDevices
@@ -201,9 +211,11 @@ class BorrowController extends ApiController {
                     $conn->begin();
                     $borrowDevices = $this->BorrowDevices->patchEntity($borrowDevices, $this->getRequest()->getData());
                     $borrowDevices->update_time = $this->dateNow;
+                    $borrowDevices->update_user = $this->login['id'];
                     $this->BorrowDevices->save($borrowDevices);
                     $borrowDevicesDetail = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $this->getRequest()->getData());
                     $borrowDevicesDetail->update_time = $this->dateNow;
+                    $borrowDevicesDetail->update_user = $this->login['id'];
                     $this->BorrowDevicesDetail->save($borrowDevicesDetail);
                     $conn->commit();
 
@@ -235,7 +247,6 @@ class BorrowController extends ApiController {
             $this->responseCode = 903;
             // Set the response
             $this->apiResponse['message'] = 'Not found data.';
-            return;
         }
         
         $borrowDevices = $this->BorrowDevices
@@ -284,8 +295,8 @@ class BorrowController extends ApiController {
         }
     }
 
-    //function return devices
-    public function returnDevices($id){
+    //function comfirm borrow devices
+    public function comfirm($id){
         
          if (empty($id)) {
             $this->responseCode = 903;
@@ -311,14 +322,34 @@ class BorrowController extends ApiController {
                     $conn->begin();
                     $borrowDevices = $this->BorrowDevices->patchEntity($borrowDevices, $this->getRequest()->getData());
                     $borrowDevices->update_time = $this->dateNow;
-                    $borrowDevices->status = 2;
+                    $borrowDevices->status = 1;
+                    $borrowDevices->update_user = $this->login['id'];                     
                     $this->BorrowDevices->save($borrowDevices);
+                    
                     $borrowDevicesDetail = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $this->getRequest()->getData());
                     $borrowDevicesDetail->update_time = $this->dateNow;
-                    $borrowDevicesDetail->status = 2;
+                    $borrowDevicesDetail->status = 1;
+                    $borrowDevicesDetail->update_user = $this->login['id'];                    
                     $this->BorrowDevicesDetail->save($borrowDevicesDetail);
+                    
                     $conn->commit();
-
+                    
+                    $device=  $this->Devices->get($borrowDevicesDetail->device_id);
+                    $borrowInfo = array(
+                    "user" => $this->login,
+                    "borrowDetail" => $borrowDevicesDetail,
+                    'device'=>$device
+                    );
+                    $email = new Email();
+                    $email->setFrom('hoangnguyen03091998@gmail.com')
+                    ->addTo(['hoangnguyenit98@gmail.com' => 'My Website'])
+                    ->setSubject('Contact')
+                    ->setSender('hoangnguyen03091998@gmail.com', 'Notification export report!')
+                    ->setEmailFormat('html')
+                    ->setTemplate('request_borrow')
+                    ->setViewVars($borrowInfo)
+                    ->send();
+                    
                     // Set the HTTP status code. By default, it is set to 200
                     $this->responseCode = 200;
 

@@ -167,8 +167,13 @@
                                                 <div style="font-family: Arial, sans-serif; line-height: 20px; color: #444444; font-size: 13px;">
                                                     Xin chào <b>Nguyễn Văn A</b>!
                                                     <br/>
+                                                    <?php if($data['accept'] == 1) { ?>
                                                     Yêu cầu mượn thiết bị <b>Iphone X</b> phục vụ cho việc <b>test dự án Anshin APP</b> đã được <b>Admin</b> chấp nhận.
                                                     Bạn có thể đến phòng quản lý thiết bị để nhận thiết bị. Quy định mượn thiết bị được ghi rõ trong bản <b>Cam kết mượn thiết bị</b>. Chúc bạn một ngày vui vẻ!
+                                                    <?php } else { ?>
+                                                    Yêu cầu mượn thiết bị <b>Iphone X</b> phục vụ cho việc <b>test dự án Anshin APP</b> đã không được <b>Admin</b> chấp nhận.
+                                                    Bở lý do thiết bị đang hỏng. (Thiết bị đang được sử dụng ở dự án khác) Bạn có thể đợi đến ngày xxxx để mượn lại thiết bị.
+                                                    <?php }?>
                                                     <br/>
                                                     <br/>
                                                     <a href="mailto:vn@saishunkansys.com">vn@saishunkansys.com </a><br/>
