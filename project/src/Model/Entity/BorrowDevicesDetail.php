@@ -52,6 +52,7 @@ class BorrowDevicesDetail extends Entity
         'update_time' => true,
         'is_deleted' => true,
         'borrow_device' => true,
-        'device' => true
+        'device' => true,
+        'note_admin'=> true
     ];
 }

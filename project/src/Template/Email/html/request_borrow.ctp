@@ -167,7 +167,7 @@
                                                 <div style="font-family: Arial, sans-serif; line-height: 20px; color: #444444; font-size: 13px;">
                                                     Xin chào <b>Admin</b>!
                                                     <br/>
-                                                    Nhân viên <b><?= $borrowInfo['user']['full_name'] ?></b> vị trí <b><?=$borrowInfo['user']['position']?></b> thuộc <b><?=$borrowInfo['user']['team']?></b> có yêu cầu muốn mượn thiết bị <b><?=$borrowInfo['device']['name']?></b> để phục vụ <b><?=$borrowInfo['borrow']['borrow_reason']?></b>.
+                                                    Nhân viên <b><?= $user['full_name'] ?></b> vị trí <b><?=$user['position']?></b> thuộc team <b><?=$user['team']?></b> có yêu cầu muốn mượn thiết bị <b><?=$device['name']?></b> để phục vụ <b><?=$borrowDetail['borrow_reason']?></b>.
                                                     Để xem thông tin chi tiết yêu cầu của nhân viên này mời bạn đăng nhập vào hệ thống quản lý <b>Devices Management</b>!
                                                     <br/>
                                                     <br/>
