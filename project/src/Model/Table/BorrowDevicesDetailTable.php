@@ -57,8 +57,16 @@ class BorrowDevicesDetailTable extends Table
     {
         $validator
             ->allowEmptyString('id', 'create');
-
-        $validator
+        
+         $validator
+            ->requirePresence('borrow_device_id','create')
+            ->allowEmptyString('borrow_device_id', false);
+         
+          $validator
+            ->requirePresence('device_id','create')
+            ->allowEmptyString('device_id', false);
+        
+        $validator  
             ->scalar('borrow_reason')
             ->allowEmptyString('borrow_reason');
 
