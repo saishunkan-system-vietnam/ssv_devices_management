@@ -79,26 +79,24 @@ class UsersController extends ApiController
                 $userdata = $this->Users->find()
                     ->where(['is_deleted' => 0, 'user_name' => $username])
                     ->first();
-                if (!empty($userdata)) {
-                    if ($userdata->id) {
-                        $this->responseCode = 200;
-                        // Set the response
-                        $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
-
-                        $this->apiResponse['token'] = JwtToken::generateToken($payload);
-                        $this->apiResponse['message'] = 'Logged in successfully.';
-                        // redirect to dashboard
-                    } else {
-                        $session->write('User.username', $userdata);
-                        $this->responseCode = 902;
-                        // Set the response
-                        $this->apiResponse['message'] = 'New user';
-                    }
-                } else {
-                    $this->responseCode = 901;
+                if (!empty($userdata) && $userdata->id) {
+                    $this->responseCode = 200;
                     // Set the response
-                    $this->apiResponse['message'] = 'Wrong user name or password';
+                    $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
+
+                    $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                    $this->apiResponse['message'] = 'Logged in successfully.';
+                    // redirect to dashboard
+                } else {
+                    $session->write('User.username', $userdata);
+                    $this->responseCode = 902;
+                    // Set the response
+                    $this->apiResponse['message'] = 'New user';
                 }
+            } else {
+                $this->responseCode = 901;
+                // Set the response
+                $this->apiResponse['message'] = 'Wrong user name or password';
             }
         }
 
