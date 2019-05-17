@@ -21,6 +21,7 @@ use Cake\ORM\Entity;
  * @property string|null $address
  * @property \Cake\I18n\FrozenDate|null $birthdate
  * @property \Cake\I18n\FrozenDate|null $join_date
+ * @property bool|null $status
  */
 class User extends Entity
 {
@@ -47,6 +48,7 @@ class User extends Entity
         'team' => true,
         'address' => true,
         'birthdate' => true,
-        'join_date' => true
+        'join_date' => true,
+        'status' => true
     ];
 }

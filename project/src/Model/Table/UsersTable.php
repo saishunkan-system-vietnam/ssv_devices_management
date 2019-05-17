@@ -114,6 +114,10 @@ class UsersTable extends Table
             ->date('join_date')
             ->allowEmptyDate('join_date');
 
+        $validator
+            ->boolean('status')
+            ->allowEmptyString('status');
+
         return $validator;
     }
 

@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import LstUsers from '../../api/listusers';
 
 var bgColors = { "Edit": "#339af0",
@@ -12,13 +12,66 @@ var bgColors = { "Edit": "#339af0",
 
 function ListUsers(props) {
     const [lstUsers, setLstUsers] = useState([]);
-    function handleGetLstUsers(event) {
-        event.preventDefault();
+
+    function handleGetLstUsers() {
         LstUsers.LstUsers().then(responseJson => {
+            console.log(responseJson);
             setLstUsers(responseJson['payload']['lstUser']);
         });
-
     }
+    useEffect(() => {
+        if(lstUsers.length == 0) {
+            handleGetLstUsers();
+        }
+    });
+
+    function getPosition(position) {
+        if(position == 1){
+            return <span className="role member">Programmer</span>;
+        } else if (position == 2) {
+            return <span className="role user">Leader Project</span>;
+        } else if (position == 3) {
+            return <span className="role account">Accounting</span>;
+        } else if (position == 4) {
+            return <span className="role admin">Administrator</span>;
+        } else if (position == 5) {
+            return <span className="role manager">Project Manager</span>;
+        }
+    }
+
+    function getStatus(status) {
+        if(status == 0){
+            return <span className="status--process">Ready</span>;
+        } else if (status == 1) {
+            return <span className="status--denied">Denied</span>
+        }
+    }
+
+    function getAction(status, id) {
+        if(status == 0){
+            return <div><a href={'user/edit/' + id}>
+                <i className="fa fa-edit fa-lg" style={{color: bgColors.Edit}}></i>
+            </a>
+            <a href={'#'} onClick={e =>
+                window.confirm("You want to delete this user?") &&
+                this.deleteItem(e)
+            }>
+                <i className="fa fa-trash fa-lg" style={{color: bgColors.Red}}></i>
+            </a></div>;
+        }
+    }
+
+    function getRestock(status) {
+        if(status == 1){
+            return <a href={'#'} onClick={e =>
+                window.confirm("You want to restock this user?") &&
+                this.deleteItem(e)
+            } style={{color: bgColors.Confirm}}>
+                <i className="fa fa-undo fa-lg"></i>
+            </a>;
+        }
+    }
+
     return (
         <div className="main-content">
             <div className="section__content section__content--p30">
@@ -63,34 +116,27 @@ function ListUsers(props) {
                                         </thead>
                                         <tbody>
                                         {lstUsers.map(function(value, key){
-                                           return <tr>
+                                           return <tr key={value.id}>
                                                <td>
                                                    <img src="/images/icon/avatar-01.jpg" style={{"width": "50px", "height": "50px"}} />
                                                </td>
-                                               <td>{value['user_name']}</td>
+                                               <td>{value.user_name}</td>
                                                <td>
-                                                   {value['full_name']}
+                                                   {value.full_name}
                                                </td>
-                                               <td>{value['position']}</td>
+                                               <td>{value.position}</td>
                                                <td>
-                                                   <span className="role admin">{value['level']}</span>
-                                               </td>
-                                               <td>
-                                                   {value['created_user']}
+                                                   {getPosition(value['level'])}
                                                </td>
                                                <td>
-                                                   <span className="status--process">Ready</span>
+                                                   {value.created_user}
                                                </td>
                                                <td>
-                                                   <a href="edit-user.html">
-                                                       <i className="fa fa-edit fa-lg" style={{color: bgColors.Edit}}></i>
-                                                   </a>&nbsp;
-                                                   <a href="#" onClick={e =>
-                                                       window.confirm("You want to delete this user?") &&
-                                                       this.deleteItem(e)
-                                                   }>
-                                                       <i className="fa fa-trash fa-lg" style={{color: bgColors.Red}}></i>
-                                                   </a>
+                                                   {getStatus(value.status)}
+                                               </td>
+                                               <td>
+                                                   {getAction(value.status, value.id)}
+                                                   {getRestock(value.status, value.id)}
                                                </td>
                                            </tr>;
                                         })}

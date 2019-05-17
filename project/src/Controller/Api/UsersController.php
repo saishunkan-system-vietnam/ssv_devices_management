@@ -235,6 +235,7 @@ class UsersController extends ApiController
             $user->created_time = date('Y-m-d H:i:s');
             $user->update_time = date('Y-m-d H:i:s');
             $user->is_deleted = (int)0;
+            $user->status = $request['status'];
             if($this->Users->save($user)){
                 $this->responseCode = 200;
                 // Set the response

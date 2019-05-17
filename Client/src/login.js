@@ -13,9 +13,11 @@ function Login(props) {
         signin.signin(params).then(responseJson => {
             if (responseJson['0'] === 200) {
                 localStorage.setItem('newUser', responseJson['payload']['userName']);
+                localStorage.setItem('Token', responseJson['payload']['token']);
                 props.history.push('/dashboard');
             } else if(responseJson['0'] === 902) {
                 localStorage.setItem('newUser', responseJson['payload']['userName']);
+                localStorage.setItem('Token', responseJson['payload']['token']);
                 props.history.push('/user/update');
             } else {
                 props.history.push('/');

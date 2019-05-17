@@ -4454,6 +4454,14 @@ section {
     background: #57b846;
 }
 
+.role.manager {
+    background: #f70915;
+}
+
+.role.account {
+    background: #5092fc;
+}
+
 .table-top-campaign.table td {
     border-top: none;
     border-bottom: 1px solid #e5e5e5;
