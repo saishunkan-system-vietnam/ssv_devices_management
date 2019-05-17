@@ -86,6 +86,7 @@ class UsersController extends ApiController
                     $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
 
                     $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                    $this->apiResponse['userName'] = $request['username'];
                     $this->apiResponse['message'] = 'Logged in successfully.';
                     return;
                     // redirect to dashboard
@@ -93,6 +94,7 @@ class UsersController extends ApiController
                     $session->write('User.username', $userdata);
                     $this->responseCode = 902;
                     // Set the response
+                    $this->apiResponse['userName'] = $request['username'];
                     $this->apiResponse['message'] = 'New user';
                     return;
                 }
@@ -239,6 +241,7 @@ class UsersController extends ApiController
                 $payload = ['email' => $user->email, 'name' => $user->user_name];
 
                 $this->apiResponse['token'] = JwtToken::generateToken($payload);
+                $this->apiResponse['userData'] = $user;
                 // Set the response
                 $this->apiResponse['message'] = 'The user has been saved.';
             } else {

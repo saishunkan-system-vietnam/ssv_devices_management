@@ -1,7 +1,7 @@
 import constants from '../constants/contants';
 
-function signin(params) {
-    const url = constants.Url + constants.endpoint.login;
+function AuthServer(params) {
+    const url = constants.Url + constants.endpoint.auth;
    return   fetch(url, {
         method: 'POST',
         headers: {
@@ -10,8 +10,7 @@ function signin(params) {
         },
 
         body: JSON.stringify({
-            username: params.username,
-            passwd: params.passwd
+            user_name: params.inputName,
         })
     }).then(response => {
         return response.json();
@@ -21,5 +20,5 @@ function signin(params) {
 }
 
 export default {
-    signin: signin
+    AuthServer: AuthServer
 }

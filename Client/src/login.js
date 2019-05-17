@@ -12,8 +12,10 @@ function Login(props) {
         params.passwd = passwd;
         signin.signin(params).then(responseJson => {
             if (responseJson['0'] === 200) {
+                localStorage.setItem('newUser', responseJson['payload']['userName']);
                 props.history.push('/dashboard');
             } else if(responseJson['0'] === 902) {
+                localStorage.setItem('newUser', responseJson['payload']['userName']);
                 props.history.push('/user/update');
             } else {
                 props.history.push('/');

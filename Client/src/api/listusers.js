@@ -1,7 +1,7 @@
 import constants from '../constants/contants';
 
-function signin(params) {
-    const url = constants.Url + constants.endpoint.login;
+function LstUsers() {
+    const url = constants.Url + constants.endpoint.lstusers;
    return   fetch(url, {
         method: 'POST',
         headers: {
@@ -9,10 +9,6 @@ function signin(params) {
             'Content-Type': 'application/json',
         },
 
-        body: JSON.stringify({
-            username: params.username,
-            passwd: params.passwd
-        })
     }).then(response => {
         return response.json();
     }).catch(err => {
@@ -21,5 +17,5 @@ function signin(params) {
 }
 
 export default {
-    signin: signin
+    LstUsers: LstUsers
 }

@@ -1,7 +1,7 @@
 import constants from '../constants/contants';
 
 function UpdateProfile(params) {
-    const url = constants.Url + '/api/v1/user/profile';
+    const url = constants.Url + constants.endpoint.update_profile;
    return   fetch(url, {
         method: 'POST',
         headers: {

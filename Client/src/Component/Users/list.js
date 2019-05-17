@@ -1,4 +1,6 @@
-import React from 'react';
+import React,{useState} from 'react';
+import LstUsers from '../../api/listusers';
+
 var bgColors = { "Edit": "#339af0",
     "Confirm": "#20c997",
     "Cyan": "#37BC9B",
@@ -6,7 +8,17 @@ var bgColors = { "Edit": "#339af0",
     "Red": "#E9573F",
     "Yellow": "#F6BB42",
 };
-function ListUsers() {
+
+
+function ListUsers(props) {
+    const [lstUsers, setLstUsers] = useState([]);
+    function handleGetLstUsers(event) {
+        event.preventDefault();
+        LstUsers.LstUsers().then(responseJson => {
+            setLstUsers(responseJson['payload']['lstUser']);
+        });
+
+    }
     return (
         <div className="main-content">
             <div className="section__content section__content--p30">
@@ -50,93 +62,95 @@ function ListUsers() {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>
-                                                <img src="/images/icon/avatar-01.jpg" style={{"width": "50px", "height": "50px"}} />
-                                            </td>
-                                            <td>Admin</td>
-                                            <td>
-                                                Admin
-                                            </td>
-                                            <td>Management</td>
-                                            <td>
-                                                <span className="role admin">admin</span>
-                                            </td>
-                                            <td>
-                                                Admin
-                                            </td>
-                                            <td>
-                                                <span className="status--process">Ready</span>
-                                            </td>
-                                            <td>
-                                                <a href="edit-user.html">
-                                                    <i className="fa fa-edit fa-lg" style={{color: bgColors.Edit}}></i>
-                                                </a>&nbsp;
-                                                <a href="#" onClick={e =>
-                                                    window.confirm("You want to delete this user?") &&
-                                                    this.deleteItem(e)
-                                                }>
-                                                    <i className="fa fa-trash fa-lg" style={{color: bgColors.Red}}></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <img src="/images/icon/avatar-02.jpg" style={{"width": "50px", "height": "50px"}} />
-                                            </td>
-                                            <td>Linh123</td>
-                                            <td>
-                                                Linh Nguyen
-                                            </td>
-                                            <td>Leader</td>
-                                            <td>
-                                                <span className="role member">member</span>
-                                            </td>
-                                            <td>
-                                                Admin
-                                            </td>
-                                            <td>
-                                                <span className="status--process">Ready</span>
-                                            </td>
-                                            <td>
-                                                <a href="edit-user.html">
-                                                    <i className="fa fa-edit fa-lg" style={{color: bgColors.Edit}}></i>
-                                                </a>&nbsp;
-                                                <a href="#" onClick={e =>
-                                                    window.confirm("You want to delete this user?") &&
-                                                    this.deleteItem(e)
-                                                }>
-                                                    <i className="fa fa-trash fa-lg" style={{color: bgColors.Red}}></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <img src="/images/icon/avatar-03.jpg" style={{"width": "50px", "height": "50px"}} />
-                                            </td>
-                                            <td>Nam</td>
-                                            <td>
-                                                Nam Duong
-                                            </td>
-                                            <td>Customer</td>
-                                            <td>
-                                                <span className="role user">customer</span>
-                                            </td>
-                                            <td>
-                                                Admin
-                                            </td>
-                                            <td>
-                                                <span className="status--denied">Denied</span>
-                                            </td>
-                                            <td>
-                                                <a href={'#'} onClick={e =>
-                                                    window.confirm("You want to restock this user?") &&
-                                                    this.deleteItem(e)
-                                                } style={{color: bgColors.Confirm}}>
-                                                    <i className="fa fa-undo fa-lg"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
+                                        {lstUsers.map(function(value, key){
+                                           return <tr>
+                                               <td>
+                                                   <img src="/images/icon/avatar-01.jpg" style={{"width": "50px", "height": "50px"}} />
+                                               </td>
+                                               <td>{value['user_name']}</td>
+                                               <td>
+                                                   {value['full_name']}
+                                               </td>
+                                               <td>{value['position']}</td>
+                                               <td>
+                                                   <span className="role admin">{value['level']}</span>
+                                               </td>
+                                               <td>
+                                                   {value['created_user']}
+                                               </td>
+                                               <td>
+                                                   <span className="status--process">Ready</span>
+                                               </td>
+                                               <td>
+                                                   <a href="edit-user.html">
+                                                       <i className="fa fa-edit fa-lg" style={{color: bgColors.Edit}}></i>
+                                                   </a>&nbsp;
+                                                   <a href="#" onClick={e =>
+                                                       window.confirm("You want to delete this user?") &&
+                                                       this.deleteItem(e)
+                                                   }>
+                                                       <i className="fa fa-trash fa-lg" style={{color: bgColors.Red}}></i>
+                                                   </a>
+                                               </td>
+                                           </tr>;
+                                        })}
+                                        {/*<tr>*/}
+                                            {/*<td>*/}
+                                                {/*<img src="/images/icon/avatar-02.jpg" style={{"width": "50px", "height": "50px"}} />*/}
+                                            {/*</td>*/}
+                                            {/*<td>Linh123</td>*/}
+                                            {/*<td>*/}
+                                                {/*Linh Nguyen*/}
+                                            {/*</td>*/}
+                                            {/*<td>Leader</td>*/}
+                                            {/*<td>*/}
+                                                {/*<span className="role member">member</span>*/}
+                                            {/*</td>*/}
+                                            {/*<td>*/}
+                                                {/*Admin*/}
+                                            {/*</td>*/}
+                                            {/*<td>*/}
+                                                {/*<span className="status--process">Ready</span>*/}
+                                            {/*</td>*/}
+                                            {/*<td>*/}
+                                                {/*<a href="edit-user.html">*/}
+                                                    {/*<i className="fa fa-edit fa-lg" style={{color: bgColors.Edit}}></i>*/}
+                                                {/*</a>&nbsp;*/}
+                                                {/*<a href="#" onClick={e =>*/}
+                                                    {/*window.confirm("You want to delete this user?") &&*/}
+                                                    {/*this.deleteItem(e)*/}
+                                                {/*}>*/}
+                                                    {/*<i className="fa fa-trash fa-lg" style={{color: bgColors.Red}}></i>*/}
+                                                {/*</a>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
+                                        {/*<tr>*/}
+                                            {/*<td>*/}
+                                                {/*<img src="/images/icon/avatar-03.jpg" style={{"width": "50px", "height": "50px"}} />*/}
+                                            {/*</td>*/}
+                                            {/*<td>Nam</td>*/}
+                                            {/*<td>*/}
+                                                {/*Nam Duong*/}
+                                            {/*</td>*/}
+                                            {/*<td>Customer</td>*/}
+                                            {/*<td>*/}
+                                                {/*<span className="role user">customer</span>*/}
+                                            {/*</td>*/}
+                                            {/*<td>*/}
+                                                {/*Admin*/}
+                                            {/*</td>*/}
+                                            {/*<td>*/}
+                                                {/*<span className="status--denied">Denied</span>*/}
+                                            {/*</td>*/}
+                                            {/*<td>*/}
+                                                {/*<a href={'#'} onClick={e =>*/}
+                                                    {/*window.confirm("You want to restock this user?") &&*/}
+                                                    {/*this.deleteItem(e)*/}
+                                                {/*} style={{color: bgColors.Confirm}}>*/}
+                                                    {/*<i className="fa fa-undo fa-lg"></i>*/}
+                                                {/*</a>*/}
+                                            {/*</td>*/}
+                                        {/*</tr>*/}
                                         </tbody>
                                     </table>
                                 </div>

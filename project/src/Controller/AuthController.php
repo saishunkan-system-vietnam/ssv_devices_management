@@ -136,13 +136,14 @@ class AuthController extends AppController
                         'message' => 'Username can not empty!'
                     ]
                 ];
-                echo json_encode($args);die;
+                echo json_encode($args);
+                return;
             }
             $user = $this->Users->find()
                 ->where(['is_deleted' => 0, 'user_name' => $request['user_name']])
                 ->first();
             //$user = $this->Auth->identify();
-            if ($user) { // Don't allow "Disabled" users to log in
+            if (isset($user) && !empty($user)) { // Don't allow "Disabled" users to log in
                 $this->Auth->setUser($user);
                 $args = [
                   '0' => 200,
@@ -153,6 +154,7 @@ class AuthController extends AppController
                 ];
 
                 echo json_encode($args);
+                return;
             } else {
                 $args = [
                     '0' => 901,
@@ -162,6 +164,7 @@ class AuthController extends AppController
                     ]
                 ];
                 echo json_encode($args);
+                return;
             }
         }
     }
@@ -179,6 +182,7 @@ class AuthController extends AppController
             ];
 
             echo json_encode($args);
+            return;
         } else {
             $args = [
                 '0' => 901,
@@ -188,6 +192,7 @@ class AuthController extends AppController
                 ]
             ];
             echo json_encode($args);
+            return;
         }
     }
 }

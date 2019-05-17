@@ -1,5 +1,6 @@
 import React from 'react';
 import UpdateProfile from "../../api/update_profile";
+import AuthServer from "../../api/auth";
 import  {useRef} from 'react';
 
 function AddUser(props) {
@@ -10,6 +11,15 @@ function AddUser(props) {
     const inputAddress = useRef();
     const inputJoinDate = useRef();
     const inputImage = useRef();
+
+    //get data local Storage
+    const [value, setValue] = React.useState(
+        localStorage.getItem('newUser') || ''
+    );
+
+    React.useEffect(() => {
+        localStorage.setItem('newUser', value);
+    }, [value]);
 
     function handleUpdate(event) {
         event.preventDefault();
@@ -23,8 +33,18 @@ function AddUser(props) {
         params.inputImage = inputImage.current.value;
 
         UpdateProfile.UpdateProfile(params).then(responseJson => {
-            if (responseJson['0'] === 200) {
-                props.history.push('/dashboard');
+            if (responseJson['0'] === 200 && responseJson['payload']['userData'] !== 'undefined') {
+                localStorage.setItem('UserData', responseJson['payload']['userData']);
+                AuthServer.AuthServer(params).then(responseAuth => {
+                    if(responseAuth['0'] === 200){
+                        //props.history.push('/dashboard');
+                        console.log(responseAuth);
+                    } else if(responseAuth['0'] === 901){
+                        console.log('Error login');
+                    }
+                });
+                //console.log(responseJson);
+                //props.history.push('/dashboard');
             } else {
                 console.log(responseJson);
             }
@@ -50,9 +70,9 @@ function AddUser(props) {
                                         <div className="col-12 col-md-9">
                                             <input type="text" name="disabledname"
                                                    placeholder="User Name" className="form-control" disabled
-                                                   value={"HungHT"}/>
+                                                   value={value}/>
                                             <input ref={inputName} type="hidden" id="inputName" name="username"
-                                                   placeholder="User Name" className="form-control" value="HungHT"/>
+                                                   placeholder="User Name" className="form-control" value={value}/>
                                         </div>
                                     </div>
                                     <div className="row form-group col-lg-8">
