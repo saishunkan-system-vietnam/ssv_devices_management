@@ -51,7 +51,7 @@ class UsersTable extends Table
             ->scalar('user_name')
             ->maxLength('user_name', 100)
             ->requirePresence('user_name', 'create')
-            ->notEmpty('user_name', 'A username is required');
+            ->allowEmptyString('user_name', false);
 
         $validator
             ->scalar('full_name')
@@ -95,6 +95,24 @@ class UsersTable extends Table
             ->email('email')
             ->requirePresence('email', 'create')
             ->allowEmptyString('email', false);
+
+        $validator
+            ->scalar('team')
+            ->maxLength('team', 100)
+            ->allowEmptyString('team');
+
+        $validator
+            ->scalar('address')
+            ->maxLength('address', 250)
+            ->allowEmptyString('address');
+
+        $validator
+            ->date('birthdate')
+            ->allowEmptyDate('birthdate');
+
+        $validator
+            ->date('join_date')
+            ->allowEmptyDate('join_date');
 
         return $validator;
     }

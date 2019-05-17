@@ -1,6 +1,36 @@
 import React from 'react';
+import UpdateProfile from "../../api/update_profile";
+import  {useRef} from 'react';
 
-function addUser() {
+function AddUser(props) {
+    const inputName = useRef();
+    const inputFullName = useRef();
+    const inputEmail = useRef();
+    const inputDOB = useRef(null);
+    const inputAddress = useRef();
+    const inputJoinDate = useRef();
+    const inputImage = useRef();
+
+    function handleUpdate(event) {
+        event.preventDefault();
+        let params = {};
+        params.inputName = inputName.current.value;
+        params.inputFullName = inputFullName.current.value;
+        params.inputEmail = inputEmail.current.value;
+        params.inputDOB = inputDOB.current.value;
+        params.inputAddress = inputAddress.current.value;
+        params.inputJoinDate = inputJoinDate.current.value;
+        params.inputImage = inputImage.current.value;
+
+        UpdateProfile.UpdateProfile(params).then(responseJson => {
+            if (responseJson['0'] === 200) {
+                props.history.push('/dashboard');
+            } else {
+                console.log(responseJson);
+            }
+        });
+    }
+
     return (
         <div className="main-content">
             <div className="section__content section__content--p30">
@@ -12,71 +42,79 @@ function addUser() {
                                     <strong>Add User</strong>
                                 </div>
                                 <div className="card-body card-block">
-                                    <form action="" method="post" encType="multipart/form-data"
-                                          className="form-horizontal">
-                                        <div className="row form-group col-lg-8">
-                                            <div className="col col-md-3">
-                                                <label htmlFor="text-input" className=" form-control-label">User
-                                                    Name</label>
-                                            </div>
-                                            <div className="col-12 col-md-9">
-                                                <input type="text" id="inputName" name="text-input"
-                                                       placeholder="User Name" className="form-control"/>
-                                            </div>
+                                    <div className="row form-group col-lg-8">
+                                        <div className="col col-md-3">
+                                            <label htmlFor="text-input" className=" form-control-label">User
+                                                Name</label>
                                         </div>
-                                        <div className="row form-group col-lg-8">
-                                            <div className="col col-md-3">
-                                                <label htmlFor="text-input" className=" form-control-label">Full
-                                                    Name</label>
-                                            </div>
-                                            <div className="col-12 col-md-9">
-                                                <input type="text" id="text-input" name="text-input"
-                                                       placeholder="Full Name" className="form-control"/>
-                                            </div>
+                                        <div className="col-12 col-md-9">
+                                            <input type="text" name="disabledname"
+                                                   placeholder="User Name" className="form-control" disabled
+                                                   value={"HungHT"}/>
+                                            <input ref={inputName} type="hidden" id="inputName" name="username"
+                                                   placeholder="User Name" className="form-control" value="HungHT"/>
                                         </div>
-                                        <div className="row form-group col-lg-8">
-                                            <div className="col col-md-3">
-                                                <label htmlFor="text-input"
-                                                       className=" form-control-label">Position</label>
-                                            </div>
-                                            <div className="col-12 col-md-9">
-                                                <input type="text" id="text-input" name="text-input"
-                                                       placeholder="Position" className="form-control"/>
-                                            </div>
+                                    </div>
+                                    <div className="row form-group col-lg-8">
+                                        <div className="col col-md-3">
+                                            <label htmlFor="text-input" className=" form-control-label">Full
+                                                Name</label>
                                         </div>
-                                        <div className="row form-group col-lg-8">
-                                            <div className="col col-md-3">
-                                                <label htmlFor="textarea-input"
-                                                       className=" form-control-label">Level</label>
-                                            </div>
-                                            <div className="col-12 col-md-9">
-                                                <input type="text" id="text-input" name="text-input" placeholder="Level"
-                                                       className="form-control"/>
-                                            </div>
+                                        <div className="col-12 col-md-9">
+                                            <input ref={inputFullName} type="text" id="text-input" name="full_name"
+                                                   placeholder="Full Name" className="form-control"/>
                                         </div>
-                                        <div className="row form-group col-lg-8">
-                                            <div className="col col-md-3">
-                                                <label htmlFor="image" className=" form-control-label">Image</label>
-                                            </div>
-                                            <div className="col-12 col-md-9">
-                                                <input type="file" id="image" name="image" className="form-control"/>
-                                            </div>
+                                    </div>
+                                    <div className="row form-group col-lg-8">
+                                        <div className="col col-md-3">
+                                            <label htmlFor="text-input" className=" form-control-label">Email</label>
                                         </div>
-                                        <div className="row form-group col-lg-8">
-                                            <div className="col col-md-3">
-                                                <label htmlFor="text-input"
-                                                       className=" form-control-label">Created</label>
-                                            </div>
-                                            <div className="col-12 col-md-9">
-                                                <input type="text" id="text-input" name="text-input"
-                                                       placeholder="Created by user" className="form-control"/>
-                                            </div>
+                                        <div className="col-12 col-md-9">
+                                            <input ref={inputEmail} type="text" id="text-input" name="email"
+                                                   placeholder="Email" className="form-control"/>
                                         </div>
-
-                                    </form>
+                                    </div>
+                                    <div className="row form-group col-lg-8">
+                                        <div className="col col-md-3">
+                                            <label htmlFor="text-input" className=" form-control-label">DOB</label>
+                                        </div>
+                                        <div className="col-12 col-md-9">
+                                            <input ref={inputDOB} type="date" id="text-input" name="dateofbirth"
+                                                   placeholder="Date of birth" className="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div className="row form-group col-lg-8">
+                                        <div className="col col-md-3">
+                                            <label htmlFor="text-input" className=" form-control-label">Address</label>
+                                        </div>
+                                        <div className="col-12 col-md-9">
+                                            <input ref={inputAddress} type="text" id="text-input" name="address"
+                                                   placeholder="Address" className="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div className="row form-group col-lg-8">
+                                        <div className="col col-md-3">
+                                            <label htmlFor="text-input" className=" form-control-label">Join
+                                                Date</label>
+                                        </div>
+                                        <div className="col-12 col-md-9">
+                                            <input ref={inputJoinDate} type="date" id="text-input" name="joindate"
+                                                   placeholder="Address" className="form-control"/>
+                                        </div>
+                                    </div>
+                                    <div className="row form-group col-lg-8">
+                                        <div className="col col-md-3">
+                                            <label htmlFor="image" className=" form-control-label">Image</label>
+                                        </div>
+                                        <div className="col-12 col-md-9">
+                                            <input ref={inputImage} type="file" id="image" name="image" className="form-control"/>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="card-footer">
-                                    <button type="submit" className="btn btn-primary ">
+                                    <button type="submit" className="btn btn-primary " onClick={(event) => {
+                                        handleUpdate(event);
+                                    }}>
                                         <i className="fa fa-dot-circle-o"></i> Submit
                                     </button>
                                     <button type="reset" className="btn btn-danger">
@@ -104,4 +142,4 @@ function addUser() {
     );
 }
 
-export default addUser;
+export default AddUser;

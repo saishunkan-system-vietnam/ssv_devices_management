@@ -71,6 +71,7 @@ class UsersController extends ApiController
                 $this->responseCode = 903;
                 // Set the response
                 $this->apiResponse['message'] = 'Username or Password can not empty!';
+                return;
             }
             $http = new Client();
             $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
@@ -86,17 +87,20 @@ class UsersController extends ApiController
 
                     $this->apiResponse['token'] = JwtToken::generateToken($payload);
                     $this->apiResponse['message'] = 'Logged in successfully.';
+                    return;
                     // redirect to dashboard
                 } else {
                     $session->write('User.username', $userdata);
                     $this->responseCode = 902;
                     // Set the response
                     $this->apiResponse['message'] = 'New user';
+                    return;
                 }
             } else {
                 $this->responseCode = 901;
                 // Set the response
                 $this->apiResponse['message'] = 'Wrong user name or password';
+                return;
             }
         }
 
@@ -109,12 +113,13 @@ class UsersController extends ApiController
      * @return \Cake\Http\Response|void
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function view($id = null)
+    public function view($id)
     {
         if(empty($id)){
             $this->responseCode = 903;
             // Set the response
             $this->apiResponse['message'] = 'Not found data.';
+            return;
         }
         $user = $this->Users->find()
             ->where(['is_deleted' => 0, 'id' => $id])
@@ -123,10 +128,12 @@ class UsersController extends ApiController
             $this->responseCode = 200;
             // Set the response
             $this->apiResponse['lstUser'] = $user;
+            return;
         } else {
             $this->responseCode = 901;
             // Set the response
             $this->apiResponse['message'] = 'There is no data, please check again.';
+            return;
         }
     }
 
@@ -190,10 +197,12 @@ class UsersController extends ApiController
                 $this->responseCode = 200;
                 // Set the response
                 $this->apiResponse['message'] = 'The user has been deleted';
+                return;
             } else {
                 $this->responseCode = 901;
                 // Set the response
                 $this->apiResponse['message'] = 'The user could not be deleted. Please, try again.';
+                return;
             }
         }
     }
@@ -206,18 +215,19 @@ class UsersController extends ApiController
             if(empty($user_name) || empty($request['full_name']) || empty($request['email'])) {
                 $this->responseCode = 903;
                 // Set the response
-                return $this->apiResponse['message'] = 'Data can not empty!';
-
+                $this->apiResponse['message'] = 'Data can not empty!';
+                return;
             }
             if ($session->check('User.username')) {
                 $user_name = $session->read('User.username');
-            } else {
-                //$this->Flash->error(__('The user could not empty'));
             }
             $user = $this->Users->newEntity();
             $user->user_name = $user_name;
             $user->full_name = $request['full_name'];
             $user->email = $request['email'];
+            $user->address = $request['address'];
+            $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
+            $user->join_date = date('Y-m-d', strtotime($request['joindate']));
             $user->position = 'Programmer';
             $user->level = (int)1;
             $user->created_time = date('Y-m-d H:i:s');

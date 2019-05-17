@@ -1,7 +1,7 @@
 import constants from '../constants/contants';
 
-function signin(params) {
-    const url = constants.Url + '/api/v1/user/login';
+function UpdateProfile(params) {
+    const url = constants.Url + '/api/v1/user/profile';
    return   fetch(url, {
         method: 'POST',
         headers: {
@@ -10,8 +10,12 @@ function signin(params) {
         },
 
         body: JSON.stringify({
-            username: params.username,
-            passwd: params.passwd
+            user_name: params.inputName,
+            full_name: params.inputFullName,
+            email: params.inputEmail,
+            address: params.inputAddress,
+            dateofbirth: params.inputDOB,
+            joindate: params.inputJoinDate,
         })
     }).then(response => {
         return response.json();
@@ -21,5 +25,5 @@ function signin(params) {
 }
 
 export default {
-    signin: signin
+    UpdateProfile: UpdateProfile
 }

@@ -4,13 +4,17 @@ import HeaderDesktop from '../Master/header_desktop';
 import MenuSidebar from '../Master/menu_sidebar';
 
 function MasterPage(props) {
+
+   function renderContent(){
+      return  React.cloneElement(props.content);
+    }
     return (
         <div className="page-wrapper">
             <HeaderMobile />
             <MenuSidebar />
             <div className="page-container">
                 <HeaderDesktop />
-                {props.children}
+                {renderContent()}
             </div>
 
         </div>

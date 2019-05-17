@@ -26,6 +26,10 @@ class UsersFixture extends TestFixture
         'update_time' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => 'CURRENT_TIMESTAMP', 'comment' => '', 'precision' => null],
         'is_deleted' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => '', 'precision' => null],
         'email' => ['type' => 'string', 'length' => 100, 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'team' => ['type' => 'string', 'length' => 100, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'address' => ['type' => 'string', 'length' => 250, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
+        'birthdate' => ['type' => 'date', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
+        'join_date' => ['type' => 'date', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -51,10 +55,14 @@ class UsersFixture extends TestFixture
                 'level' => 1,
                 'created_user' => 'Lorem ipsum dolor sit amet',
                 'update_user' => 'Lorem ipsum dolor sit amet',
-                'created_time' => '2019-05-09 02:09:02',
-                'update_time' => '2019-05-09 02:09:02',
+                'created_time' => '2019-05-16 06:56:47',
+                'update_time' => '2019-05-16 06:56:47',
                 'is_deleted' => 1,
-                'email' => 'Lorem ipsum dolor sit amet'
+                'email' => 'Lorem ipsum dolor sit amet',
+                'team' => 'Lorem ipsum dolor sit amet',
+                'address' => 'Lorem ipsum dolor sit amet',
+                'birthdate' => '2019-05-16',
+                'join_date' => '2019-05-16'
             ],
         ];
         parent::init();

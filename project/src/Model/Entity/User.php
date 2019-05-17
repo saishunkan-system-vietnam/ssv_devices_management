@@ -17,6 +17,10 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\FrozenTime|null $update_time
  * @property bool $is_deleted
  * @property string $email
+ * @property string|null $team
+ * @property string|null $address
+ * @property \Cake\I18n\FrozenDate|null $birthdate
+ * @property \Cake\I18n\FrozenDate|null $join_date
  */
 class User extends Entity
 {
@@ -39,6 +43,10 @@ class User extends Entity
         'created_time' => true,
         'update_time' => true,
         'is_deleted' => true,
-        'email' => true
+        'email' => true,
+        'team' => true,
+        'address' => true,
+        'birthdate' => true,
+        'join_date' => true
     ];
 }

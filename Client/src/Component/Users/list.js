@@ -52,7 +52,7 @@ function ListUsers() {
                                         <tbody>
                                         <tr>
                                             <td>
-                                                <img src="images/icon/avatar-01.jpg" style={{"width": "50px", "height": "50px"}} />
+                                                <img src="/images/icon/avatar-01.jpg" style={{"width": "50px", "height": "50px"}} />
                                             </td>
                                             <td>Admin</td>
                                             <td>
@@ -82,7 +82,7 @@ function ListUsers() {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <img src="images/icon/avatar-02.jpg" style={{"width": "50px", "height": "50px"}} />
+                                                <img src="/images/icon/avatar-02.jpg" style={{"width": "50px", "height": "50px"}} />
                                             </td>
                                             <td>Linh123</td>
                                             <td>
@@ -112,7 +112,7 @@ function ListUsers() {
                                         </tr>
                                         <tr>
                                             <td>
-                                                <img src="images/icon/avatar-03.jpg" style={{"width": "50px", "height": "50px"}} />
+                                                <img src="/images/icon/avatar-03.jpg" style={{"width": "50px", "height": "50px"}} />
                                             </td>
                                             <td>Nam</td>
                                             <td>
