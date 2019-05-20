@@ -15,7 +15,6 @@ function ListUsers(props) {
 
     function handleGetLstUsers() {
         LstUsers.LstUsers().then(responseJson => {
-            console.log(responseJson);
             setLstUsers(responseJson['payload']['lstUser']);
         });
     }
@@ -52,7 +51,7 @@ function ListUsers(props) {
             return <div><a href={'user/edit/' + id}>
                 <i className="fa fa-edit fa-lg" style={{color: bgColors.Edit}}></i>
             </a>
-            <a href={'#'} onClick={e =>
+            <a href={'user/delete/' + id} onClick={e =>
                 window.confirm("You want to delete this user?") &&
                 this.deleteItem(e)
             }>
@@ -61,9 +60,9 @@ function ListUsers(props) {
         }
     }
 
-    function getRestock(status) {
+    function getRestock(status, id) {
         if(status == 1){
-            return <a href={'#'} onClick={e =>
+            return <a href={'user/restock/' + id} onClick={e =>
                 window.confirm("You want to restock this user?") &&
                 this.deleteItem(e)
             } style={{color: bgColors.Confirm}}>

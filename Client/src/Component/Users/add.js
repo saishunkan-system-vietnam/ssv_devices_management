@@ -13,7 +13,7 @@ function AddUser(props) {
     const inputImage = useRef();
 
     //get data local Storage
-    const [value, setValue] = React.useState(
+    const [value] = React.useState(
         localStorage.getItem('newUser') || ''
     );
 
