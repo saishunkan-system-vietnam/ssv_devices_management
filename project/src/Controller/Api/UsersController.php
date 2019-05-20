@@ -70,7 +70,7 @@ class UsersController extends ApiController
             if(empty($username) || empty($pwd)){
                 $this->responseCode = 903;
                 // Set the response
-                $this->apiResponse['message'] = 'Username or Password can not empty!';
+                $this->apiResponse['message'] = 'Username or Password can not empty.';
                 return;
             }
             $http = new Client();
@@ -250,6 +250,38 @@ class UsersController extends ApiController
                 // Set the response
                 $this->apiResponse['message'] = 'The user could not be saved. Please, try again.';
             }
+        }
+    }
+
+    public function reStock(){
+        if ($this->getRequest()->is(['post'])) {
+            $request = $this->getRequest()->getData();
+            $id = $request['id'];
+            if(empty($id)){
+                $this->responseCode = 903;
+                // Set the response
+                $this->apiResponse['message'] = 'Id user can not empty.';
+                return;
+            }
+            $query = $this->Users->query();
+            $query = $query->update()
+                ->set(['status' => (int)0])
+                ->where(['id' => $id]);
+            if($query->execute()){
+                $this->responseCode = 200;
+                // Set the response
+                $this->apiResponse['message'] = 'The user has been restock.';
+            } else {
+                $this->responseCode = 901;
+                // Set the response
+                $this->apiResponse['message'] = 'The user could not be restock. Please, try again.';
+            }
+        } else {
+            // Set the HTTP status code. By default, it is set to 200
+            $this->responseCode = 904;
+
+            //set the response
+            $this->apiResponse['message'] = 'Method is not correct.';
         }
     }
 }

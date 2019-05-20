@@ -61,6 +61,7 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('user/delete', ['controller' => 'Users', 'action' => 'delete', 'allowWithoutToken' => false]);
     $routes->connect('user/show/:id', ['controller' => 'Users', 'action' => 'view', 'allowWithoutToken' => false], ['id' => '\d+', 'pass' => ['id']]);
     $routes->connect('user/update', ['controller' => 'Users', 'action' => 'edit', 'allowWithoutToken' => false]);
+    $routes->connect('user/restock', ['controller' => 'Users', 'action' => 'reStock', 'allowWithoutToken' => true]);
 
     // $routes->connect('/schedules/', ['controller' => 'Admin/Schedules', 'action' => 'index']);
     
