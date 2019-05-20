@@ -40,7 +40,7 @@ class UsersController extends ApiController
      * @return \Cake\Http\Response|void
      */
     public function index()
-    {
+    {        
         // Set the HTTP status code. By default, it is set to 200
         $this->httpStatusCode = 200;
         $users = $this->Users

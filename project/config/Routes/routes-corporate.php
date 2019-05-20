@@ -63,4 +63,16 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('user/update', ['controller' => 'Users', 'action' => 'edit', 'allowWithoutToken' => false]);
 
     // $routes->connect('/schedules/', ['controller' => 'Admin/Schedules', 'action' => 'index']);
+    
+    //Borrow
+    $routes->connect('borrow', ['controller' => 'Borrow', 'action' => 'borrowDevices', 'allowWithoutToken' => true]);
+    $routes->connect('borrow/view/:id', ['controller' => 'Borrow', 'action' => 'view', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('borrow/add', ['controller' => 'Borrow', 'action' => 'add', 'allowWithoutToken' => true]);
+    $routes->connect('borrow/edit', ['controller' => 'Borrow', 'action' => 'edit', 'allowWithoutToken' => true]);
+    $routes->connect('borrow/delete', ['controller' => 'Borrow', 'action' => 'delete', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('borrow/approve', ['controller' => 'Borrow', 'action' => 'approve', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('borrow/noapprove', ['controller' => 'Borrow', 'action' => 'noApprove', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('borrow/returndevice', ['controller' => 'Borrow', 'action' => 'returnDevice', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('borrow/confirmreturndevice', ['controller' => 'Borrow', 'action' => 'confirmReturnDevice', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    
 });

@@ -57,8 +57,12 @@ class BorrowDevicesDetailTable extends Table
     {
         $validator
             ->allowEmptyString('id', 'create');
-
+        
         $validator
+            ->requirePresence('device_id','create')
+            ->allowEmptyString('device_id', false);
+        
+        $validator  
             ->scalar('borrow_reason')
             ->allowEmptyString('borrow_reason');
 
@@ -120,11 +124,11 @@ class BorrowDevicesDetailTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
-    {
-        $rules->add($rules->existsIn(['borrow_device_id'], 'BorrowDevices'));
-        $rules->add($rules->existsIn(['device_id'], 'Devices'));
-
-        return $rules;
-    }
+//    public function buildRules(RulesChecker $rules)
+//    {
+//        $rules->add($rules->existsIn(['borrow_device_id'], 'BorrowDevices'));
+//        $rules->add($rules->existsIn(['device_id'], 'Devices'));
+//
+//        return $rules;
+//    }
 }

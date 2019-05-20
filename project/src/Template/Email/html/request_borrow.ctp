@@ -167,7 +167,7 @@
                                                 <div style="font-family: Arial, sans-serif; line-height: 20px; color: #444444; font-size: 13px;">
                                                     Xin chào <b>Admin</b>!
                                                     <br/>
-                                                    Nhân viên <b>Nguyễn Văn A</b> vị trí <b>Programer</b> thuộc <b>Team HungHT</b> có yêu cầu muốn mượn thiết bị <b>Iphone X</b> để phục vụ <b>test cho dự án Anshin APP</b>.
+                                                    Nhân viên <b><?= $user['full_name'] ?></b> vị trí <b><?=$user['position']?></b> thuộc team <b><?=$user['team']?></b> có yêu cầu muốn mượn thiết bị <b><?=$device['name']?></b> để phục vụ <b><?=$borrowDetail['borrow_reason']?></b>.
                                                     Để xem thông tin chi tiết yêu cầu của nhân viên này mời bạn đăng nhập vào hệ thống quản lý <b>Devices Management</b>!
                                                     <br/>
                                                     <br/>
