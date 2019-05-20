@@ -1,106 +1,163 @@
 <?php
+
 namespace App\Controller\Api;
 
-use App\Controller\AppController;
+use RestApi\Controller\ApiController;
 
-/**
- * Categories Controller
- *
- * @property \App\Model\Table\CategoriesTable $Categories
- *
- * @method \App\Model\Entity\Category[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
-class CategoriesController extends AppController
+class CategoriesController extends ApiController
 {
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|void
-     */
+
+    private $login;
+
+    public function initialize()
+    {
+        parent::initialize();
+        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+    }
+
     public function index()
     {
-        $categories = $this->paginate($this->Categories);
-        
-        $this->set(compact('categories'));
+        // Set the HTTP status code. By default, it is set to 200
+        $this->responseCode = 200;
+
+        $categories = $this->Categories
+                ->find('all')
+                ->where(['is_deleted' => 0])
+                ->toArray();
+
+        // Set the response
+        $this->apiResponse['lstCategories'] = $categories;
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Category id.
-     * @return \Cake\Http\Response|void
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
+    //function view category
     public function view($id = null)
     {
-        $category = $this->Categories->get($id, [
-            'contain' => []
-        ]);
+        $category = $this->Categories
+                ->find('all')
+                ->where(['is_deleted' => 0, 'id' => $id])
+                ->toArray();
 
-        $this->set('category', $category);
+        if (!empty($category)) {
+            $this->responseCode = 200;
+            $this->apiResponse['Category'] = $category;
+        } else {
+            $this->responseCode = 903;
+            $this->apiResponse['message'] = 'There is no data, please check again.';
+        }
     }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
+    //function add category
     public function add()
     {
-        $category = $this->Categories->newEntity();
-        if ($this->request->is('post')) {
-            $category = $this->Categories->patchEntity($category, $this->request->getData());
-            if ($this->Categories->save($category)) {
-                $this->Flash->success(__('The category has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+        var_dump(date('Y-m-d H:i:s'));die();
+        if ($this->getRequest()->is('post')) {
+            $category = $this->Categories->newEntity();
+            $validate = $this->Categories->newEntity($this->getRequest()->getData());
+            $validateError = $validate->getErrors();
+            if (empty($validateError)) {
+                $category = $this->Categories->patchEntity($category, $this->getRequest()->getData());
+                $category->created_user = $this->login['user_name'];
+                $category->is_deleted = 0;
+                if ($this->Categories->save($category)) {
+                    $this->responseCode = 200;
+                    $this->apiResponse['message'] = 'Save category success.';
+                } else {
+                    $this->responseCode = 901;
+                    $this->apiResponse['message'] = 'Save category no success, please check again';
+                }
+            } else {
+                $this->responseCode = 901;
+                $this->apiResponse['message'] = $validateError;
             }
-            $this->Flash->error(__('The category could not be saved. Please, try again.'));
-        }
-        $this->set(compact('category'));
-    }
-
-    /**
-     * Edit method
-     *
-     * @param string|null $id Category id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $category = $this->Categories->get($id, [
-            'contain' => []
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $category = $this->Categories->patchEntity($category, $this->request->getData());
-            if ($this->Categories->save($category)) {
-                $this->Flash->success(__('The category has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The category could not be saved. Please, try again.'));
-        }
-        $this->set(compact('category'));
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Category id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $category = $this->Categories->get($id);
-        if ($this->Categories->delete($category)) {
-            $this->Flash->success(__('The category has been deleted.'));
         } else {
-            $this->Flash->error(__('The category could not be deleted. Please, try again.'));
+            // Set the HTTP status code. By default, it is set to 200
+            $this->responseCode = 904;
+            //set the response
+            $this->apiResponse['message'] = 'Method is not correct.';
         }
-
-        return $this->redirect(['action' => 'index']);
     }
+
+    //function update category
+    public function edit()
+    {
+        if ($this->getRequest()->is('post')) {
+            $request = $this->getRequest()->getData();
+            if (!isset($request['id']) or empty($request['id'])) {
+                $this->responseCode = 903;
+                $this->apiResponse['message'] = 'No found id';
+                return;
+            }
+            $category = $this->Categories
+                    ->find('all')
+                    ->where(['id' => $request['id']])
+                    ->first();
+            if (!empty($category)) {
+                $validate = $this->Categories->newEntity($this->getRequest()->getData());
+                $validateError = $validate->getErrors();
+
+                if (!empty($validateError)) {
+                    $this->httpStatusCode = 901;
+                    $this->apiResponse['message'] = $validateError;
+                    return;
+                }
+
+                $category = $this->Categories->patchEntity($category, $this->request->getData());
+                $category->update_user = $this->login['user_name'];
+                if ($this->Categories->save($category)) {
+                    $this->responseCode = 200;
+                    $this->apiResponse['message'] = 'update category success';
+                } else {
+                    $this->responseCode = 901;
+                    $this->apiResponse['message'] = 'update category no success, please check again';
+                }
+            } else {
+                $this->responseCode = 903;
+                $this->apiResponse['message'] = 'No found category, please check again';
+            }
+        } else {
+            // Set the HTTP status code. By default, it is set to 200
+            $this->responseCode = 904;
+            //set the response
+            $this->apiResponse['message'] = 'Method is not correct.';
+        }
+    }
+
+//function delete category
+    public function delete()
+    {
+
+
+
+        if ($this->request->is('post')) {
+            $request = $this->getRequest()->getData();
+            if (!isset($request['id']) or empty($request['id'])) {
+                $this->httpStatusCode = 903;
+                $this->apiResponse['message'] = 'No found id';
+                return;
+            }
+            $category = $this->Categories
+                    ->find('all')
+                    ->where(['id' => $request['id']])
+                    ->first();
+            if (!empty($category)) {
+                $category->is_deleted = 1;
+                if ($this->Categories->save($category)) {
+                    $this->httpStatusCode = 200;
+                    $this->apiResponse['message'] = 'delete category success';
+                } else {
+                    $this->httpStatusCode = 901;
+                    $this->apiResponse['message'] = 'delete category no success, please check again';
+                }
+            } else {
+                $this->httpStatusCode = 903;
+                $this->apiResponse['message'] = 'There is no data, please check again';
+            }
+        } else {
+            // Set the HTTP status code. By default, it is set to 200
+            $this->responseCode = 904;
+            //set the response
+            $this->apiResponse['message'] = 'Method is not correct.';
+        }
+    }
+
 }

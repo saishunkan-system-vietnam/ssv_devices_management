@@ -75,4 +75,11 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('borrow/returndevice', ['controller' => 'Borrow', 'action' => 'returnDevice', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
     $routes->connect('borrow/confirmreturndevice', ['controller' => 'Borrow', 'action' => 'confirmReturnDevice', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
     
+     // Categories
+    $routes->connect('category', ['controller' => 'Categories', 'action' => 'index', 'allowWithoutToken' => true]);
+    $routes->connect('category/view/:id', ['controller' => 'Categories', 'action' => 'view', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('category/add', ['controller' => 'Categories', 'action' => 'add', 'allowWithoutToken' => true]);
+    $routes->connect('category/edit', ['controller' => 'Categories', 'action' => 'edit', 'allowWithoutToken' => true]);
+    $routes->connect('category/delete', ['controller' => 'Categories', 'action' => 'delete', 'allowWithoutToken' => true]);
+    
 });
