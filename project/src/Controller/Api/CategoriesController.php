@@ -2,26 +2,21 @@
 
 namespace App\Controller\Api;
 
-
 use RestApi\Controller\ApiController;
 
-/**
- * Categories Controller
- *
- * @property \App\Model\Table\CategoriesTable $Categories
- *
- * @method \App\Model\Entity\Category[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
-class CategoriesController extends ApiController {
+class CategoriesController extends ApiController
+{
 
     private $login;
 
-    public function initialize() {
+    public function initialize()
+    {
         parent::initialize();
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
     }
 
-    public function index() {
+    public function index()
+    {
         // Set the HTTP status code. By default, it is set to 200
         $this->responseCode = 200;
 
@@ -34,15 +29,11 @@ class CategoriesController extends ApiController {
         $this->apiResponse['lstCategories'] = $categories;
     }
 
-    /**
-     * View method
-     *
-     * @param string|null $id Category id.
-     * @return \Cake\Http\Response|void
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     //function view category
-    public function view($id = null) {
+    public function view($id = null)
+    {
+        
+        $this->responseCode = 903;die();
         $category = $this->Categories
                 ->find('all')
                 ->where(['is_deleted' => 0, 'id' => $id])
@@ -57,13 +48,9 @@ class CategoriesController extends ApiController {
         }
     }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
     //function add category
-    public function add() {
+    public function add()
+    {
         if ($this->getRequest()->is('post')) {
             $category = $this->Categories->newEntity();
             $validate = $this->Categories->newEntity($this->getRequest()->getData());
@@ -81,34 +68,40 @@ class CategoriesController extends ApiController {
                 }
             } else {
                 $this->httpStatusCode = 901;
-                $this->apiResponse['validate'] = $validateError;
+                $this->apiResponse['message'] = $validateError;
             }
+        } else {
+            // Set the HTTP status code. By default, it is set to 200
+            $this->responseCode = 904;
+            //set the response
+            $this->apiResponse['message'] = 'Method is not correct.';
         }
     }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Category id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     //function update category
-    public function edit() {
-
-        $request = $this->getRequest()->getData();
-        if (!isset($request['id']) or empty($request['id'])) {
-            $this->responseCode = 903;
-            $this->apiResponse['message'] = 'No found id';
-            return;
-        }
-
-        if ($this->getRequest()->is(['patch', 'post', 'put'])) {
+    public function edit()
+    {
+        if ($this->getRequest()->is('post')) {
+            $request = $this->getRequest()->getData();
+            if (!isset($request['id']) or empty($request['id'])) {
+                $this->responseCode = 903;
+                $this->apiResponse['message'] = 'No found id';
+                return;
+            }
             $category = $this->Categories
                     ->find('all')
                     ->where(['id' => $request['id']])
                     ->first();
             if (!empty($category)) {
+                $validate = $this->Categories->newEntity($this->getRequest()->getData());
+                $validateError = $validate->getErrors();
+
+                if (!empty($validateError)) {
+                    $this->httpStatusCode = 901;
+                    $this->apiResponse['message'] = $validateError;
+                    return;
+                }
+
                 $category = $this->Categories->patchEntity($category, $this->request->getData());
                 $category->update_user = $this->login['user_name'];
                 if ($this->Categories->save($category)) {
@@ -118,31 +111,31 @@ class CategoriesController extends ApiController {
                     $this->responseCode = 901;
                     $this->apiResponse['message'] = 'update category no success, please check again';
                 }
+            } else {
+                $this->responseCode = 903;
+                $this->apiResponse['message'] = 'No found category, please check again';
             }
         } else {
-            $this->responseCode = 903;
-            $this->apiResponse['message'] = 'No found category, please check again';
+            // Set the HTTP status code. By default, it is set to 200
+            $this->responseCode = 904;
+            //set the response
+            $this->apiResponse['message'] = 'Method is not correct.';
         }
     }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id Category id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
 //function delete category
-    public function delete() {
+    public function delete()
+    {
 
-        $request = $this->getRequest()->getData();
-        if (!isset($request['id']) or empty($request['id'])) {
-            $this->httpStatusCode = 903;
-            $this->apiResponse['message'] = 'No found id';
-            return;
-        }
 
-        if ($this->request->is(['patch', 'post', 'put'])) {
+
+        if ($this->request->is('post')) {
+            $request = $this->getRequest()->getData();
+            if (!isset($request['id']) or empty($request['id'])) {
+                $this->httpStatusCode = 903;
+                $this->apiResponse['message'] = 'No found id';
+                return;
+            }
             $category = $this->Categories
                     ->find('all')
                     ->where(['id' => $request['id']])
@@ -160,6 +153,11 @@ class CategoriesController extends ApiController {
                 $this->httpStatusCode = 903;
                 $this->apiResponse['message'] = 'There is no data, please check again';
             }
+        } else {
+            // Set the HTTP status code. By default, it is set to 200
+            $this->responseCode = 904;
+            //set the response
+            $this->apiResponse['message'] = 'Method is not correct.';
         }
     }
 
