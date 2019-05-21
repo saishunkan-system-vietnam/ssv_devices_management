@@ -12,37 +12,35 @@ use Cake\ORM\TableRegistry;
  *
  * @method \App\Model\Entity\Device[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class DevicesController extends ApiController {
+class DevicesController extends ApiController
+{
 
-    private $dateNow;
     private $Brands;
     private $Devices;
     private $login;
 
-    public function initialize() {
+    public function initialize()
+    {
         parent::initialize();
         $this->Brands = TableRegistry::getTableLocator()->get('Brands');
         $this->Devices = TableRegistry::getTableLocator()->get('Devices');
-
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
-
-        date_default_timezone_set('Asia/Ho_Chi_Minh');
-        $this->dateNow = date('Y-m-d H-i:s');
     }
 
     //function get list brands
-    public function getLstBrand() {
-
-        $this->responseCode = 200;
+    public function getLstBrand()
+    {
         $brands = $this->Brands
                 ->find('all')
                 ->where(['is_deleted' => 0])
                 ->toArray();
-        $this->apiResponse['lstBrands'] = $brands;
+        //set return response (response code, api response)
+        $this->returnResponse(200, $brands);
     }
 
     //function view brand
-    public function viewBrand($id = null) {
+    public function viewBrand($id = null)
+    {
 
         $brands = $this->Brands
                 ->find('all')
@@ -50,21 +48,22 @@ class DevicesController extends ApiController {
                 ->toArray();
 
         if (!empty($brands)) {
-            $this->responseCode = 200;
-            $this->apiResponse['brand'] = $brands;
+            //set return response (response code, api response)
+        $this->returnResponse(200, $brands);
         } else {
-            $this->responseCode = 903;
-            $this->apiResponse['message'] = 'There are no data, please check again';
+             //set return response (response code, api response)
+        $this->returnResponse(903, 'There are no data, please check again');
         }
     }
 
     //function add brand
-    public function addBrand() {
-        
+    public function addBrand()
+    {
+
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $brand = $this->Brands->newEntity();
-            
+
             $validate = $this->Brands->newEntity($request);
             $validateError = $validate->getErrors();
             if (empty($validateError)) {
@@ -85,7 +84,8 @@ class DevicesController extends ApiController {
     }
 
     //function edit brand
-    public function editBrand() {
+    public function editBrand()
+    {
 
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
@@ -117,7 +117,8 @@ class DevicesController extends ApiController {
     }
 
     //function delete brand
-    public function deleteBrand() {
+    public function deleteBrand()
+    {
 
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
@@ -149,7 +150,8 @@ class DevicesController extends ApiController {
     }
 
     //function get list devices
-    public function getLstDevices() {
+    public function getLstDevices()
+    {
         $this->responseCode = 200;
         $devices = $this->Devices
                 ->find('all')
@@ -159,7 +161,8 @@ class DevicesController extends ApiController {
     }
 
     //function view devices
-    public function view($id = null) {
+    public function view($id = null)
+    {
         $devices = $this->Devices
                 ->find('all')
                 ->where(['id' => $id])
@@ -175,7 +178,8 @@ class DevicesController extends ApiController {
     }
 
     //function add devices
-    public function add() {
+    public function add()
+    {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $device = $this->Devices->newEntity();
@@ -205,7 +209,8 @@ class DevicesController extends ApiController {
      * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function edit() {
+    public function edit()
+    {
 
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
@@ -257,7 +262,8 @@ class DevicesController extends ApiController {
      * @return \Cake\Http\Response|null Redirects to index.
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      */
-    public function delete() {
+    public function delete()
+    {
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) or empty($request['id'])) {
