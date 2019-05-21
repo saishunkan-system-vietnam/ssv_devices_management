@@ -5,6 +5,7 @@ namespace RestApi\Controller;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Log\Log;
 
 /**
  * Application Controller
