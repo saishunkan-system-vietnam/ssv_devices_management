@@ -68,9 +68,9 @@ class DevicesTable extends Table
             ->allowEmptyString('id', 'create');
 
         $validator
-            ->integer('id_cate')
-            ->requirePresence('id_cate', 'create')
-            ->allowEmptyString('id_cate', false);
+            ->integer('categories_id')
+            ->requirePresence('categories_id', 'create')
+            ->allowEmptyString('categories_id', false);
 
         $validator
             ->scalar('serial_number')
@@ -81,8 +81,13 @@ class DevicesTable extends Table
         $validator
             ->scalar('product_number')
             ->maxLength('product_number', 50)
+            ->requirePresence('product_number', 'create')
             ->allowEmptyString('product_number', false);
 
+         $validator
+            ->scalar('brand_id')
+            ->requirePresence('brand_id', 'create');
+        
         $validator
             ->scalar('name')
             ->maxLength('name', 100)
@@ -128,6 +133,12 @@ class DevicesTable extends Table
 
         return $validator;
     }
+    
+     public function validationSerialnumber(Validator $validator){
+         $this->validationDefault($validator);
+         $validator->add('serial_number', 'unique', ['rule' => 'validateUnique', 'provider' => 'table','message'=>'serial number is exits']);
+         return $validator;
+     }
 
     /**
      * Returns a rules checker object that will be used for validating
