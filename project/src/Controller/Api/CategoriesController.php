@@ -8,11 +8,13 @@ class CategoriesController extends ApiController
 {
 
     private $login;
+    private $dateNow;
 
     public function initialize()
     {
         parent::initialize();
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
+        $this->dateNow=  date('Y-m-d H:i:s');
     }
 
     public function index()
@@ -49,7 +51,6 @@ class CategoriesController extends ApiController
     //function add category
     public function add()
     {
-        var_dump(date('Y-m-d H:i:s'));die();
         if ($this->getRequest()->is('post')) {
             $category = $this->Categories->newEntity();
             $validate = $this->Categories->newEntity($this->getRequest()->getData());
@@ -96,13 +97,15 @@ class CategoriesController extends ApiController
                 $validateError = $validate->getErrors();
 
                 if (!empty($validateError)) {
-                    $this->httpStatusCode = 901;
+                    $this->responseCode = 901;
                     $this->apiResponse['message'] = $validateError;
                     return;
                 }
 
                 $category = $this->Categories->patchEntity($category, $this->request->getData());
+               
                 $category->update_user = $this->login['user_name'];
+                $category->update_time = $this->dateNow;
                 if ($this->Categories->save($category)) {
                     $this->responseCode = 200;
                     $this->apiResponse['message'] = 'update category success';
@@ -125,13 +128,10 @@ class CategoriesController extends ApiController
 //function delete category
     public function delete()
     {
-
-
-
         if ($this->request->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) or empty($request['id'])) {
-                $this->httpStatusCode = 903;
+                $this->responseCode = 903;
                 $this->apiResponse['message'] = 'No found id';
                 return;
             }
@@ -141,15 +141,17 @@ class CategoriesController extends ApiController
                     ->first();
             if (!empty($category)) {
                 $category->is_deleted = 1;
+                $category->update_user = $this->login['user_name'];
+                $category->update_time = $this->dateNow;
                 if ($this->Categories->save($category)) {
-                    $this->httpStatusCode = 200;
+                    $this->responseCode = 200;
                     $this->apiResponse['message'] = 'delete category success';
                 } else {
-                    $this->httpStatusCode = 901;
+                    $this->responseCode = 901;
                     $this->apiResponse['message'] = 'delete category no success, please check again';
                 }
             } else {
-                $this->httpStatusCode = 903;
+                $this->responseCode = 903;
                 $this->apiResponse['message'] = 'There is no data, please check again';
             }
         } else {
