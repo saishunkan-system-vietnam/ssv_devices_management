@@ -36,7 +36,6 @@ class BorrowController extends ApiController
         $this->Devices = TableRegistry::getTableLocator()->get('Devices');
         $this->Users = TableRegistry::getTableLocator()->get('Users');
 
-        date_default_timezone_set('Asia/Ho_Chi_Minh');
         $this->dateNow = date('Y-m-d H-i:s');
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
     }
@@ -118,14 +117,10 @@ class BorrowController extends ApiController
                 $borrowDevices->return_date = (isset($request['return_date'])) ? $request['return_date'] : '';
                 $borrowDevices->created_user = $this->login['user_name'];
                 $borrowDevices->is_deleted = 0;
-                $this->BorrowDevices->save($borrowDevices);
+                $result = $this->BorrowDevices->save($borrowDevices);
 
-                //get id of borrow devices new
-                $borrowDevicesNew = $this->BorrowDevices
-                        ->find('all')
-                        ->max('id');
                 $borrowDevicesDetail = $this->BorrowDevicesDetail->newEntity();
-                $borrowDevicesDetail->borrow_device_id = $borrowDevicesNew['id'];
+                $borrowDevicesDetail->borrow_device_id = $result->id;
                 $borrowDevicesDetail->device_id = (isset($request['device_id'])) ? $request['device_id'] : '';
                 $borrowDevicesDetail->borrow_reason = (isset($request['borrow_reason'])) ? $request['borrow_reason'] : '';
                 $borrowDevicesDetail->status = 0;
