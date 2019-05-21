@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import signin from './api/signin';
+import { useAlert } from "react-alert";
 
 function Login(props) {
     const [username, setUserName] = useState('');
     const [passwd, setPasswd] = useState('');
+    const alert = useAlert();
 
     function handleLogin(event) {
         event.preventDefault();
@@ -14,12 +16,15 @@ function Login(props) {
             if (responseJson['0'] === 200) {
                 localStorage.setItem('newUser', responseJson['payload']['userName']);
                 localStorage.setItem('Token', responseJson['payload']['token']);
+                alert.success("Login success!");
                 props.history.push('/dashboard');
             } else if(responseJson['0'] === 902) {
                 localStorage.setItem('newUser', responseJson['payload']['userName']);
                 localStorage.setItem('Token', responseJson['payload']['token']);
+                alert.success("Login success!");
                 props.history.push('/user/update');
             } else {
+                alert.error(responseJson['payload']['message']);
                 props.history.push('/');
             }
         });
@@ -47,14 +52,14 @@ function Login(props) {
                                     <div className="form-group">
                                         <label>User name</label>
                                         <input className="au-input au-input--full" type="text" name="username"
-                                               placeholder="User name" onChange={(event) => {
+                                               placeholder="User name" required onChange={(event) => {
                                             onChangeUsername(event)
                                         }}/>
                                     </div>
                                     <div className="form-group">
                                         <label>Password</label>
                                         <input className="au-input au-input--full" type="password" name="passwd"
-                                               placeholder="Password" onChange={(event) => {
+                                               placeholder="Password" required onChange={(event) => {
                                             onChangePassword(event)
                                         }}/>
                                     </div>

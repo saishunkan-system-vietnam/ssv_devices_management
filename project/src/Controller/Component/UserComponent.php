@@ -34,7 +34,7 @@ class UserComponent extends Component
     {
         $query = $this->Controller->Users->query();
         $result = $query->update()
-            ->set(['is_deleted' => 1])
+            ->set(['status' => 1])
             ->where(['id' => $id])
             ->execute();
         if ($result->rowCount() == 0) {
