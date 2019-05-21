@@ -5,6 +5,7 @@ namespace RestApi\Controller;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Log\Log;
 
 /**
  * Application Controller
@@ -25,7 +26,7 @@ class AppController extends Controller
      *
      * @var string
      */
-    public $responseCode = "";
+    private $responseCode = "";
 
     /**
      * Status value in API response
@@ -46,7 +47,7 @@ class AppController extends Controller
      *
      * @var array
      */
-    public $apiResponse = [];
+    private $apiResponse = [];
 
     /**
      * payload value from JWT token
@@ -61,6 +62,20 @@ class AppController extends Controller
      * @var string
      */
     public $jwtToken = "";
+
+    /**
+     * url log api
+     *
+     * @var string
+     */
+    public $url;
+
+    /**
+     * date now system
+     *
+     * @var string
+     */
+    public $dateNow;
 
     /**
      * Initialization hook method.
@@ -88,6 +103,9 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('RestApi.AccessControl');
+
+        $this->url = $this->getRequest()->getPath();
+        $this->dateNow = date('Y-m-d H:i:s');
     }
 
     /**
@@ -121,7 +139,8 @@ class AppController extends Controller
         return null;
     }
 
-    public function argLog($url, $formdata = null, $message){
+    public function argLog($url, $formdata = null, $message)
+    {
         $argsLog = array(
             'url' => $url,
             'formdata' => $formdata,
@@ -129,4 +148,17 @@ class AppController extends Controller
         );
         return $argsLog;
     }
+
+    public function returnResponse( $responseCode, $apiResponse)
+    {
+        $leveLog='error';
+        if($responseCode===200){
+            $leveLog = 'info' ;
+        }
+        $this->responseCode = $responseCode;
+        $this->apiResponse['message'] = $apiResponse;
+        Log::write( $leveLog, $this->argLog($this->url,'', $apiResponse));
+       
+    }
+
 }
