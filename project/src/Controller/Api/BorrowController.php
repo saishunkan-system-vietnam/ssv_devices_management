@@ -6,6 +6,7 @@ use RestApi\Controller\ApiController;
 use \Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
 use Cake\Mailer\Email;
+use Cake\Log\Log;
 
 
 class BorrowController extends ApiController
@@ -48,6 +49,7 @@ class BorrowController extends ApiController
     //function view borrow devices
     public function view($id = null)
     {
+        $url = $this->getRequest()->getPath();
         if (empty($id)) {
             $this->responseCode = 903;
             // Set the response
@@ -71,11 +73,13 @@ class BorrowController extends ApiController
             $this->responseCode = 200;
 
             $this->apiResponse['lstBorrowDevices'] = $borrowDevices;
+            Log::write('info', $this->argLog($url,'', $borrowDevices));
         } else {
             $this->responseCode = 903;
 
             //set the response   
             $this->apiResponse['message'] = 'There is no data, please check again.';
+            Log::write('error', $this->argLog($url, '', 'There is no data, please check again.'));
         }
     }
 
@@ -455,7 +459,9 @@ class BorrowController extends ApiController
 
                 //set the response
                 $this->apiResponse['message'] = 'Not found data. Please, try again.';
-            } else {
+                return;
+            }
+            if (isset($borrowDevices) && isset($borrowDevicesDetail)){
                 $conn = ConnectionManager::get('default');
                 try {
                     $conn->begin();
