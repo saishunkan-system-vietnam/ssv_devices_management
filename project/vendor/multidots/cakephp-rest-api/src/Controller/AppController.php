@@ -120,4 +120,13 @@ class AppController extends Controller
 
         return null;
     }
+
+    public function argLog($url, $formdata = null, $message){
+        $argsLog = array(
+            'url' => $url,
+            'formdata' => $formdata,
+            'message' => $message
+        );
+        return $argsLog;
+    }
 }
