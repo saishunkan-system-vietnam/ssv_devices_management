@@ -7,20 +7,11 @@ use \Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
 use Cake\Mailer\Email;
 
-/**
- * Borrow Controller
- *
- *
- * @method \App\Model\Entity\Borrow[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
+
 class BorrowController extends ApiController
 {
 
-    /**
-     * Index method
-     *
-     * @return \Cake\Http\Response|void
-     */
+    
     private $Devices;
     private $BorrowDevices;
     private $BorrowDevicesDetail;
@@ -92,7 +83,8 @@ class BorrowController extends ApiController
     // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
     public function add()
     {
-
+        $result=['id'=>1];
+        var_dump(each($result)['key']);die;
         if ($this->getRequest()->is('post')) {
             $conn = ConnectionManager::get('default');
             try {
@@ -587,6 +579,14 @@ class BorrowController extends ApiController
                 ->viewBuilder()
                 ->setTemplate($template);
         $email->send();
+    }
+    
+    private function getUser($condition){
+       $user = $this->Users
+                ->find('all')
+                ->where(['id' => $borrower_id])
+                ->first();
+       return $user;
     }
 
 }
