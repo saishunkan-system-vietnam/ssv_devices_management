@@ -3,32 +3,29 @@
 namespace App\Controller\Api;
 
 use RestApi\Controller\ApiController;
+use Cake\ORM\TableRegistry;
 
 class CategoriesController extends ApiController
 {
 
     private $login;
-    private $dateNow;
+    private $Categories;
 
     public function initialize()
     {
         parent::initialize();
+        $this->Categories = TableRegistry::getTableLocator()->get('Categories');
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
-        $this->dateNow=  date('Y-m-d H:i:s');
     }
 
     public function index()
     {
-        // Set the HTTP status code. By default, it is set to 200
-        $this->responseCode = 200;
-
         $categories = $this->Categories
                 ->find('all')
                 ->where(['is_deleted' => 0])
                 ->toArray();
-
-        // Set the response
-        $this->apiResponse['lstCategories'] = $categories;
+        // Set return response (response code, api response)       
+        $this->returnResponse(200, $categories);
     }
 
     //function view category
@@ -40,11 +37,11 @@ class CategoriesController extends ApiController
                 ->toArray();
 
         if (!empty($category)) {
-            $this->responseCode = 200;
-            $this->apiResponse['Category'] = $category;
+            // Set return response (response code, api response)       
+            $this->returnResponse(200, $category);
         } else {
-            $this->responseCode = 903;
-            $this->apiResponse['message'] = 'There is no data, please check again.';
+            // Set return response (response code, api response)       
+            $this->returnResponse(903, 'There is no data, please check again.');
         }
     }
 
@@ -52,29 +49,27 @@ class CategoriesController extends ApiController
     public function add()
     {
         if ($this->getRequest()->is('post')) {
-            $category = $this->Categories->newEntity();
+            $categoryNewEntity = $this->Categories->newEntity();
             $validate = $this->Categories->newEntity($this->getRequest()->getData());
             $validateError = $validate->getErrors();
-            if (empty($validateError)) {
-                $category = $this->Categories->patchEntity($category, $this->getRequest()->getData());
-                $category->created_user = $this->login['user_name'];
-                $category->is_deleted = 0;
-                if ($this->Categories->save($category)) {
-                    $this->responseCode = 200;
-                    $this->apiResponse['message'] = 'Save category success.';
-                } else {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = 'Save category no success, please check again';
-                }
+            if (!empty($validateError)) {
+                // Set return response (response code, api response)       
+                $this->returnResponse(901, $validateError);
+                return;
+            }
+            $category = $this->Categories->patchEntity($categoryNewEntity, $this->getRequest()->getData());
+            $category->created_user = $this->login['user_name'];
+            $category->is_deleted = 0;
+            if ($this->Categories->save($category)) {
+                // Set return response (response code, api response)       
+                $this->returnResponse(200, 'Save category success.');
             } else {
-                $this->responseCode = 901;
-                $this->apiResponse['message'] = $validateError;
+                // Set return response (response code, api response)       
+                $this->returnResponse(901, 'Save category no success, please check again');
             }
         } else {
-            // Set the HTTP status code. By default, it is set to 200
-            $this->responseCode = 904;
-            //set the response
-            $this->apiResponse['message'] = 'Method is not correct.';
+            // Set return response (response code, api response)       
+            $this->returnResponse(904, 'Method type is not correct.');
         }
     }
 
@@ -84,44 +79,39 @@ class CategoriesController extends ApiController
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) or empty($request['id'])) {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'No found id';
+                // Set return response (response code, api response)       
+                $this->returnResponse(903, 'No found id');
                 return;
             }
             $category = $this->Categories
                     ->find('all')
                     ->where(['id' => $request['id']])
                     ->first();
-            if (!empty($category)) {
-                $validate = $this->Categories->newEntity($this->getRequest()->getData());
-                $validateError = $validate->getErrors();
-
-                if (!empty($validateError)) {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = $validateError;
-                    return;
-                }
-
-                $category = $this->Categories->patchEntity($category, $this->request->getData());
-               
-                $category->update_user = $this->login['user_name'];
-                $category->update_time = $this->dateNow;
-                if ($this->Categories->save($category)) {
-                    $this->responseCode = 200;
-                    $this->apiResponse['message'] = 'update category success';
-                } else {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = 'update category no success, please check again';
-                }
+            if (empty($category)) {
+                // Set return response (response code, api response)       
+                $this->returnResponse(903, 'No found category, please check again.');
+                return;
+            }
+            $validate = $this->Categories->newEntity($this->getRequest()->getData());
+            $validateError = $validate->getErrors();
+            if (!empty($validateError)) {
+                // Set return response (response code, api response)       
+                $this->returnResponse(901, $validateError);
+                return;
+            }
+            $categoryUpdate = $this->Categories->patchEntity($category, $this->request->getData());
+            $categoryUpdate->update_user = $this->login['user_name'];
+            $categoryUpdate->update_time = $this->dateNow;
+            if ($this->Categories->save($categoryUpdate)) {
+                // Set return response (response code, api response)       
+                $this->returnResponse(200, 'Update category success');
             } else {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'No found category, please check again';
+                // Set return response (response code, api response)       
+                $this->returnResponse(901, 'Update category no success, please check again.');
             }
         } else {
-            // Set the HTTP status code. By default, it is set to 200
-            $this->responseCode = 904;
-            //set the response
-            $this->apiResponse['message'] = 'Method is not correct.';
+            // Set return response (response code, api response)       
+            $this->returnResponse(200, 'Method type is not correct.');
         }
     }
 
@@ -131,34 +121,32 @@ class CategoriesController extends ApiController
         if ($this->request->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) or empty($request['id'])) {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'No found id';
+                // Set return response (response code, api response)       
+                $this->returnResponse(903, 'No found id');
                 return;
             }
             $category = $this->Categories
                     ->find('all')
                     ->where(['id' => $request['id']])
                     ->first();
-            if (!empty($category)) {
-                $category->is_deleted = 1;
-                $category->update_user = $this->login['user_name'];
-                $category->update_time = $this->dateNow;
-                if ($this->Categories->save($category)) {
-                    $this->responseCode = 200;
-                    $this->apiResponse['message'] = 'delete category success';
-                } else {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = 'delete category no success, please check again';
-                }
+            if (empty($category)) {
+                // Set return response (response code, api response)       
+                $this->returnResponse(903, 'There is no data, please check again');
+                return;
+            }
+            $category->is_deleted = 1;
+            $category->update_user = $this->login['user_name'];
+            $category->update_time = $this->dateNow;
+            if ($this->Categories->save($category)) {
+                // Set return response (response code, api response)       
+                $this->returnResponse(200, 'The category has been deleted.');
             } else {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'There is no data, please check again';
+                // Set return response (response code, api response)       
+                $this->returnResponse(901, 'The category could not be deleted. Please, try again.');
             }
         } else {
-            // Set the HTTP status code. By default, it is set to 200
-            $this->responseCode = 904;
-            //set the response
-            $this->apiResponse['message'] = 'Method is not correct.';
+            // Set return response (response code, api response)       
+            $this->returnResponse(904, 'Method type is not correct.');
         }
     }
 

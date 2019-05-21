@@ -243,29 +243,29 @@ return [
      *   E.g set it to 'utf8mb4' in MariaDB and MySQL and 'utf8' for any
      *   other RDBMS.
      */
-    'Datasources' => [
+   'Datasources' => [
         'default' => [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
             'persistent' => false,
-            'host' => env('DB_HOST', 'localhost'),
+            'host' => '192.168.10.139',
             /*
              * CakePHP will use the default DB port based on the driver selected
              * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
              * the following line and set the port accordingly
              */
             //'port' => 'non_standard_port_number',
-            'username' => env('DB_USERNAME', 'root'),
-            'password' => env('DB_PASSWORD', ''),
-            'database' => env('DB_DATABASE', 'ssv_em'),
+            'username' => 'ssv_ed',
+            'password' => '123456789',
+            'database' => 'ssv_em',
             /*
              * You do not need to set this flag to use full utf-8 encoding (internal default since CakePHP 3.6).
              */
             //'encoding' => 'utf8mb4',
-            'timezone' => 'UTC',
+            'timezone' => 'UTC', //UTC
             'flags' => [],
             'cacheMetadata' => true,
-            'log' => env('DEBUG', true),
+            'log' => false,
 
             /**
              * Set identifier quoting to true if you are using reserved words or
