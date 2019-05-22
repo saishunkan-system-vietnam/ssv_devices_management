@@ -158,7 +158,7 @@ class AppController extends Controller
         $this->responseCode = $responseCode;
         $this->apiResponse['message'] = $apiResponse;
         Log::write( $leveLog, $this->argLog($this->url,'', $apiResponse));
-       
+
     }
 
 }
