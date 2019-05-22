@@ -1,32 +1,56 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import UpdateProfile from "../../api/update_profile";
-import AuthServer from "../../api/auth";
-import  {useRef} from 'react';
+import ShowUser from "../../api/user";
+import  {useRef, useState} from 'react';
 import { useAlert } from "react-alert";
 
-function AddUser(props) {
-    const inputName = useRef();
+function UpdateUser(props) {
+    const inputId = useRef();
     const inputFullName = useRef();
     const inputEmail = useRef();
     const inputDOB = useRef(null);
     const inputAddress = useRef();
     const inputJoinDate = useRef();
     const inputImage = useRef();
-    const alert = useAlert();
+    const [userEdit, setUserEdit] = useState({});
 
     //get data local Storage
     const [value] = React.useState(
         localStorage.getItem('newUser') || ''
     );
 
-    React.useEffect(() => {
-        localStorage.setItem('newUser', value);
-    }, [value]);
+    // React.useEffect(() => {
+    //     localStorage.setItem('newUser', value);
+    // }, [value]);
+
+    const alert = useAlert();
+
+    useEffect(() => {
+        if(Object.keys(userEdit).length == 0) {
+            handleGetUserInfo(props.match.params.id);
+        }
+    });
+
+    function handleGetUserInfo(id) {
+        ShowUser.ShowUser(id).then(responseJson => {
+            if (responseJson['0'] === 200 && responseJson['payload']['userData'] !== 'undefined') {
+                if(responseJson['0'] === 200){
+                    setUserEdit(responseJson['payload']['userData']);
+                } else {
+                    alert.error(responseJson['payload']['message']);
+                }
+                //console.log(responseJson);
+                //props.history.push('/dashboard');
+            } else {
+                alert.error(responseJson['payload']['message']);
+            }
+        });
+    }
 
     function handleUpdate(event) {
         event.preventDefault();
         let params = {};
-        params.inputName = inputName.current.value;
+        params.inputId = inputId.current.value;
         params.inputFullName = inputFullName.current.value;
         params.inputEmail = inputEmail.current.value;
         params.inputDOB = inputDOB.current.value;
@@ -37,19 +61,14 @@ function AddUser(props) {
         UpdateProfile.UpdateProfile(params).then(responseJson => {
             if (responseJson['0'] === 200 && responseJson['payload']['userData'] !== 'undefined') {
                 localStorage.setItem('UserData', responseJson['payload']['userData']);
-                AuthServer.AuthServer(params).then(responseAuth => {
-                    if(responseAuth['0'] === 200){
+                    if(responseJson['0'] === 200){
                         alert.success("The user has been update profile success!");
                         //props.history.push('/dashboard');
-                        console.log(responseAuth);
-                    } else if(responseAuth['0'] === 901){
+                    } else if(responseJson['0'] === 901){
                         alert.error("The user could not be saved. Please, try again.");
                     }
-                });
-                //console.log(responseJson);
-                //props.history.push('/dashboard');
             } else {
-                console.log(responseJson);
+                alert.error(responseJson['payload']['message']);
             }
         });
     }
@@ -62,7 +81,7 @@ function AddUser(props) {
                         <div className="col-lg-12">
                             <div className="card">
                                 <div className="card-header">
-                                    <strong>Add User</strong>
+                                    <strong>Update User Profile</strong>
                                 </div>
                                 <div className="card-body card-block">
                                     <div className="row form-group col-lg-8">
@@ -71,21 +90,16 @@ function AddUser(props) {
                                                 Name</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input type="text" name="disabledname"
-                                                   placeholder="User Name" className="form-control" disabled
-                                                   value={value}/>
-                                            <input ref={inputName} type="hidden" id="inputName" name="username"
-                                                   placeholder="User Name" className="form-control" value={value}/>
+                                            <input type="text" name="disabledname" placeholder="User Name" className="form-control" disabled value={userEdit.user_name}/>
+                                            <input ref={inputId} type="hidden" name="userid" placeholder="User Name" className="form-control" value={userEdit.id}/>
                                         </div>
                                     </div>
                                     <div className="row form-group col-lg-8">
                                         <div className="col col-md-3">
-                                            <label htmlFor="text-input" className=" form-control-label">Full
-                                                Name</label>
+                                            <label htmlFor="text-input" className=" form-control-label">Full Name</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputFullName} type="text" id="text-input" name="full_name"
-                                                   placeholder="Full Name" className="form-control"/>
+                                            <input ref={inputFullName} type="text" name="full_name" placeholder="Full Name" className="form-control" defaultValue={userEdit.full_name}/>
                                         </div>
                                     </div>
                                     <div className="row form-group col-lg-8">
@@ -93,8 +107,7 @@ function AddUser(props) {
                                             <label htmlFor="text-input" className=" form-control-label">Email</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputEmail} type="text" id="text-input" name="email"
-                                                   placeholder="Email" className="form-control"/>
+                                            <input ref={inputEmail} type="text" name="email" placeholder="Email" className="form-control" defaultValue={userEdit.email} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"/>
                                         </div>
                                     </div>
                                     <div className="row form-group col-lg-8">
@@ -102,8 +115,7 @@ function AddUser(props) {
                                             <label htmlFor="text-input" className=" form-control-label">DOB</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputDOB} type="date" id="text-input" name="dateofbirth"
-                                                   placeholder="Date of birth" className="form-control"/>
+                                            <input ref={inputDOB} type="date" name="dateofbirth" placeholder="Date of birth" className="form-control" defaultValue={userEdit.birthdate} />
                                         </div>
                                     </div>
                                     <div className="row form-group col-lg-8">
@@ -111,18 +123,15 @@ function AddUser(props) {
                                             <label htmlFor="text-input" className=" form-control-label">Address</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputAddress} type="text" id="text-input" name="address"
-                                                   placeholder="Address" className="form-control"/>
+                                            <input ref={inputAddress} type="text" name="address" placeholder="Address" className="form-control" defaultValue={userEdit.address}/>
                                         </div>
                                     </div>
                                     <div className="row form-group col-lg-8">
                                         <div className="col col-md-3">
-                                            <label htmlFor="text-input" className=" form-control-label">Join
-                                                Date</label>
+                                            <label htmlFor="text-input" className=" form-control-label">Join Date</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputJoinDate} type="date" id="text-input" name="joindate"
-                                                   placeholder="Address" className="form-control"/>
+                                            <input ref={inputJoinDate} type="date" name="joindate" placeholder="Address" className="form-control" defaultValue={userEdit.join_date}/>
                                         </div>
                                     </div>
                                     <div className="row form-group col-lg-8">
@@ -165,4 +174,4 @@ function AddUser(props) {
     );
 }
 
-export default AddUser;
+export default UpdateUser;

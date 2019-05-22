@@ -124,12 +124,21 @@ class UsersController extends ApiController
             return;
         }
         $user = $this->Users->find()
-            ->where(['is_deleted' => 0, 'id' => $id])
+            ->where(['is_deleted' => 0, 'id' => $id, 'status' => 0])
             ->first();
+        $args = array(
+            'id' => $user->id,
+            'user_name' => $user->user_name,
+            'full_name' => $user->full_name,
+            'email' => $user->email,
+            'address' => $user->address,
+            'birthdate' => date('Y-m-d', strtotime($user->birthdate)),
+            'join_date' => date('Y-m-d', strtotime($user->join_date)),
+        );
         if (!empty($user)) {
             $this->responseCode = 200;
             // Set the response
-            $this->apiResponse['lstUser'] = $user;
+            $this->apiResponse['userData'] = $args;
             return;
         } else {
             $this->responseCode = 901;
