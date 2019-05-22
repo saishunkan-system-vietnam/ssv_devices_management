@@ -49,36 +49,35 @@ class DevicesController extends ApiController
 
         if (!empty($brands)) {
             //set return response (response code, api response)
-        $this->returnResponse(200, $brands);
+            $this->returnResponse(200, $brands);
         } else {
-             //set return response (response code, api response)
-        $this->returnResponse(903, 'There are no data, please check again');
+            //set return response (response code, api response)
+            $this->returnResponse(903, 'There are no data, please check again');
         }
     }
 
     //function add brand
     public function addBrand()
     {
-
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
-            $brand = $this->Brands->newEntity();
+            $brandNewEntity = $this->Brands->newEntity();
 
             $validate = $this->Brands->newEntity($request);
             $validateError = $validate->getErrors();
-            if (empty($validateError)) {
-                $brand = $this->Brands->patchEntity($brand, $request);
-                $brand->created_user = $this->login['user_name'];
-                if ($this->Brands->save($brand)) {
-                    $this->responseCode = 200;
-                    $this->apiResponse['message'] = 'The brand has been saved.';
-                } else {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = 'The brand could not be saved. Please, try again.';
-                }
+            if (!empty($validateError)) {
+            //set return response (response code, api response)
+            $this->returnResponse(901, $validateError);
+                return;
+            }
+            $brand = $this->Brands->patchEntity($brandNewEntity, $request);
+            $brand->created_user = $this->login['user_name'];
+            if ($this->Brands->save($brand)) {
+                 //set return response (response code, api response)
+            $this->returnResponse(200, 'The brand has been saved.');
             } else {
-                $this->responseCode = 901;
-                $this->apiResponse['message'] = $validateError;
+                 //set return response (response code, api response)
+            $this->returnResponse(901, 'The brand could not be saved. Please, try again.');               
             }
         }
     }
