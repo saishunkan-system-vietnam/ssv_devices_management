@@ -151,11 +151,11 @@ class AppController extends Controller
     public function returnResponse( $responseCode, $apiResponse)
     {
         $leveLog='error';
-        if($responseCode===200){
+        if($responseCode == 200) {
             $leveLog = 'info' ;
         }
         $this->responseCode = $responseCode;
-        $this->apiResponse['message'] = $apiResponse;
+        $this->apiResponse = $apiResponse;
         Log::write( $leveLog, $this->argLog($this->url,'', $apiResponse));
        
     }
