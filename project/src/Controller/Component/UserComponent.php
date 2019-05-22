@@ -30,11 +30,15 @@ class UserComponent extends Component
      * @param int|null $id
      * @return bool
      */
-    public function deleteUser(?int $id = null)
+    public function deleteUser(?int $id = null, $user_name)
     {
         $query = $this->Controller->Users->query();
         $result = $query->update()
-            ->set(['status' => 1])
+            ->set([
+                'status' => (int)1,
+                'update_user' => $user_name,
+                'update_time' => date('Y-m-d H:i:s'),
+                ])
             ->where(['id' => $id])
             ->execute();
         if ($result->rowCount() == 0) {
