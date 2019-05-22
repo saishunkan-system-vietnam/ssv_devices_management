@@ -34,25 +34,26 @@ class DevicesController extends ApiController
                 ->find('all')
                 ->where(['is_deleted' => 0])
                 ->toArray();
+        $agrs = array(
+            'lstBrands' => $brands
+        );
         //set return response (response code, api response)
-        $this->returnResponse(200, $brands);
+        $this->returnResponse(200, $agrs);
     }
 
     //function view brand
     public function viewBrand($id = null)
     {
-
-        $brands = $this->Brands
-                ->find('all')
-                ->where(['id' => $id])
-                ->toArray();
-
-        if (!empty($brands)) {
+        $brand =  $this->getBrand(['id' =>$id]) ;
+        if (!empty($brand)) {
+            $agrs = array(
+                'brand' => $brand
+            );
             //set return response (response code, api response)
-            $this->returnResponse(200, $brands);
+            $this->returnResponse(200, $agrs);
         } else {
             //set return response (response code, api response)
-            $this->returnResponse(903, 'There are no data, please check again');
+            $this->returnResponse(903, ['message' => 'There are no data, please check again']);
         }
     }
 
@@ -66,52 +67,54 @@ class DevicesController extends ApiController
             $validate = $this->Brands->newEntity($request);
             $validateError = $validate->getErrors();
             if (!empty($validateError)) {
-            //set return response (response code, api response)
-            $this->returnResponse(901, $validateError);
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => $validateError]);
                 return;
             }
             $brand = $this->Brands->patchEntity($brandNewEntity, $request);
             $brand->created_user = $this->login['user_name'];
             if ($this->Brands->save($brand)) {
-                 //set return response (response code, api response)
-            $this->returnResponse(200, 'The brand has been saved.');
+                //set return response (response code, api response)
+                $this->returnResponse(200, ['message' => 'The brand has been saved.']);
             } else {
-                 //set return response (response code, api response)
-            $this->returnResponse(901, 'The brand could not be saved. Please, try again.');               
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => 'The brand could not be saved. Please, try again.']);
             }
+        } else {
+            // Set return response (response code, api response)
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
     //function edit brand
     public function editBrand()
     {
-
-        if ($this->getRequest()->is(['post'])) {
+        if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
-            if (!isset($request['id']) or empty($request['id'])) {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'id could not be found';
+            if (!isset($request['id']) || empty($request['id'])) {
+                //set return response (response code, api response)
+                $this->returnResponse(903, ['message' => 'ID could not be found']);
                 return;
             }
-            $brand = $this->Brands
-                    ->find('all')
-                    ->where(['id' => $request['id']])
-                    ->first();
+           $brand =  $this->getBrand(['id' => $request['id']]) ;
             if (!empty($brand)) {
-                $brand = $this->Brands->patchEntity($brand, $request);
-                $brand->update_user = $this->login['user_name'];
-                $brand->update_time = $this->dateNow;
-                if ($this->Brands->save($brand)) {
-                    $this->responseCode = 200;
-                    $this->apiResponse['message'] = 'The brand has been saved change.';
-                } else {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = 'The brand could not be saved change. Please, try again.';
-                }
-            } else {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'There are no data, please check again';
+                //set return response (response code, api response)
+                $this->returnResponse(903, ['message' => 'There are no data, please check again']);
+                return;
             }
+            $brandUpdate = $this->Brands->patchEntity($brand, $request);
+            $brandUpdate->update_user = $this->login['user_name'];
+            $brandUpdate->update_time = $this->dateNow;
+            if ($this->Brands->save($brandUpdate)) {
+                //set return response (response code, api response)
+                $this->returnResponse(200, ['message' => 'The brand has been saved change.']);
+            } else {
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => 'The brand could not be saved change. Please, try again.']);
+            }
+        }else {
+            // Set return response (response code, api response)
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -119,60 +122,60 @@ class DevicesController extends ApiController
     public function deleteBrand()
     {
 
-        if ($this->getRequest()->is(['post'])) {
+        if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
-            if (!isset($request['id']) or empty($request['id'])) {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'id could not be found';
+            if (!isset($request['id']) || empty($request['id'])) {
+                //set return response (response code, api response)
+                $this->returnResponse(903, ['message' => 'ID could not be found']);
                 return;
             }
-            $brand = $this->Brands
-                    ->find('all')
-                    ->where(['id' => $request['id']])
-                    ->first();
-            if (!empty($brand)) {
-                $brand = $this->Brands->patchEntity($brand, $request);
-                $brand->is_deleted = 1;
-                $brand->update_time = $this->dateNow;
-                if ($this->Brands->save($brand)) {
-                    $this->responseCode = 200;
-                    $this->apiResponse['message'] = 'The brand has been deleted.';
-                } else {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = 'The brand could not be deleted. Please, try again.';
-                }
-            } else {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'There are no data, please check again';
+            $brand =  $this->getBrand(['id' => $request['id']]) ;
+            if (empty($brand)) {
+                $this->returnResponse(903, ['message' => 'There are no data, please check again']);
             }
+            $brand->is_deleted = 1;
+            $brand->update_user = $this->login['user_name'];
+            $brand->update_time = $this->dateNow;
+            if ($this->Brands->save($brand)) {
+                //set return response (response code, api response)
+                $this->returnResponse(200, ['message' => 'The brand has been deleted.']);
+            } else {
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => 'The brand could not be deleted. Please, try again.']);
+            }
+        }else {
+            // Set return response (response code, api response)
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
     //function get list devices
     public function getLstDevices()
     {
-        $this->responseCode = 200;
-        $devices = $this->Devices
+       $devices = $this->Devices
                 ->find('all')
                 ->where(['is_deleted' => 0])
                 ->toArray();
-        $this->apiResponse['lstDevices'] = $devices;
+       $args = array(
+            'lstDevices' => $devices
+        );
+        //set return response (response code, api response)
+        $this->returnResponse(200, $args);
     }
 
     //function view devices
     public function view($id = null)
     {
-        $devices = $this->Devices
-                ->find('all')
-                ->where(['id' => $id])
-                ->toArray();
-
+        $devices =  $this->getDevice(['id' => $id]) ;   
         if (!empty($devices)) {
-            $this->responseCode = 200;
-            $this->apiResponse['devices'] = $devices;
+            $args = array(
+                'device' => $devices
+            );
+            //set return response (response code, api response)
+            $this->returnResponse(200, $args);
         } else {
-            $this->responseCode = 903;
-            $this->apiResponse['message'] = 'There are no data, please check again';
+            //set return response (response code, api response)
+            $this->returnResponse(903, ['message' => 'There are no data, please check again']);
         }
     }
 
@@ -181,115 +184,119 @@ class DevicesController extends ApiController
     {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
-            $device = $this->Devices->newEntity();
             $validate = $this->Devices->newEntity($request, ['validate' => 'serialnumber']);
             $validateError = $validate->getErrors();
-            if (empty($validateError)) {
-                $device = $this->Devices->patchEntity($device, $request);
-                $device->created_user = $this->login['user_name'];
-                if ($this->Devices->save($device)) {
-                    $this->responseCode = 200;
-                    $this->apiResponse['message'] = 'The device has been saved.';
-                } else {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = 'The device could not be saved. Please, try again.';
-                }
-            } else {
-                $this->responseCode = 901;
-                $this->apiResponse['validate'] = $validateError;
+            if (!empty($validateError)) {
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => $validateError]);
+                return;
             }
+            $deviceNewEntity = $this->Devices->newEntity();
+            $device = $this->Devices->patchEntity($deviceNewEntity, $request);
+            $device->created_user = $this->login['user_name'];
+            if ($this->Devices->save($device)) {
+                //set return response (response code, api response)
+                $this->returnResponse(200, ['message' => 'The device has been saved.']);
+            } else {
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => 'The device could not be saved. Please, try again.']);
+            }
+        }else {
+            // Set return response (response code, api response)
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Device id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
+    //function edit devices
     public function edit()
     {
-
-        if ($this->getRequest()->is(['post'])) {
+        if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
 
-            if (!isset($request['id']) or empty($request['id'])) {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'id could not be found';
+            if (!isset($request['id']) || empty($request['id'])) {
+                //set return response (response code, api response)
+                $this->returnResponse(903, ['message' => 'ID could not be found']);
                 return;
             }
 
-            $device = $this->Devices
-                    ->find('all')
-                    ->where(['id' => $request['id']])
-                    ->first();
-
             $validate = $this->Devices->newEntity($request);
             $validateError = $validate->getErrors();
-            if (empty($validateError)) {
-
-                if ($request['serial_number'] !== $device['serial_number']) {
-                    $validateSerialnumber = $this->Devices->newEntity($request, ['validate' => 'serialnumber']);
-                    $validateSerialnumberError = $validateSerialnumber->getErrors();
-                    if (!empty($validateSerialnumberError)) {
-                        $this->responseCode = 901;
-                        $this->apiResponse['message'] = $validateSerialnumberError;
-                        return;
-                    }
-                }
-                $device = $this->Devices->patchEntity($device, $request);
-                $device->update_user = $this->login['user_name'];
-                if ($this->Devices->save($device)) {
-                    $this->responseCode = 200;
-                    $this->apiResponse['message'] = 'The device has been saved.';
-                } else {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = 'The device could not be saved. Please, try again.';
-                }
-            } else {
-                $this->responseCode = 901;
-                $this->apiResponse['message'] = $validateError;
+            if (!empty($validateError)) {
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => $validateError]);
+                return;
             }
+            $device = $this->getDevice(['id' => $request['id']]);
+            if ($request['serial_number'] !== $device['serial_number']) {
+                $validateSerialnumber = $this->Devices->newEntity($request, ['validate' => 'serialnumber']);
+                $validateSerialnumberError = $validateSerialnumber->getErrors();
+                if (!empty($validateSerialnumberError)) {
+                    //set return response (response code, api response)
+                    $this->returnResponse(901, ['message' => $validateSerialnumberError]);
+                    return;
+                }
+            }
+            $deviceUpdate = $this->Devices->patchEntity($device, $request);
+            $deviceUpdate->update_user = $this->login['user_name'];
+            if ($this->Devices->save($deviceUpdate)) {
+                //set return response (response code, api response)
+                $this->returnResponse(200, ['message' => 'The device has been saved.']);
+            } else {
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => 'The device could not be saved. Please, try again.']);
+            }
+        }else {
+            // Set return response (response code, api response)
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id Device id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
+    //function delete device
     public function delete()
     {
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
-            if (!isset($request['id']) or empty($request['id'])) {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'id could not be found';
+            if (!isset($request['id']) || empty($request['id'])) {
+                //set return response (response code, api response)
+                $this->returnResponse(903, ['message' => 'ID could not be found']);
                 return;
             }
-            $device = $this->Devices
-                    ->find('all')
-                    ->where(['id' => $request['id']])
-                    ->first();
-            if (!empty($device)) {
-                $device->update_user = $this->login['user_name'];
-                $device->update_time = $this->dateNow;
-                $device->is_deleted = 1;
-                if ($this->Devices->save($device)) {
-                    $this->responseCode = 200;
-                    $this->apiResponse['message'] = 'The device has been deleted.';
-                } else {
-                    $this->responseCode = 901;
-                    $this->apiResponse['message'] = 'The device could not be deleted. Please, try again.';
-                }
-            } else {
-                $this->responseCode = 903;
-                $this->apiResponse['message'] = 'There are no data, please check again';
+            $device=  $this->getDevice(['id' => $request['id']]);
+            if (empty($device)) {
+                //set return response (response code, api response)
+                $this->returnResponse(903, ['message' => 'There are no data, please check again']);
             }
+            $device->update_user = $this->login['user_name'];
+            $device->update_time = $this->dateNow;
+            $device->is_deleted = 1;
+            if ($this->Devices->save($device)) {
+                //set return response (response code, api response)
+                $this->returnResponse(200, ['message' => 'The device has been deleted.']);
+            } else {
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => 'The device could not be deleted. Please, try again.']);
+            }
+        }else {
+            // Set return response (response code, api response)
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
+    }
+    
+    
+    function getDevice(array $condition){
+         $device = $this->Devices
+                    ->find('all')
+                    ->where([key($condition) => current($condition)])
+                    ->first();
+            return $device;
+    }
+    
+    function getBrand(array $condition){
+         $brands = $this->Brands
+                ->find('all')
+                ->where([key($condition) => current($condition)])
+                ->first();
+            return $brands;
     }
 
 }
