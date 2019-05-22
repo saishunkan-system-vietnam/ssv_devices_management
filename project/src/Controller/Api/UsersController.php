@@ -224,7 +224,12 @@ class UsersController extends ApiController
             $request = $this->getRequest()->getData();
             $session = $this->getRequest()->getSession();
             $id = $request['id'];
-            $user_name = $this->login['user_name'];
+            $controllerName = $this->getRequest()->getParam('controller');
+
+            if(!empty($_FILES['file'])){
+                $upload = $this->uploadFile($controllerName);
+            }
+            $user_name = 'HungHT';
             if(empty($user_name) || empty($request['full_name']) || empty($request['email'])) {
                 // Set the response
                 $this->returnResponse(903, 'Data can not empty.');
@@ -241,6 +246,7 @@ class UsersController extends ApiController
                 $user->address = $request['address'];
                 $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
                 $user->join_date = date('Y-m-d', strtotime($request['joindate']));
+                $user->img = isset($upload) ? $upload : '';
                 $user->position = 'Programmer';
                 $user->level = (int)1;
                 $user->created_user = $user_name;
@@ -261,6 +267,7 @@ class UsersController extends ApiController
                 $user->address = $request['address'];
                 $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
                 $user->join_date = date('Y-m-d', strtotime($request['joindate']));
+                $user->img = isset($upload) ? $upload : $user->img;
                 if(!empty($request['position']) && !empty($request['level'])) {
                     $user->position = $request['position'];
                     $user->level = $request['level'];
@@ -268,6 +275,7 @@ class UsersController extends ApiController
                 $user->update_user = $user_name;
                 $user->update_time = date('Y-m-d H:i:s');
             }
+
             if($this->Users->save($user)){
                 $payload = ['email' => $user->email, 'name' => $user->user_name];
                 $args = array(
