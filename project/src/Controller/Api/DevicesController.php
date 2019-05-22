@@ -166,9 +166,14 @@ class DevicesController extends ApiController
                 ->find('all')
                 ->where(['is_deleted' => 0])
                 ->toArray();
+        if(count($devices)>0){
+            foreach ($devices as $row){
+           $row['specifications']=  html_entity_decode($row['specifications']);
+        }
+        }
        $args = array(
             'lstDevices' => $devices
-        );
+        );       
         //set return response (response code, api response)
         $this->returnResponse(200, $args);
     }
@@ -176,8 +181,9 @@ class DevicesController extends ApiController
     //function view devices
     public function view($id = null)
     {
-        $devices =  $this->getDevice(['id' => $id]) ;   
+        $devices =  $this->getDevice(['id' => $id]) ;                 
         if (!empty($devices)) {
+            $devices['specifications']=  html_entity_decode($devices['specifications']); 
             $args = array(
                 'device' => $devices
             );
@@ -192,8 +198,8 @@ class DevicesController extends ApiController
     //function add devices
     public function add()
     {
-        if ($this->getRequest()->is('post')) {
-            $request = $this->getRequest()->getData();
+       if ($this->getRequest()->is('post')) {
+            $request = $this->getRequest()->getData();   
             $validate = $this->Devices->newEntity($request, ['validate' => 'serialnumber']);
             $validateError = $validate->getErrors();
             if (!empty($validateError)) {
@@ -202,8 +208,17 @@ class DevicesController extends ApiController
                 return;
             }
             $deviceNewEntity = $this->Devices->newEntity();
+            if(!isset($_FILES) || empty($_FILES)){                
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => 'Please select a image before add device.']);
+                return;
+            }
             $device = $this->Devices->patchEntity($deviceNewEntity, $request);
-            $device->created_user = $this->login['user_name'];
+            $device ->image=  $this->uploadFile($this->getRequest()->controller);
+            if(!empty($device->specifications)){
+             $device->specifications =htmlentities($device->specifications);
+            }
+            $device->created_user = $this->login['user_name'];            
             if ($this->Devices->save($device)) {
                 //set return response (response code, api response)
                 $this->returnResponse(200, ['message' => 'The device has been saved.']);
@@ -235,8 +250,15 @@ class DevicesController extends ApiController
                 //set return response (response code, api response)
                 $this->returnResponse(901, ['message' => $validateError]);
                 return;
-            }
+            }            
             $device = $this->getDevice(['id' => $request['id']]);
+            //chech null devices ?
+            if(empty($device)){
+                $this->returnResponse(903, ['message' => 'The is no data. Please, try again.']);
+                return;
+            }
+            
+            //if $request['serial_number'] !== $device['serial_number'] then check unique
             if ($request['serial_number'] !== $device['serial_number']) {
                 $validateSerialnumber = $this->Devices->newEntity($request, ['validate' => 'serialnumber']);
                 $validateSerialnumberError = $validateSerialnumber->getErrors();
@@ -247,6 +269,15 @@ class DevicesController extends ApiController
                 }
             }
             $deviceUpdate = $this->Devices->patchEntity($device, $request);
+            // if isset($_FILES) && !empty($_FILES) then upload new image
+             if(isset($_FILES) && !empty($_FILES)){                
+               $device ->image=  $this->uploadFile($this->getRequest()->controller);
+            }
+            
+            //if specification khac null ma hoa code 
+             if(!empty($device->specifications)){
+             $device->specifications =htmlentities($device->specifications);
+            }
             $deviceUpdate->update_user = $this->login['user_name'];
              $device->update_time = $this->dateNow;
             if ($this->Devices->save($deviceUpdate)) {
@@ -272,10 +303,11 @@ class DevicesController extends ApiController
                 $this->returnResponse(903, ['message' => 'ID could not be found']);
                 return;
             }
-            $device=  $this->getDevice(['id' => $request['id']]);
-            if (empty($device)) {
+            $device=  $this->getDevice(['id' => $request['id']]);           
+            if (empty($device)) {              
                 //set return response (response code, api response)
                 $this->returnResponse(903, ['message' => 'There are no data, please check again']);
+                return;
             }
             $device->update_user = $this->login['user_name'];
             $device->update_time = $this->dateNow;
