@@ -47,9 +47,12 @@ class UsersController extends ApiController
             ->find('all')
             ->where(['status' => 0])
             ->toArray();
-
+        $args = array(
+            'lstUser' => $users,
+            'message' => 'Get list user success.'
+        );
         // Set the response
-        $this->apiResponse['lstUser'] = $users;
+        $this->returnResponse(903, $args);
     }
 
     /**
@@ -270,7 +273,7 @@ class UsersController extends ApiController
                 $args = array(
                     'token' => JwtToken::generateToken($payload),
                     'userData' => $user,
-                    'message' => 'The user has been saved.'
+                    'message' => 'The user has been update profile success.'
                 );
                 // Set the response
                 $this->returnResponse(200, $args);

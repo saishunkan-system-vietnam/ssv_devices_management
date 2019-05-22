@@ -36,11 +36,10 @@ function AddUser(props) {
 
         UpdateProfile.UpdateProfile(params).then(responseJson => {
             if (responseJson['0'] === 200 && responseJson['payload']['userData'] !== 'undefined') {
-                localStorage.setItem('UserData', responseJson['payload']['userData']);
                 AuthServer.AuthServer(params).then(responseAuth => {
                     if(responseAuth['0'] === 200){
                         alert.success("The user has been update profile success!");
-                        //props.history.push('/dashboard');
+                        props.history.push('/dashboard');
                         console.log(responseAuth);
                     } else if(responseAuth['0'] === 901){
                         alert.error("The user could not be saved. Please, try again.");

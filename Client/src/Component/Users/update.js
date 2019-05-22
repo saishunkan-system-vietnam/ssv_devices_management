@@ -14,15 +14,6 @@ function UpdateUser(props) {
     const inputImage = useRef();
     const [userEdit, setUserEdit] = useState({});
 
-    //get data local Storage
-    const [value] = React.useState(
-        localStorage.getItem('newUser') || ''
-    );
-
-    // React.useEffect(() => {
-    //     localStorage.setItem('newUser', value);
-    // }, [value]);
-
     const alert = useAlert();
 
     useEffect(() => {
@@ -59,18 +50,22 @@ function UpdateUser(props) {
         params.inputImage = inputImage.current.value;
 
         UpdateProfile.UpdateProfile(params).then(responseJson => {
-            if (responseJson['0'] === 200 && responseJson['payload']['userData'] !== 'undefined') {
+            if (responseJson['0'] === 200) {
                 localStorage.setItem('UserData', responseJson['payload']['userData']);
                     if(responseJson['0'] === 200){
-                        alert.success("The user has been update profile success!");
-                        //props.history.push('/dashboard');
+                        alert.success(responseJson['payload']['message']);
+                        props.history.push('/user');
                     } else if(responseJson['0'] === 901){
-                        alert.error("The user could not be saved. Please, try again.");
+                        alert.error(responseJson['payload']['message']);
                     }
-            } else {
+            } else {console.log(responseJson);
                 alert.error(responseJson['payload']['message']);
             }
         });
+    }
+
+    function goBack(){
+        props.history.goBack();
     }
 
     return (
@@ -91,7 +86,7 @@ function UpdateUser(props) {
                                         </div>
                                         <div className="col-12 col-md-9">
                                             <input type="text" name="disabledname" placeholder="User Name" className="form-control" disabled value={userEdit.user_name}/>
-                                            <input ref={inputId} type="hidden" name="userid" placeholder="User Name" className="form-control" value={userEdit.id}/>
+                                            <input ref={inputId} type="hidden" name="id" placeholder="User Name" className="form-control" value={userEdit.id}/>
                                         </div>
                                     </div>
                                     <div className="row form-group col-lg-8">
@@ -158,7 +153,9 @@ function UpdateUser(props) {
                     </div>
                     <div className="row">
                         <div className="col-md-12 text-center">
-                            <button id="singlebutton" name="singlebutton" className="btn btn-secondary">
+                            <button id="singlebutton" name="singlebutton" className="btn btn-secondary" onClick={(event) => {
+                                goBack();
+                            }}>
                                 <i className="fa fa-arrow-left" aria-hidden="true"></i> Back
                             </button>
                         </div>
