@@ -24,24 +24,26 @@ class CategoriesController extends ApiController
                 ->find('all')
                 ->where(['is_deleted' => 0])
                 ->toArray();
+        $args = array(
+            'lstCategories' => $categories
+        );
         // Set return response (response code, api response)       
-        $this->returnResponse(200, $categories);
+        $this->returnResponse(200, $args);
     }
 
     //function view category
     public function view($id = null)
     {
-        $category = $this->Categories
-                ->find('all')
-                ->where(['is_deleted' => 0, 'id' => $id])
-                ->toArray();
-
+        $category = $this->getCategory(['id' => $id]);
         if (!empty($category)) {
+            $args = array(
+                'category' => $category
+            );
             // Set return response (response code, api response)       
-            $this->returnResponse(200, $category);
+            $this->returnResponse(200, $args);
         } else {
             // Set return response (response code, api response)       
-            $this->returnResponse(903, 'There is no data, please check again.');
+            $this->returnResponse(903, ['message' => 'There is no data, please check again.']);
         }
     }
 
@@ -49,27 +51,28 @@ class CategoriesController extends ApiController
     public function add()
     {
         if ($this->getRequest()->is('post')) {
+            $request = $this->getRequest()->getData();
             $categoryNewEntity = $this->Categories->newEntity();
-            $validate = $this->Categories->newEntity($this->getRequest()->getData());
+            $validate = $this->Categories->newEntity($request);
             $validateError = $validate->getErrors();
             if (!empty($validateError)) {
                 // Set return response (response code, api response)       
-                $this->returnResponse(901, $validateError);
+                $this->returnResponse(901, ['message' => $validateError]);
                 return;
             }
-            $category = $this->Categories->patchEntity($categoryNewEntity, $this->getRequest()->getData());
+            $category = $this->Categories->patchEntity($categoryNewEntity, $request);
             $category->created_user = $this->login['user_name'];
             $category->is_deleted = 0;
             if ($this->Categories->save($category)) {
-                // Set return response (response code, api response)       
-                $this->returnResponse(200, 'Save category success.');
+                // Set return response (response code, api response)    
+                $this->returnResponse(200, ['message' => 'Save category success.']);
             } else {
-                // Set return response (response code, api response)       
-                $this->returnResponse(901, 'Save category no success, please check again');
+                // Set return response (response code, api response)     
+                $this->returnResponse(901, ['message' => 'Save category no success, please check again']);
             }
         } else {
             // Set return response (response code, api response)       
-            $this->returnResponse(904, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -78,40 +81,37 @@ class CategoriesController extends ApiController
     {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
-            if (!isset($request['id']) or empty($request['id'])) {
+            if (!isset($request['id']) || empty($request['id'])) {
                 // Set return response (response code, api response)       
-                $this->returnResponse(903, 'No found id');
+                $this->returnResponse(903, ['message' => 'ID could not be found']);
                 return;
             }
-            $category = $this->Categories
-                    ->find('all')
-                    ->where(['id' => $request['id']])
-                    ->first();
+            $category = $this->getCategory(['id' => $request['id']]);
             if (empty($category)) {
-                // Set return response (response code, api response)       
-                $this->returnResponse(903, 'No found category, please check again.');
+                // Set return response (response code, api response)    
+                $this->returnResponse(903, ['message' => 'No found category, please check again.']);
                 return;
             }
-            $validate = $this->Categories->newEntity($this->getRequest()->getData());
+            $validate = $this->Categories->newEntity($request);
             $validateError = $validate->getErrors();
             if (!empty($validateError)) {
                 // Set return response (response code, api response)       
-                $this->returnResponse(901, $validateError);
+                $this->returnResponse(901, ['message' => $validateError]);
                 return;
             }
-            $categoryUpdate = $this->Categories->patchEntity($category, $this->request->getData());
+            $categoryUpdate = $this->Categories->patchEntity($category, $request);
             $categoryUpdate->update_user = $this->login['user_name'];
             $categoryUpdate->update_time = $this->dateNow;
             if ($this->Categories->save($categoryUpdate)) {
                 // Set return response (response code, api response)       
-                $this->returnResponse(200, 'Update category success');
+                $this->returnResponse(200, ['message' => 'Update category success']);
             } else {
-                // Set return response (response code, api response)       
-                $this->returnResponse(901, 'Update category no success, please check again.');
+                // Set return response (response code, api response)
+                $this->returnResponse(901, ['message' => 'Update category no success, please check again.']);
             }
         } else {
             // Set return response (response code, api response)       
-            $this->returnResponse(200, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -120,18 +120,15 @@ class CategoriesController extends ApiController
     {
         if ($this->request->is('post')) {
             $request = $this->getRequest()->getData();
-            if (!isset($request['id']) or empty($request['id'])) {
+            if (!isset($request['id']) || empty($request['id'])) {
                 // Set return response (response code, api response)       
-                $this->returnResponse(903, 'No found id');
+                $this->returnResponse(903, ['message' => 'ID could not be found']);
                 return;
             }
-            $category = $this->Categories
-                    ->find('all')
-                    ->where(['id' => $request['id']])
-                    ->first();
+            $category = $this->getCategory(['id' => $request['id']]);
             if (empty($category)) {
                 // Set return response (response code, api response)       
-                $this->returnResponse(903, 'There is no data, please check again');
+                $this->returnResponse(903, ['message' => 'There is no data, please check again']);
                 return;
             }
             $category->is_deleted = 1;
@@ -139,15 +136,24 @@ class CategoriesController extends ApiController
             $category->update_time = $this->dateNow;
             if ($this->Categories->save($category)) {
                 // Set return response (response code, api response)       
-                $this->returnResponse(200, 'The category has been deleted.');
+                $this->returnResponse(200, ['message' => 'The category has been deleted.']);
             } else {
                 // Set return response (response code, api response)       
-                $this->returnResponse(901, 'The category could not be deleted. Please, try again.');
+                $this->returnResponse(901, ['message' => 'The category could not be deleted. Please, try again.']);
             }
         } else {
             // Set return response (response code, api response)       
-            $this->returnResponse(904, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
+    }
+
+    function getCategory(array $condition)
+    {
+        $category = $this->Categories
+                ->find('all')
+                ->where([key($condition) => current($condition)])
+                ->first();
+        return $category;
     }
 
 }
