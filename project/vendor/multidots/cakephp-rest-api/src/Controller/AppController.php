@@ -62,7 +62,7 @@ class AppController extends Controller
      * @var string
      */
     public $jwtToken = "";
-
+    
     /**
      * url log api
      *
@@ -100,12 +100,12 @@ class AppController extends Controller
 
         $this->responseStatus = $this->responseFormat['statusOkText'];
         $this->responseCode = $this->responseFormat['statusCode'];
+        
+        $this->url = $this->getRequest()->getPath();
+        $this->dateNow = date('Y-m-d H:i:s');
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('RestApi.AccessControl');
-
-        $this->url = $this->getRequest()->getPath();
-        $this->dateNow = date('Y-m-d H:i:s');
     }
 
     /**
@@ -139,8 +139,7 @@ class AppController extends Controller
         return null;
     }
 
-    public function argLog($url, $formdata = null, $message)
-    {
+    public function argLog($url, $formdata = null, $message){
         $argsLog = array(
             'url' => $url,
             'formdata' => $formdata,
@@ -148,7 +147,7 @@ class AppController extends Controller
         );
         return $argsLog;
     }
-
+    
     public function returnResponse( $responseCode, $apiResponse)
     {
         $leveLog='error';
@@ -158,7 +157,6 @@ class AppController extends Controller
         $this->responseCode = $responseCode;
         $this->apiResponse['message'] = $apiResponse;
         Log::write( $leveLog, $this->argLog($this->url,'', $apiResponse));
-
+       
     }
-
 }

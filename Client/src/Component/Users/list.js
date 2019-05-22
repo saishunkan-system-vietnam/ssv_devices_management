@@ -1,5 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import LstUsers from '../../api/listusers';
+import Restock from '../../api/restock';
+import DeleteUser from '../../api/delete_user';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
+import { useAlert } from "react-alert";
 
 var bgColors = { "Edit": "#339af0",
     "Confirm": "#20c997",
@@ -11,6 +16,7 @@ var bgColors = { "Edit": "#339af0",
 
 
 function ListUsers(props) {
+    const alert = useAlert();
     const [lstUsers, setLstUsers] = useState([]);
 
     function handleGetLstUsers() {
@@ -23,6 +29,56 @@ function ListUsers(props) {
             handleGetLstUsers();
         }
     });
+
+    function handleRestockUser(id) {
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-ui'>
+                        <h1>Are you sure?</h1>
+                        <p>You want to restock this user?</p>
+                        <button onClick={() => Restock.restock(id).then(responseJson => {
+                            if (responseJson['0'] === 200){
+                                alert.success("The user has been restock!");
+                                onClose();
+                                handleGetLstUsers();
+                            } else {
+                                alert.error("The user could not be restock. Please, try again.");
+                                onClose();
+                                handleGetLstUsers();
+                            }
+                        })}>Yes, Restock user!</button>
+                        <button onClick={onClose}>No</button>
+                    </div>
+                )
+            }
+        })
+    }
+
+    function handleDeletedUser(id) {
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                return (
+                    <div className='custom-ui'>
+                        <h1>Are you sure?</h1>
+                        <p>You want to delete this user?</p>
+                        <button onClick={() => DeleteUser.delete_user(id).then(responseJson => {
+                            if (responseJson['0'] === 200){
+                                alert.success("The user has been delete!");
+                                onClose();
+                                handleGetLstUsers();
+                            } else {
+                                alert.error("The user could not be delete. Please, try again.");
+                                onClose();
+                                handleGetLstUsers();
+                            }
+                        })}>Yes, Delete user!</button>
+                        <button onClick={onClose}>No</button>
+                    </div>
+                )
+            }
+        })
+    }
 
     function getPosition(position) {
         if(position == 1){
@@ -51,23 +107,21 @@ function ListUsers(props) {
             return <div><a href={'user/edit/' + id}>
                 <i className="fa fa-edit fa-lg" style={{color: bgColors.Edit}}></i>
             </a>
-            <a href={'user/delete/' + id} onClick={e =>
-                window.confirm("You want to delete this user?") &&
-                this.deleteItem(e)
-            }>
+            <span onClick={(event) => {
+                handleDeletedUser(id);
+            }} style={{'cursor': 'pointer'}}>
                 <i className="fa fa-trash fa-lg" style={{color: bgColors.Red}}></i>
-            </a></div>;
+            </span></div>;
         }
     }
 
     function getRestock(status, id) {
         if(status == 1){
-            return <a href={'user/restock/' + id} onClick={e =>
-                window.confirm("You want to restock this user?") &&
-                this.deleteItem(e)
-            } style={{color: bgColors.Confirm}}>
+            return <span onClick={(event) => {
+                handleRestockUser(id);
+            }} style={{'color': bgColors.Confirm, 'cursor': 'pointer'}}>
                 <i className="fa fa-undo fa-lg"></i>
-            </a>;
+            </span>;
         }
     }
 
