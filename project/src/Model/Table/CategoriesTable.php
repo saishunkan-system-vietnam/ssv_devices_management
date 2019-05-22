@@ -48,6 +48,11 @@ class CategoriesTable extends Table
             ->allowEmptyString('id', 'create');
 
         $validator
+            ->integer('brands_id')
+                ->requirePresence('brands_id', 'create')
+            ->allowEmptyString('brands_id', false);
+        
+        $validator
             ->integer('id_parent')
             ->allowEmptyString('id_parent');
 

@@ -33,6 +33,7 @@ class Category extends Entity
         'update_user' => true,
         'created_time' => true,
         'update_time' => true,
-        'is_deleted' => true
+        'is_deleted' => true,        
+        'brands_id' => true
     ];
 }
