@@ -14,15 +14,6 @@ function UpdateUser(props) {
     const inputImage = useRef();
     const [userEdit, setUserEdit] = useState({});
 
-    //get data local Storage
-    const [value] = React.useState(
-        localStorage.getItem('newUser') || ''
-    );
-
-    // React.useEffect(() => {
-    //     localStorage.setItem('newUser', value);
-    // }, [value]);
-
     const alert = useAlert();
 
     useEffect(() => {
@@ -71,6 +62,10 @@ function UpdateUser(props) {
                 alert.error(responseJson['payload']['message']);
             }
         });
+    }
+
+    function goBack(){
+        props.history.goBack();
     }
 
     return (
@@ -158,7 +153,9 @@ function UpdateUser(props) {
                     </div>
                     <div className="row">
                         <div className="col-md-12 text-center">
-                            <button id="singlebutton" name="singlebutton" className="btn btn-secondary">
+                            <button id="singlebutton" name="singlebutton" className="btn btn-secondary" onClick={(event) => {
+                                goBack();
+                            }}>
                                 <i className="fa fa-arrow-left" aria-hidden="true"></i> Back
                             </button>
                         </div>
