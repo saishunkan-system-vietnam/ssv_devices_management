@@ -139,8 +139,7 @@ class AppController extends Controller
         return null;
     }
 
-    public function argLog($url, $formdata = null, $message)
-    {
+    public function argLog($url, $formdata = null, $message){
         $argsLog = array(
             'url' => $url,
             'formdata' => $formdata,
@@ -148,16 +147,16 @@ class AppController extends Controller
         );
         return $argsLog;
     }
-
-    public function returnResponse($responseCode, $apiResponse)
+    
+    public function returnResponse( $responseCode, $apiResponse)
     {
-        $leveLog = 'error';
-        if ($responseCode === 200) {
-            $leveLog = 'info';
+        $leveLog='error';
+        if($responseCode===200){
+            $leveLog = 'info' ;
         }
         $this->responseCode = $responseCode;
-        $this->apiResponse = $apiResponse;
-        Log::write($leveLog, $this->argLog($this->url, '', $apiResponse));
+        $this->apiResponse['message'] = $apiResponse;
+        Log::write( $leveLog, $this->argLog($this->url,'', $apiResponse));
+       
     }
-
 }
