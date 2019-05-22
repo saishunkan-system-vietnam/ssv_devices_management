@@ -20,7 +20,7 @@ class ApisController extends ApiController
      * e.g. `$this->loadComponent('Security');`
      *
      * @return void
-     */
+     */    
     public function initialize()
     {
         parent::initialize();
@@ -39,7 +39,7 @@ class ApisController extends ApiController
                 'action' => 'display',
                 'home'
             ]
-        ]);
+        ]);     
 
         /*
          * Enable the following component for recommended CakePHP security settings.
