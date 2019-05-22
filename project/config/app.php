@@ -243,7 +243,7 @@ return [
      *   E.g set it to 'utf8mb4' in MariaDB and MySQL and 'utf8' for any
      *   other RDBMS.
      */
-    'Datasources' => [
+   'Datasources' => [
         'default' => [
             'className' => 'Cake\Database\Connection',
             'driver' => 'Cake\Database\Driver\Mysql',
