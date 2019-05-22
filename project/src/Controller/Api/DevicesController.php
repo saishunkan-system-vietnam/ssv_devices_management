@@ -97,11 +97,20 @@ class DevicesController extends ApiController
                 return;
             }
            $brand =  $this->getBrand(['id' => $request['id']]) ;
-            if (!empty($brand)) {
+            if (empty($brand)) {
                 //set return response (response code, api response)
                 $this->returnResponse(903, ['message' => 'There are no data, please check again']);
                 return;
             }
+            
+            $validate = $this->Brands->newEntity($request);
+            $validateError = $validate->getErrors();
+            if (!empty($validateError)) {
+                //set return response (response code, api response)
+                $this->returnResponse(901, ['message' => $validateError]);
+                return;
+            }
+            
             $brandUpdate = $this->Brands->patchEntity($brand, $request);
             $brandUpdate->update_user = $this->login['user_name'];
             $brandUpdate->update_time = $this->dateNow;
@@ -132,6 +141,7 @@ class DevicesController extends ApiController
             $brand =  $this->getBrand(['id' => $request['id']]) ;
             if (empty($brand)) {
                 $this->returnResponse(903, ['message' => 'There are no data, please check again']);
+                return;
             }
             $brand->is_deleted = 1;
             $brand->update_user = $this->login['user_name'];
@@ -238,6 +248,7 @@ class DevicesController extends ApiController
             }
             $deviceUpdate = $this->Devices->patchEntity($device, $request);
             $deviceUpdate->update_user = $this->login['user_name'];
+             $device->update_time = $this->dateNow;
             if ($this->Devices->save($deviceUpdate)) {
                 //set return response (response code, api response)
                 $this->returnResponse(200, ['message' => 'The device has been saved.']);
