@@ -42,19 +42,7 @@ class BorrowDevice extends Entity
     protected $_accessible = [
         'borrower_id' => true,
         'approved_id' => true,
-        'handover_id' => true,
-        'borrow_date' => true,
-        'approved_date' => true,
-        'delivery_date' => true,
-        'return_date' => true,
-        'created_user' => true,
-        'update_user' => true,
-        'created_time' => true,
-        'update_time' => true,
-        'is_deleted' => true,
-        'borrower' => true,
-        'approved' => true,
-        'handover' => true,
-        'borrow_devices_detail' => true
+        'handover_id' => true,             
+        'is_deleted' => true,        
     ];
 }
