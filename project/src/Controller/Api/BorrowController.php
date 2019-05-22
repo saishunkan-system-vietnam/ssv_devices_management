@@ -15,6 +15,7 @@ class BorrowController extends ApiController
     private $BorrowDevicesDetail;
     private $login;
     private $Users;
+    private $conn;
 
     public function initialize()
     {
@@ -24,6 +25,7 @@ class BorrowController extends ApiController
         $this->Devices = TableRegistry::getTableLocator()->get('Devices');
         $this->Users = TableRegistry::getTableLocator()->get('Users');
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
+        $this->conn = ConnectionManager::get('default');
     }
 
     //get list BorrowDevices
@@ -41,8 +43,13 @@ class BorrowController extends ApiController
                                 'conditions' => 'BorrowDevicesDetail.borrow_device_id = BorrowDevices.id'
                             ]
                         ])->toArray();
+
+        $args = array(
+            'lstBorrowDevices' => $borrowDevices
+        );
+
         // Set return response (response code, api response)
-        $this->returnResponse(200, $borrowDevices);
+        $this->returnResponse(200, $args);
     }
 
     //function view borrow devices
@@ -50,7 +57,7 @@ class BorrowController extends ApiController
     {
         if (empty($id)) {
             // Set return response (response code, api response)
-            $this->returnResponse(903, 'Id could not be found.');
+            $this->returnResponse(903, ['message' => 'Id could not be found.']);
             return;
         }
 
@@ -68,10 +75,13 @@ class BorrowController extends ApiController
                         ])->toArray();
         if (!empty($borrowDevices)) {
             // Set return response (response code, api response)
-            $this->returnResponse(200, $borrowDevices);
+            $args = array(
+                'borrowDevices' => $borrowDevices
+            );
+            $this->returnResponse(200, $args);
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(903, 'There is no data, please check again.');
+            $this->returnResponse(903, ['message' => 'There is no data, please check again.']);
         }
     }
 
@@ -80,15 +90,14 @@ class BorrowController extends ApiController
     public function add()
     {
         if ($this->getRequest()->is('post')) {
-            $conn = ConnectionManager::get('default');
             try {
-                $conn->begin();
+                $this->conn->begin();
                 $request = $this->getRequest()->getData();
                 $validateBorrowDevicesDetail = $this->BorrowDevicesDetail->newEntity($request);
                 $validateBorrowDevicesDetailError = $validateBorrowDevicesDetail->getErrors();
                 if ($validateBorrowDevicesDetailError) {
                     // Set return response (response code, api response)
-                    $this->returnResponse(901, $validateBorrowDevicesDetailError);
+                    $this->returnResponse(901, ['message' => $validateBorrowDevicesDetailError]);
                     return;
                 }
                 $borrowDevices = $this->BorrowDevices->newEntity();
@@ -115,17 +124,17 @@ class BorrowController extends ApiController
                 $borrowInfo = $this->getBorrowDeviceInfo($borrowDevices->borrower_id, $borrowDevicesDetail);
                 $template = 'request_borrow';
                 $this->sendMail($toEmail, $borrowInfo, $template);
-                $conn->commit();
+                $this->conn->commit();
                 // Set return response (response code, api response)
-                $this->returnResponse(200, 'The Borrow device has been saved.');
+                $this->returnResponse(200, ['message' => 'The Borrow device has been saved.']);
             } catch (Exception $e) {
-                $conn->rollback();
+                $this->conn->rollback();
                 // Set return response (response code, api response)
-                $this->returnResponse(901, $e);
+                $this->returnResponse(901, ['message' => $e]);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -136,36 +145,36 @@ class BorrowController extends ApiController
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Id could not be found.');
+                $this->returnResponse(903, ['message' => 'Id could not be found.']);
                 return;
             }
             $borrowDevices = $this->getBorrowDevices(['id' => $request['id']]);
             $borrowDevicesDetail = $this->getBorrowDevicesDetail(['borrow_device_id' => $request['id']]);
             if (empty($borrowDevices) || empty($borrowDevicesDetail)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Not found data. Please, try again.');
+                $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
-            $validateBorrowDevicesDetail = $this->BorrowDevicesDetail->newEntity($this->getRequest()->getData());
+            $validateBorrowDevicesDetail = $this->BorrowDevicesDetail->newEntity($request);
             $validateBorrowDevicesDetailError = $validateBorrowDevicesDetail->getErrors();
             if ($validateBorrowDevicesDetailError) {
                 // Set return response (response code, api response)
-                $this->returnResponse(901, $validateBorrowDevicesDetailError);
+                $this->returnResponse(901, ['message' => $validateBorrowDevicesDetailError]);
                 return;
             }
-            $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $this->getRequest()->getData());
+            $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $request);
             $borrowDevicesDetailUpdate->update_time = $this->dateNow;
             $borrowDevicesDetailUpdate->update_user = $this->login['user_name'];
             if ($this->BorrowDevicesDetail->save($borrowDevicesDetailUpdate)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(200, 'The borrow devices has been saved.');
+                $this->returnResponse(200, ['message' => 'The borrow devices has been saved.']);
             } else {
                 // Set return response (response code, api response)
-                $this->returnResponse(901, 'The category could not be saved. Please, try again.');
+                $this->returnResponse(901, ['message' => 'The category could not be saved. Please, try again.']);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -176,19 +185,18 @@ class BorrowController extends ApiController
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Id could not be found.');
+                $this->returnResponse(903, ['message' => 'Id could not be found.']);
                 return;
             }
             $borrowDevices = $this->getBorrowDevices(['id' => $request['id']]);
             $borrowDevicesDetail = $this->getBorrowDevicesDetail(['borrow_device_id' => $request['id']]);
             if (empty($borrowDevices) || empty($borrowDevicesDetail)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Not found data. Please, try again.');
+                $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
-            $conn = ConnectionManager::get('default');
             try {
-                $conn->begin();
+                $this->conn->begin();
                 $borrowDevices->is_deleted = 1;
                 $this->BorrowDevices->save($borrowDevices);
                 $borrowDevicesDetail->update_time = $this->dateNow;
@@ -196,17 +204,17 @@ class BorrowController extends ApiController
                 $borrowDevicesDetail->update_user = $this->login['user_name'];
                 $this->BorrowDevicesDetail->save($borrowDevicesDetail);
 
-                $conn->commit();
+                $this->conn->commit();
                 // Set return response (response code, api response)
-                $this->returnResponse(200, 'The borrow devices has been deleted.');
+                $this->returnResponse(200, ['message' => 'The borrow devices has been deleted.']);
             } catch (Exception $ex) {
-                $conn->rollback();
+                $this->conn->rollback();
                 // Set return response (response code, api response)
-                $this->returnResponse(901, $ex);
+                $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -218,19 +226,18 @@ class BorrowController extends ApiController
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Id could not be found.');
+                $this->returnResponse(903, ['message' => 'Id could not be found.']);
                 return;
             }
             $borrowDevices = $this->getBorrowDevices(['id' => $request['id']]);
             $borrowDevicesDetail = $this->getBorrowDevicesDetail(['borrow_device_id' => $request['id']]);
             if (empty($borrowDevices) || empty($borrowDevicesDetail)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Not found data. Please, try again.');
+                $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
-            $conn = ConnectionManager::get('default');
             try {
-                $conn->begin();
+                $this->conn->begin();
                 $borrowDevices->approved_id = $this->login['id'];
                 $borrowDevices->handover_id = $this->login['id'];
                 $this->BorrowDevices->save($borrowDevices);
@@ -246,17 +253,17 @@ class BorrowController extends ApiController
                 $borrowInfo = $this->getBorrowDeviceInfo($borrowDevices->borrower_id, $borrowDevicesDetail);
                 $template = 'approved';
                 $this->sendMail($toEmail, $borrowInfo, $template);
-                $conn->commit();
+                $this->conn->commit();
                 // Set return response (response code, api response)
-                $this->returnResponse(200, 'The borrow devices has been approve.');
+                $this->returnResponse(200, ['message' => 'The borrow devices has been approve.']);
             } catch (Exception $ex) {
-                $conn->rollback();
+                $this->conn->rollback();
                 // Set return response (response code, api response)
-                $this->returnResponse(901, $ex);
+                $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -269,24 +276,23 @@ class BorrowController extends ApiController
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Id could not be found.');
+                $this->returnResponse(903, ['message' => 'Id could not be found.']);
                 return;
             }
             $borrowDevices = $this->getBorrowDevices(['id' => $request['id']]);
             $borrowDevicesDetail = $this->getBorrowDevicesDetail(['borrow_device_id' => $request['id']]);
             if (empty($borrowDevices) || empty($borrowDevicesDetail)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Not found data. Please, try again.');
+                $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
-            $conn = ConnectionManager::get('default');
             try {
-                $conn->begin();
+                $this->conn->begin();
                 $borrowDevices->approved_id = $this->login['id'];
                 $borrowDevices->handover_id = $this->login['id'];
                 $this->BorrowDevices->save($borrowDevices);
 
-                $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $this->getRequest()->getData());
+                $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $request);
                 $borrowDevicesDetailUpdate->update_time = $this->dateNow;
                 $borrowDevicesDetailUpdate->status = 2;
                 $borrowDevicesDetailUpdate->update_user = $this->login['user_name'];
@@ -298,17 +304,17 @@ class BorrowController extends ApiController
                 $borrowInfo = $this->getBorrowDeviceInfo($borrowDevices->borrower_id, $borrowDevicesDetail);
                 $template = 'approved';
                 $this->sendMail($toEmail, $borrowInfo, $template);
-                $conn->commit();
+                $this->conn->commit();
                 // Set return response (response code, api response)
-                $this->returnResponse(200, 'The borrow devices has been no approve.');
+                $this->returnResponse(200, ['message' => 'The borrow devices has been no approve.']);
             } catch (Exception $ex) {
-                $conn->rollback();
+                $this->conn->rollback();
                 // Set return response (response code, api response)
-                $this->returnResponse(901, $ex);
+                $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -321,31 +327,31 @@ class BorrowController extends ApiController
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Id could not be found.');
+                $this->returnResponse(903, ['message' => 'Id could not be found.']);
                 return;
             }
             $borrowDevices = $this->getBorrowDevices(['id' => $request['id']]);
             $borrowDevicesDetail = $this->getBorrowDevicesDetail(['borrow_device_id' => $request['id']]);
             if (empty($borrowDevices) || empty($borrowDevicesDetail)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Not found data. Please, try again.');
+                $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
-            $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $this->getRequest()->getData());
+            $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $request);
             $borrowDevicesDetailUpdate->update_time = $this->dateNow;
             $borrowDevicesDetailUpdate->status = 3;
             $borrowDevicesDetailUpdate->update_user = $this->login['user_name'];
 
             if ($this->BorrowDevicesDetail->save($borrowDevicesDetailUpdate)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(200, 'The borrow devices has been return device.');
+                $this->returnResponse(200, ['message' => 'The borrow devices has been return device.']);
             } else {
                 // Set return response (response code, api response)
-                $this->returnResponse(901, 'The borrow devices could not be return. Please, try again.');
+                $this->returnResponse(901, ['message' => 'The borrow devices could not be return. Please, try again.']);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -355,16 +361,16 @@ class BorrowController extends ApiController
     {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
-            if (!isset($request['id']) or empty($request['id'])) {
+            if (!isset($request['id']) || empty($request['id'])) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Id could not be found.');
+                $this->returnResponse(903, ['message' => 'Id could not be found.']);
                 return;
             }
             $borrowDevices = $this->getBorrowDevices(['id' => $request['id']]);
             $borrowDevicesDetail = $this->getBorrowDevicesDetail(['borrow_device_id' => $request['id']]);
             if (empty($borrowDevices) || empty($borrowDevicesDetail)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(903, 'Not found data. Please, try again.');
+                $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
             $borrowDevicesDetail->update_time = $this->dateNow;
@@ -372,14 +378,14 @@ class BorrowController extends ApiController
             $borrowDevicesDetail->update_user = $this->login['user_name'];
             if ($this->BorrowDevicesDetail->save($borrowDevicesDetail)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(200, 'The borrow devices has been confirm return.');
+                $this->returnResponse(200, ['message' => 'The borrow devices has been confirm return.']);
             } else {
                 // Set return response (response code, api response)
-                $this->returnResponse(901, 'The borrow devices could not be confirm return. Please, try again.');
+                $this->returnResponse(901, ['message' => 'The borrow devices could not be confirm return. Please, try again.']);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, 'Method type is not correct.');
+            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }
 
@@ -410,30 +416,27 @@ class BorrowController extends ApiController
 
     private function getUser($condition)
     {
-        $conditionEach = each($condition);
         $user = $this->Users
                 ->find('all')
-                ->where([$conditionEach['key'] => $conditionEach['value']])
+                ->where([key($condition) => current($condition)])
                 ->first();
         return $user;
     }
 
     private function getBorrowDevicesDetail($condition)
     {
-        $conditionEach = each($condition);
         $borrowDevicesDetail = $this->BorrowDevicesDetail
                 ->find('all')
-                ->where([$conditionEach['key'] => $conditionEach['value']])
+                ->where([key($condition) => current($condition)])
                 ->first();
         return $borrowDevicesDetail;
     }
 
     private function getBorrowDevices($condition)
     {
-        $conditionEach = each($condition);
         $borrowDevices = $this->BorrowDevices
                 ->find('all')
-                ->where([$conditionEach['key'] => $conditionEach['value']])
+                ->where([key($condition) => current($condition)])
                 ->first();
         return $borrowDevices;
     }

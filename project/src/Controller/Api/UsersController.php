@@ -45,11 +45,14 @@ class UsersController extends ApiController
         $this->httpStatusCode = 200;
         $users = $this->Users
             ->find('all')
-            ->where(['is_deleted' => 0])
+            ->where(['status' => 0])
             ->toArray();
-
+        $args = array(
+            'lstUser' => $users,
+            'message' => 'Get list user success.'
+        );
         // Set the response
-        $this->apiResponse['lstUser'] = $users;
+        $this->returnResponse(903, $args);
     }
 
     /**
@@ -68,9 +71,8 @@ class UsersController extends ApiController
             $username = $request['username'];
             $pwd = $request['passwd'];
             if(empty($username) || empty($pwd)){
-                $this->responseCode = 903;
                 // Set the response
-                $this->apiResponse['message'] = 'Username or Password can not empty.';
+                $this->returnResponse(903, ['message' => 'Username or Password can not empty.']);
                 return;
             }
             $http = new Client();
@@ -81,27 +83,29 @@ class UsersController extends ApiController
                     ->where(['is_deleted' => 0, 'user_name' => $username])
                     ->first();
                 if (!empty($userdata) && $userdata->id) {
-                    $this->responseCode = 200;
                     // Set the response
                     $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
-
-                    $this->apiResponse['token'] = JwtToken::generateToken($payload);
-                    $this->apiResponse['userName'] = $request['username'];
-                    $this->apiResponse['message'] = 'Logged in successfully.';
+                    $args = array(
+                        'token' => JwtToken::generateToken($payload),
+                        'userName' => $request['username'],
+                        'message' => 'Logged in successfully.'
+                    );
+                    $this->returnResponse(200, $args);
                     return;
                     // redirect to dashboard
                 } else {
                     $session->write('User.username', $userdata);
-                    $this->responseCode = 902;
                     // Set the response
-                    $this->apiResponse['userName'] = $request['username'];
-                    $this->apiResponse['message'] = 'New user';
+                    $args = array(
+                        'userName' => $request['username'],
+                        'message' => 'New user'
+                    );
+                    $this->returnResponse(902, $args);
                     return;
                 }
             } else {
-                $this->responseCode = 901;
                 // Set the response
-                $this->apiResponse['message'] = 'Wrong user name or password';
+                $this->returnResponse(901, ['message' => 'Wrong user name or password.']);
                 return;
             }
         }
@@ -118,9 +122,8 @@ class UsersController extends ApiController
     public function view($id)
     {
         if(empty($id)){
-            $this->responseCode = 903;
             // Set the response
-            $this->apiResponse['message'] = 'Not found data.';
+            $this->returnResponse(903, ['message' => 'Not found data.']);
             return;
         }
         $user = $this->Users->find()
@@ -136,14 +139,12 @@ class UsersController extends ApiController
             'join_date' => date('Y-m-d', strtotime($user->join_date)),
         );
         if (!empty($user)) {
-            $this->responseCode = 200;
             // Set the response
-            $this->apiResponse['userData'] = $args;
+            $this->returnResponse(200, ['userData' => $args]);
             return;
         } else {
-            $this->responseCode = 901;
             // Set the response
-            $this->apiResponse['message'] = 'There is no data, please check again.';
+            $this->returnResponse(901, ['message' => 'There is no data, please check again.']);
             return;
         }
     }
@@ -203,16 +204,16 @@ class UsersController extends ApiController
     {
         if ($this->getRequest()->isPost()) {
             $id = $this->getRequest()->getData('id');
-            $result = $this->User->deleteUser($id);
+            $user_name = $this->login['user_name'];
+            $result = $this->User->deleteUser($id, $user_name);
             if ($result) {
                 $this->responseCode = 200;
                 // Set the response
-                $this->apiResponse['message'] = 'The user has been deleted';
+                $this->returnResponse(200, ['message' => 'The user has been deleted']);
                 return;
             } else {
-                $this->responseCode = 901;
                 // Set the response
-                $this->apiResponse['message'] = 'The user could not be deleted. Please, try again.';
+                $this->returnResponse(901, ['message' => 'The user could not be deleted. Please, try again.']);
                 return;
             }
         }
@@ -222,42 +223,63 @@ class UsersController extends ApiController
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
             $session = $this->getRequest()->getSession();
-            $user_name = $request['user_name'];
+            $id = $request['id'];
+            $user_name = $this->login['user_name'];
             if(empty($user_name) || empty($request['full_name']) || empty($request['email'])) {
-                $this->responseCode = 903;
                 // Set the response
-                $this->apiResponse['message'] = 'Data can not empty!';
+                $this->returnResponse(903, 'Data can not empty.');
                 return;
             }
             if ($session->check('User.username')) {
                 $user_name = $session->read('User.username');
             }
-            $user = $this->Users->newEntity();
-            $user->user_name = $user_name;
-            $user->full_name = $request['full_name'];
-            $user->email = $request['email'];
-            $user->address = $request['address'];
-            $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
-            $user->join_date = date('Y-m-d', strtotime($request['joindate']));
-            $user->position = 'Programmer';
-            $user->level = (int)1;
-            $user->created_time = date('Y-m-d H:i:s');
-            $user->update_time = date('Y-m-d H:i:s');
-            $user->is_deleted = (int)0;
-            $user->status = $request['status'];
-            if($this->Users->save($user)){
-                $this->responseCode = 200;
-                // Set the response
-                $payload = ['email' => $user->email, 'name' => $user->user_name];
-
-                $this->apiResponse['token'] = JwtToken::generateToken($payload);
-                $this->apiResponse['userData'] = $user;
-                // Set the response
-                $this->apiResponse['message'] = 'The user has been saved.';
+            if($id == null) {
+                $user = $this->Users->newEntity();
+                $user->user_name = $user_name;
+                $user->full_name = $request['full_name'];
+                $user->email = $request['email'];
+                $user->address = $request['address'];
+                $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
+                $user->join_date = date('Y-m-d', strtotime($request['joindate']));
+                $user->position = 'Programmer';
+                $user->level = (int)1;
+                $user->created_user = $user_name;
+                $user->update_user = $user_name;
+                $user->created_time = date('Y-m-d H:i:s');
+                $user->update_time = date('Y-m-d H:i:s');
+                $user->is_deleted = (int)0;
+                $user->status = $request['status'];
             } else {
-                $this->responseCode = 901;
+                $user = $this->Users
+                    ->find('all')
+                    ->where(['id' => $id, 'status' => 0])
+                    ->first();
+                $user = $this->Users->patchEntity($user, $request);
+                $user->user_name = $user_name;
+                $user->full_name = $request['full_name'];
+                $user->email = $request['email'];
+                $user->address = $request['address'];
+                $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
+                $user->join_date = date('Y-m-d', strtotime($request['joindate']));
+                if(!empty($request['position']) && !empty($request['level'])) {
+                    $user->position = $request['position'];
+                    $user->level = $request['level'];
+                }
+                $user->update_user = $user_name;
+                $user->update_time = date('Y-m-d H:i:s');
+            }
+            if($this->Users->save($user)){
+                $payload = ['email' => $user->email, 'name' => $user->user_name];
+                $args = array(
+                    'token' => JwtToken::generateToken($payload),
+                    'userData' => $user,
+                    'message' => 'The user has been update profile success.'
+                );
                 // Set the response
-                $this->apiResponse['message'] = 'The user could not be saved. Please, try again.';
+                $this->returnResponse(200, $args);
+            } else {
+                // Set the response
+                $this->returnResponse(901, ['message' => 'The user could not be saved. Please, try again.']);
             }
         }
     }
@@ -266,31 +288,30 @@ class UsersController extends ApiController
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
             $id = $request['id'];
+            $user_name = $this->login['user_name'];
             if(empty($id)){
-                $this->responseCode = 903;
                 // Set the response
-                $this->apiResponse['message'] = 'Id user can not empty.';
+                $this->returnResponse(903, ['message' => 'Id user can not empty.']);
                 return;
             }
             $query = $this->Users->query();
             $query = $query->update()
-                ->set(['status' => (int)0])
+                ->set([
+                    'status' => (int)1,
+                    'update_user' => $user_name,
+                    'update_time' => date('Y-m-d H:i:s'),
+                ])
                 ->where(['id' => $id]);
             if($query->execute()){
-                $this->responseCode = 200;
                 // Set the response
-                $this->apiResponse['message'] = 'The user has been restock.';
+                $this->returnResponse(200, ['message' => 'The user has been restock.']);
             } else {
-                $this->responseCode = 901;
                 // Set the response
-                $this->apiResponse['message'] = 'The user could not be restock. Please, try again.';
+                $this->returnResponse(901, ['message' => 'The user could not be restock. Please, try again.']);
             }
         } else {
-            // Set the HTTP status code. By default, it is set to 200
-            $this->responseCode = 904;
-
             //set the response
-            $this->apiResponse['message'] = 'Method is not correct.';
+            $this->returnResponse(904, ['message' => 'Method is not correct.']);
         }
     }
 }

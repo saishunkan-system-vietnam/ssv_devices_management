@@ -89,5 +89,11 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('device/add', ['controller' => 'Devices', 'action' => 'add', 'allowWithoutToken' => true]);
     $routes->connect('device/edit', ['controller' => 'Devices', 'action' => 'edit', 'allowWithoutToken' => true]);
     $routes->connect('device/delete', ['controller' => 'Devices', 'action' => 'delete', 'allowWithoutToken' => true]);
+     // Categories
+    $routes->connect('category', ['controller' => 'Categories', 'action' => 'index', 'allowWithoutToken' => true]);
+    $routes->connect('category/view/:id', ['controller' => 'Categories', 'action' => 'view', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('category/add', ['controller' => 'Categories', 'action' => 'add', 'allowWithoutToken' => true]);
+    $routes->connect('category/edit', ['controller' => 'Categories', 'action' => 'edit', 'allowWithoutToken' => true]);
+    $routes->connect('category/delete', ['controller' => 'Categories', 'action' => 'delete', 'allowWithoutToken' => true]);
     
 });
