@@ -3,6 +3,8 @@
 namespace App\Controller\Api;
 
 use RestApi\Controller\ApiController;
+use Cake\ORM\TableRegistry;
+use Cake\Datasource\ConnectionManager;
 
 class MaintenancesController extends ApiController
 {
@@ -65,15 +67,29 @@ class MaintenancesController extends ApiController
                 $this->returnResponse(901, ['message' => $validateError]);
                 return;
             }
-            //mạc đinh satus là 0-nếu không gửi !isset($request['status])
-            $maintenanceNewEntity = $this->Maintenances->newEntity();
-            $maintenance = $this->Maintenances->patchEntity($maintenanceNewEntity, $request);
-            $maintenance->create_user = $this->login['user_name'];
-            $maintenance->notificationer_broken = $this->login['id'];
-            if ($this->Maintenances->save($maintenance)) {
+            try {
+                $this->conn->begin();
+                $maintenanceNewEntity = $this->Maintenances->newEntity();
+                $maintenance = $this->Maintenances->patchEntity($maintenanceNewEntity, $request);
+                $maintenance->create_user = $this->login['user_name'];
+                $maintenance->notificationer_broken = $this->login['id'];
+                $maintenance->status = 1;
+                if (!empty($maintenance->note)) {
+                    $maintenance->note = htmlentities($maintenance->note);
+                }
+                if (!empty($maintenance->maintenances_address)) {
+                    $maintenance->maintenances_address = htmlentities($maintenance->maintenances_address);
+                }
+                $result = $this->Maintenances->save($maintenance);
+                if ($result) {
+                    $device = $this->Device->first(['id' => $result['devices_id']]);
+                    $device->status = 2;
+                    $this->Device->save($device);
+                }
+                $this->conn->commit();
                 $this->returnResponse(200, ['message' => 'The maintenance has been saved.']);
-            } else {
-                $this->returnResponse(901, ['message' => 'The maintenance could not be saved. Please, try again.']);
+            } catch (Exception $ex) {
+                $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
             $this->returnResponse(904, 'Method type is not correct.');
@@ -103,20 +119,32 @@ class MaintenancesController extends ApiController
                 $this->returnResponse(901, ['message' => $validateError]);
                 return;
             }
-            $maintenanceUpdate = $this->Maintenances->patchEntity($maintenance, $request);
-            $maintenanceUpdate->update_time = $this->dateNow;
-            $maintenanceUpdate->update_user = $this->login['user_name'];
-            if ($this->Maintenances->save($maintenanceUpdate)) {
+            try {
+                $this->conn->begin();
+                $maintenanceUpdate = $this->Maintenances->patchEntity($maintenance, $request);
+                $maintenanceUpdate->update_time = $this->dateNow;
+                $maintenanceUpdate->update_user = $this->login['user_name'];
+                if (isset($request['note']) && !empty($request['note'])) {
+                    $maintenanceUpdate->note = htmlentities($request['note']);
+                }
+                if (isset($request['maintenances_address']) && !empty($request['maintenances_address'])) {
+                    $maintenanceUpdate->maintenances_address = htmlentities($request['maintenances_address']);
+                }
+                $result = $this->Maintenances->save($maintenanceUpdate);
+                if ($result && $result['status'] == 5) {
+                    $this->setStatusDevice(['id' => $result['device_id']], 0);
+                }
+                $this->conn->commit();
                 $this->returnResponse(200, ['message' => 'The maintenance has been saved.']);
-            } else {
-                $this->returnResponse(901, ['message' => 'The maintenance could not be saved. Please, try again.']);
+            } catch (Exception $ex) {
+                $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
             $this->returnResponse(904, 'Method type is not correct.');
         }
     }
 
-    //status: 0-báo hỏng, 1- đợi bảo trì, 2-đang bảo trì, 3-đã bảo trì, 4-đã bảo trì nhưng vẫn hỏng
+    //status: 0-báo hỏng, 1- đợi bảo trì, 2-đang bảo trì, 3-đã bảo trì, 4-đã bảo trì nhưng vẫn hỏng, 5 bình thường
     //function delete maintenance
     public function delete()
     {
@@ -164,24 +192,26 @@ class MaintenancesController extends ApiController
                 $maintenance = $this->Maintenances->patchEntity($maintenanceNewEntity, $request);
                 $maintenance->create_user = $this->login['user_name'];
                 $maintenance->notificationer_broken = $this->login['id'];
-                if ($this->Maintenances->save($maintenance)) {
-                    $this->returnResponse(200, ['message' => 'The maintenance has been notification broken.']);
-
-                    //send mail
-                    $admin = $this->User->first(['leve' => 5]);
-                    $setTo = $admin['email'];
-                    $device = $this->Device->first(['id' => $maintenance['devices_id']]);
-                    $setSubject = 'Notification device broken';
-                    $setViewVars = array(
-                        'user' => $this->login,
-                        'device' => $device
-                    );
-                    $setTemplate = 'notificationBroken';
-                    $this->sendMail($setTo, $setSubject, $setViewVars, $setTemplate);
-                } else {
-                    $this->returnResponse(901, ['message' => 'The maintenance could not be notification broken. Please, try again.']);
+                if (isset($request['note']) && !empty($request['note'])) {
+                    $maintenance->note = htmlentities($request['note']);
                 }
+                $result = $this->Maintenances->save($maintenance);
+                if ($result) {
+                   $this->setStatusDevice(['id' => $result['device_id']], 2);
+                }
+                //send mail
+                $admin = $this->User->first(['level' => 5]);
+                $setTo = $admin['email'];
+                $device = $this->Device->first(['id' => $maintenance['devices_id']]);
+                $setSubject = 'Notification device broken';
+                $setViewVars = array(
+                    'user' => $this->login,
+                    'device' => $device
+                );
+                $setTemplate = 'notificationBroken';
+                $this->Mail->sendMail($setTo, $setSubject, $setViewVars, $setTemplate);
                 $this->conn->commit();
+                $this->returnResponse(200, ['message' => 'The maintenance has been notification broken.']);
             } catch (Exception $ex) {
                 $this->returnResponse(901, ['message' => $ex]);
             }
@@ -190,7 +220,7 @@ class MaintenancesController extends ApiController
         }
     }
 
-    //status: 0-báo hỏng, 1- đợi bảo trì, 2-đang bảo trì, 3-đã bảo trì, 4-đã bảo trì nhưng vẫn hỏng
+    //status: 0-báo hỏng, 1- đợi bảo trì, 2-đang bảo trì, 3-đã bảo trì, 4-đã bảo trì nhưng vẫn hỏng, 5-bình thường
     //function comfirm notification broken
     public function comfirmNotificationBroken()
     {
@@ -211,6 +241,13 @@ class MaintenancesController extends ApiController
                 $this->returnResponse(905, ['message' => 'This notification broken comfirmed.']);
                 return;
             }
+            $validate = $this->Maintenances->newEntity($request);
+            $validateError = $validate->getErrors();
+            if (!empty($validateError)) {
+                //set return response ( response code, api response )
+                $this->returnResponse(901, ['message' => $validateError]);
+                return;
+            }
             $maintenance->update_time = $this->dateNow;
             $maintenance->update_user = $this->login['user_name'];
             $maintenance->status = 1;
@@ -226,7 +263,7 @@ class MaintenancesController extends ApiController
                     'device' => $device
                 );
                 $setTemplate = 'confirmNotificationBroken';
-                $this->sendMail($setTo, $setSubject, $setViewVars, $setTemplate);
+                $this->Mail->sendMail($setTo, $setSubject, $setViewVars, $setTemplate);
 
                 $this->returnResponse(200, ['message' => 'The notification broken has been comfirmed.']);
             } else {
@@ -235,6 +272,59 @@ class MaintenancesController extends ApiController
         } else {
             $this->returnResponse(904, 'Method type is not correct.');
         }
+    }
+    
+     //function notification broken
+    public function noComfirmNotificationBroken()
+    {
+        if ($this->request->is('post')) {
+            $request = $this->getRequest()->getData();
+            $validate = $this->Maintenances->newEntity($request);
+            $validateError = $validate->getErrors();
+            if (!empty($validateError)) {
+                //set return response ( response code, api response )
+                $this->returnResponse(901, ['message' => $validateError]);
+                return;
+            }
+            try {
+                $this->conn->begin();
+                $maintenanceNewEntity = $this->Maintenances->newEntity();
+                $maintenance = $this->Maintenances->patchEntity($maintenanceNewEntity, $request);
+                $maintenance->create_user = $this->login['user_name'];
+                $maintenance->notificationer_broken = $this->login['id'];
+                if (isset($request['note']) && !empty($request['note'])) {
+                    $maintenance->note = htmlentities($request['note']);
+                }
+                $result = $this->Maintenances->save($maintenance);
+                if ($result) {
+                   $this->setStatusDevice(['id' => $result['device_id']], 5);
+                }
+                //send mail
+                $admin = $this->User->first(['level' => 5]);
+                $setTo = $admin['email'];
+                $device = $this->Device->first(['id' => $maintenance['devices_id']]);
+                $setSubject = 'Notification device broken';
+                $setViewVars = array(
+                    'user' => $this->login,
+                    'device' => $device
+                );
+                $setTemplate = 'notificationBroken';
+                $this->Mail->sendMail($setTo, $setSubject, $setViewVars, $setTemplate);
+                $this->conn->commit();
+                $this->returnResponse(200, ['message' => 'The maintenance has been notification broken.']);
+            } catch (Exception $ex) {
+                $this->returnResponse(901, ['message' => $ex]);
+            }
+        } else {
+            $this->returnResponse(904, 'Method type is not correct.');
+        }
+    }
+
+    private function setStatusDevice(array $condition, $status)
+    {
+        $device = $this->Device->first($condition);
+        $device->status = $status;
+        return $this->Device->save($device);
     }
 
 }

@@ -2,19 +2,21 @@
 namespace App\Controller\Component;
 
 use Cake\Controller\Component;
+use Cake\ORM\TableRegistry;
 
 class UserComponent extends Component
 {
   
     private $Controller;
-
     private $login;
+    private $Users;
 
     public function initialize(array $config)
     {
         parent::initialize($config);
         $this->Controller = $this->_registry->getController();
-        //$this->login = $this->Controller->getRequest()->getSession()->read('Auth.User');
+        $this->Users= TableRegistry::getTableLocator()->get('Users');
+        //$this->login = $this->Controller->getRequest()->getSession()->read('Auth.User');       
     }
 
     //function get first user

@@ -167,7 +167,7 @@
                                                                 <div style="font-family: Arial, sans-serif; line-height: 20px; color: #444444; font-size: 13px;">
                                                                     Xin chào <b><?=$user['full_name']?></b>!
                                                                     <br/>                                                                    
-                                                                       Admin đã tiếp nhận thông báo hỏng thiết bị từ bạn. Cảm ơn bạn đã báo lại, Thiết bị sẽ được xem xét bảo trì lại trong thời gian sớm nhất.
+                                                                       Admin đã tiếp nhận thông báo hỏng thiết bị <b><?=$device['name']?></b> từ bạn. Cảm ơn bạn đã báo lại, Thiết bị sẽ được xem xét bảo trì lại trong thời gian sớm nhất.
                                                                        Vui lòng nhờ bạn mang thiết bị tới phòng kĩ thuật để bàn giao thiết bị.
                                                                     <br/>
                                                                     <br/>

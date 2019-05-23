@@ -96,4 +96,13 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('category/edit', ['controller' => 'Categories', 'action' => 'edit', 'allowWithoutToken' => true]);
     $routes->connect('category/delete', ['controller' => 'Categories', 'action' => 'delete', 'allowWithoutToken' => true]);
     
+    // Maintenances
+    $routes->connect('maintenance', ['controller' => 'Maintenances', 'action' => 'index', 'allowWithoutToken' => true]);
+    $routes->connect('maintenance/view/:id', ['controller' => 'Maintenances', 'action' => 'view', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);
+    $routes->connect('maintenance/add', ['controller' => 'Maintenances', 'action' => 'add', 'allowWithoutToken' => true]);
+    $routes->connect('maintenance/edit', ['controller' => 'Maintenances', 'action' => 'edit', 'allowWithoutToken' => true]);
+    $routes->connect('maintenance/delete', ['controller' => 'Maintenances', 'action' => 'delete', 'allowWithoutToken' => true]);
+    $routes->connect('maintenance/notification_broken', ['controller' => 'Maintenances', 'action' => 'notificationBroken', 'allowWithoutToken' => true]);
+    $routes->connect('maintenance/comfirm_notification_broken', ['controller' => 'Maintenances', 'action' => 'comfirmNotificationBroken', 'allowWithoutToken' => true]);
+    
 });
