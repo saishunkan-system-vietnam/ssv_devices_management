@@ -118,6 +118,11 @@ class UsersTable extends Table
             ->boolean('status')
             ->allowEmptyString('status');
 
+        $validator
+            ->scalar('img')
+            ->maxLength('img', 250)
+            ->allowEmptyString('img');
+
         return $validator;
     }
 

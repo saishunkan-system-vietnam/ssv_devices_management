@@ -40,26 +40,28 @@ function UpdateUser(props) {
 
     function handleUpdate(event) {
         event.preventDefault();
-        let params = {};
-        params.inputId = inputId.current.value;
-        params.inputFullName = inputFullName.current.value;
-        params.inputEmail = inputEmail.current.value;
-        params.inputDOB = inputDOB.current.value;
-        params.inputAddress = inputAddress.current.value;
-        params.inputJoinDate = inputJoinDate.current.value;
-        params.inputImage = inputImage.current.value;
+        var formData = new FormData();
 
-        UpdateProfile.UpdateProfile(params).then(responseJson => {
-            if (responseJson['0'] === 200) {
-                localStorage.setItem('UserData', responseJson['payload']['userData']);
-                    if(responseJson['0'] === 200){
-                        alert.success(responseJson['payload']['message']);
+        formData.append("id", inputId.current.value);
+        formData.append("full_name", inputFullName.current.value);
+        formData.append("email", inputEmail.current.value);
+        formData.append("address", inputAddress.current.value);
+        formData.append("dateofbirth", inputDOB.current.value);
+        formData.append("joindate", inputJoinDate.current.value);
+        formData.append("file", inputImage.current.files[0]);
+
+        UpdateProfile.UpdateProfile(formData).then(response => {
+            console.log(response['0']);
+            if (response['0'] === 200) {
+                localStorage.setItem('UserData', response['payload']['userData']);
+                    if(response['0'] === 200){
+                        alert.success(response['payload']['message']);
                         props.history.push('/user');
-                    } else if(responseJson['0'] === 901){
-                        alert.error(responseJson['payload']['message']);
+                    } else if(response['0'] === 901){
+                        alert.error(response['payload']['message']);
                     }
-            } else {console.log(responseJson);
-                alert.error(responseJson['payload']['message']);
+            } else {
+                alert.error(response['payload']['message']);
             }
         });
     }
@@ -131,10 +133,10 @@ function UpdateUser(props) {
                                     </div>
                                     <div className="row form-group col-lg-8">
                                         <div className="col col-md-3">
-                                            <label htmlFor="image" className=" form-control-label">Image</label>
+                                            <label htmlFor="image" className=" form-control-label">ImaginputImagee</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputImage} type="file" id="image" name="image" className="form-control"/>
+                                            <input ref={inputImage} type="file" id="image" name="file" className="form-control" />
                                         </div>
                                     </div>
                                 </div>

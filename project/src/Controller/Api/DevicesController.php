@@ -269,7 +269,7 @@ class DevicesController extends ApiController
                 }
             }
             $deviceUpdate = $this->Devices->patchEntity($device, $request);
-            // if isset($_FILES) && !empty($_FILES) then upload new image
+            // if is exist $_FILES then upload new image
              if(isset($_FILES) && !empty($_FILES)){                
                $device ->image=  $this->uploadFile($this->getRequest()->controller);
             }
