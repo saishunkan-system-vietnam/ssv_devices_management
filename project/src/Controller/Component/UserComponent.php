@@ -3,16 +3,9 @@ namespace App\Controller\Component;
 
 use Cake\Controller\Component;
 
-/**
- * Class UserComponent
- *
- * @package App\Controller\Component
- */
 class UserComponent extends Component
 {
-    /**
-     * @var \Cake\Controller\Controller
-     */
+  
     private $Controller;
 
     private $login;
@@ -24,12 +17,16 @@ class UserComponent extends Component
         //$this->login = $this->Controller->getRequest()->getSession()->read('Auth.User');
     }
 
-    /**
-     * deleteDebtor method
-     *
-     * @param int|null $id
-     * @return bool
-     */
+    //function get first user
+     public function first(array $condition)
+    {
+        $user = $this->Users
+                ->find('all')
+                ->where($condition)
+                ->first();
+        return $user;
+    }
+    
     public function deleteUser(?int $id = null, $user_name)
     {
         $query = $this->Controller->Users->query();
