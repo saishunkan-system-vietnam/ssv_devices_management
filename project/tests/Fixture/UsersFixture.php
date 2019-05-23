@@ -31,6 +31,7 @@ class UsersFixture extends TestFixture
         'birthdate' => ['type' => 'date', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'join_date' => ['type' => 'date', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
         'status' => ['type' => 'boolean', 'length' => null, 'null' => true, 'default' => null, 'comment' => '', 'precision' => null],
+        'img' => ['type' => 'string', 'length' => 250, 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '', 'precision' => null, 'fixed' => null],
         '_constraints' => [
             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
@@ -56,15 +57,16 @@ class UsersFixture extends TestFixture
                 'level' => 1,
                 'created_user' => 'Lorem ipsum dolor sit amet',
                 'update_user' => 'Lorem ipsum dolor sit amet',
-                'created_time' => '2019-05-17 10:07:23',
-                'update_time' => '2019-05-17 10:07:23',
+                'created_time' => '2019-05-23 04:10:16',
+                'update_time' => '2019-05-23 04:10:16',
                 'is_deleted' => 1,
                 'email' => 'Lorem ipsum dolor sit amet',
                 'team' => 'Lorem ipsum dolor sit amet',
                 'address' => 'Lorem ipsum dolor sit amet',
-                'birthdate' => '2019-05-17',
-                'join_date' => '2019-05-17',
-                'status' => 1
+                'birthdate' => '2019-05-23',
+                'join_date' => '2019-05-23',
+                'status' => 1,
+                'img' => 'Lorem ipsum dolor sit amet'
             ],
         ];
         parent::init();
