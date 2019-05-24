@@ -104,5 +104,6 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('maintenance/delete', ['controller' => 'Maintenances', 'action' => 'delete', 'allowWithoutToken' => true]);
     $routes->connect('maintenance/notification_broken', ['controller' => 'Maintenances', 'action' => 'notificationBroken', 'allowWithoutToken' => true]);
     $routes->connect('maintenance/comfirm_notification_broken', ['controller' => 'Maintenances', 'action' => 'comfirmNotificationBroken', 'allowWithoutToken' => true]);
+    $routes->connect('maintenance/no_comfirm_notification_broken', ['controller' => 'Maintenances', 'action' => 'noComfirmNotificationBroken', 'allowWithoutToken' => true]);
     
 });
