@@ -14681,3 +14681,17 @@ section {
     color: #fff;
     font-size: 14px;
 }
+
+.btn-rmv {
+    cursor: pointer;
+    color: #fff;
+    border-radius: 4px;
+    border: 1px solid #fff;
+    display: inline-block;
+    background: rgba(255, 0, 0, 1);
+    padding: 0 4px;
+}
+
+.btn-rmv:hover {
+    background: rgba(255, 0, 0, 0.5);
+}

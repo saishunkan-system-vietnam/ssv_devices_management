@@ -128,7 +128,7 @@ function ListUsers(props) {
     }
 
     function imgUser(baseUrl, img) {
-        if(img != null){
+        if(img){
             var url = baseUrl + '/' + img;
             return <img src={url} style={{"width": "70px", "height": "70px", 'max-width' : '70px', 'padding' : '4px'}} />;
         } else {

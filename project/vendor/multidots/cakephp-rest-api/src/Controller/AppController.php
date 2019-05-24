@@ -156,12 +156,11 @@ class AppController extends Controller
         }
         $this->responseCode = $responseCode;
         $this->apiResponse = $apiResponse;
-        Log::write( $leveLog, $this->argLog($this->url,'', $apiResponse));
+        Log::write($leveLog, $this->argLog($this->url,'', $apiResponse));
        
     }
 
     public function uploadFile($controllerName){
-
         $fileName = $_FILES['file']['name'];
         $file_basename = substr($fileName, 0, strripos($fileName, '.')); // get file extention
         $file_ext = substr($fileName, strripos($fileName, '.')); // get file name
@@ -171,30 +170,16 @@ class AppController extends Controller
         $newfilename = $this->rand_string(50) . $file_ext;
         $uploadPath = WWW_ROOT . 'uploads/files/' . strtolower($controllerName) . DS;
         $uploadFile = $uploadPath . $newfilename;
-        if($filesize > 200000){
-            $this->returnResponse(903, ['message' => 'The file you are trying to upload is too large.']);
-            return;
-        }
-        if (in_array($file_ext, $allowed_file_types) && ($filesize < 200000))
-        {
-            // Rename file
-            if (file_exists($uploadPath . $newfilename))
-            {
-                // file already exists error
-                $this->returnResponse(903, ['message' => 'You have already uploaded this file.']);
-            }
-            else
-            {
-                move_uploaded_file($_FILES["file"]["tmp_name"], $uploadFile);
-                return $newfilename;
-            }
-        } else {
-            // file type error
-            $this->returnResponse(903, ['message' => "Only these file typs are allowed for upload: " . implode(', ',$allowed_file_types)]);
-            unlink($_FILES["file"]["tmp_name"]);
-            return;
-        }
+        move_uploaded_file($_FILES["file"]["tmp_name"], $uploadFile);
+        return $newfilename;
+    }
 
+    public function deleteImg($filename, $controllerName){
+        $uploadPath = WWW_ROOT . 'uploads/files/' . strtolower($controllerName) . DS;
+        if (file_exists($uploadPath . $filename))
+        {
+            unlink($uploadPath . $filename);
+        }
     }
 
     function rand_string( $length ) {

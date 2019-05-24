@@ -13,6 +13,7 @@ function UpdateUser(props) {
     const inputJoinDate = useRef();
     const inputImage = useRef();
     const [userEdit, setUserEdit] = useState({});
+    const [flg_deleteImg, setFlgDeleteImg] = useState({});
 
     const alert = useAlert();
 
@@ -49,6 +50,9 @@ function UpdateUser(props) {
         formData.append("dateofbirth", inputDOB.current.value);
         formData.append("joindate", inputJoinDate.current.value);
         formData.append("file", inputImage.current.files[0]);
+        if(flg_deleteImg == 1){
+            formData.append("deleteImg", 1);
+        }
 
         UpdateProfile.UpdateProfile(formData).then(response => {
             console.log(response['0']);
@@ -68,6 +72,37 @@ function UpdateUser(props) {
 
     function goBack(){
         props.history.goBack();
+    }
+
+    function imgUser(baseUrl, img) {
+        if(img != null){
+            var url = baseUrl + 'uploads/files/users/' + img;
+            return <div id={'flgImg'} style={{'padding' : '4px'}}><img src={url} style={{"width": "120px", "height": "120px", 'max-width' : '120px', 'padding' : '4px'}} />
+                <input type="button" id="removeImage" value="x" className="btn-rmv" onClick={(event) => {
+                    deleteImg(event);
+                }}/></div>;
+        } else {
+            var baseUrl = baseUrl + "img/not-available.jpg";
+            return <div id={'flgImg'} style={{'padding' : '4px'}}><img src={baseUrl} style={{"width": "120px", "height": "120px", 'max-width' : '120px', 'padding' : '4px'}} /></div>;
+        }
+    }
+
+    function deleteImg() {
+        document.getElementById('flgImg').style.display = 'none';
+        setFlgDeleteImg('1');
+    }
+
+    function readURL(e) {
+        let files =  e.target.files;
+        let reader = new FileReader();
+        reader.readAsDataURL(files[0]);
+        reader.onload = (e) => {
+            if(files[0]){
+                deleteImg();
+                document.getElementById('showImg').style.display = 'block';
+                document.getElementById("showImg").src = e.target.result;
+            }
+        }
     }
 
     return (
@@ -136,7 +171,12 @@ function UpdateUser(props) {
                                             <label htmlFor="image" className=" form-control-label">Image</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputImage} type="file" id="image" name="file" className="form-control" />
+                                            {imgUser(userEdit.base_url, userEdit.img)}
+                                            <img id="showImg" style={{"width": "120px", "height": "120px", 'max-width' : '120px', 'padding' : '4px', 'display' : 'none'}} />
+                                            <div id="deleteImg"></div>
+                                            <input ref={inputImage} type="file" id="image" name="file" className="form-control" onChange={(event) => {
+                                                readURL(event);
+                                            }}/>
                                         </div>
                                     </div>
                                 </div>

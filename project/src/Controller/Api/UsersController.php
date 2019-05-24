@@ -236,11 +236,23 @@ class UsersController extends ApiController
             if(isset($request['id'])){
                 $id = $request['id'];
             }
-
             if(!empty($_FILES['file'])){
+                $fileName = $_FILES['file']['name'];
+                $file_ext = substr($fileName, strripos($fileName, '.')); // get file name
+                $filesize = $_FILES["file"]["size"];
+                $allowed_file_types = array('.png','.jpg','.gif','.jpeg');
+                if($filesize > 200000){
+                    $this->returnResponse(903, ['message' => 'The file you are trying to upload is too large.']);
+                    return;
+                }
+                if(!in_array($file_ext, $allowed_file_types)){
+                    $this->returnResponse(903, ['message' => "Only these file typs are allowed for upload: " . implode(', ',$allowed_file_types)]);
+                    return;
+                }
                 $upload = $this->uploadFile($this->controllerName);
             }
             $user_name = $this->login['user_name'];
+
             if(empty($user_name) || empty($request['full_name']) || empty($request['email'])) {
                 // Set the response
                 $this->returnResponse(903, 'Data can not empty.');
@@ -272,13 +284,18 @@ class UsersController extends ApiController
                     ->where(['id' => $id, 'status' => 0])
                     ->first();
                 $user = $this->Users->patchEntity($user, $request);
-                $user->user_name = $user_name;
                 $user->full_name = $request['full_name'];
                 $user->email = $request['email'];
                 $user->address = $request['address'];
                 $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
                 $user->join_date = date('Y-m-d', strtotime($request['joindate']));
-                $user->img = isset($upload) ? $upload : $user->img;
+                if((isset($request['deleteImg']) && $request['deleteImg'] == 1) && empty($upload)) {
+                    $this->deleteImg($user->img, $this->controllerName);
+                    $user->img = '';
+                } else {
+                    $this->deleteImg($user->img, $this->controllerName);
+                    $user->img = isset($upload) ? $upload : $user->img;
+                }
                 if(!empty($request['position']) && !empty($request['level'])) {
                     $user->position = $request['position'];
                     $user->level = $request['level'];
