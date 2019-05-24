@@ -4,6 +4,7 @@ namespace App\Controller\Api;
 use App\Controller\AppController;
 use App\Model\Entity\User;
 use Cake\Http\Client\Request;
+use mysql_xdevapi\Exception;
 use RestApi\Controller\ApiController;
 use App\Controller\Api\ApisController;
 use RestApi\Utility\JwtToken;
@@ -11,6 +12,7 @@ use Cake\Http\Client;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Routing\Router;
+use Cake\Log\Log;
 
 /**
  * Users Controller
@@ -25,6 +27,7 @@ class UsersController extends ApiController
     protected $connection;
     private $baseUrl;
     private $controllerName;
+
 
     public function initialize()
     {
@@ -45,7 +48,7 @@ class UsersController extends ApiController
      * @return \Cake\Http\Response|void
      */
     public function index()
-    {        
+    {
         // Set the HTTP status code. By default, it is set to 200
         $this->httpStatusCode = 200;
         $users = $this->Users
@@ -249,13 +252,12 @@ class UsersController extends ApiController
                     $this->returnResponse(903, ['message' => "Only these file typs are allowed for upload: " . implode(', ',$allowed_file_types)]);
                     return;
                 }
-                $upload = $this->uploadFile($this->controllerName);
+                $newfilename = $this->rand_string(50) . $file_ext;
             }
             $user_name = $this->login['user_name'];
-
-            if(empty($user_name) || empty($request['full_name']) || empty($request['email'])) {
+            if(empty($request['full_name']) || empty($request['email'])) {
                 // Set the response
-                $this->returnResponse(903, 'Data can not empty.');
+                $this->returnResponse(903, ['message' => 'Data can not empty.']);
                 return;
             }
             if ($session->check('User.username')) {
@@ -269,7 +271,7 @@ class UsersController extends ApiController
                 $user->address = $request['address'];
                 $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
                 $user->join_date = date('Y-m-d', strtotime($request['joindate']));
-                $user->img = isset($upload) ? $upload : '';
+                $user->img = isset($newfilename) ? $newfilename : '';
                 $user->position = 'Programmer';
                 $user->level = (int)1;
                 $user->created_user = $user_name;
@@ -289,12 +291,12 @@ class UsersController extends ApiController
                 $user->address = $request['address'];
                 $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
                 $user->join_date = date('Y-m-d', strtotime($request['joindate']));
-                if((isset($request['deleteImg']) && $request['deleteImg'] == 1) && empty($upload)) {
+                if((isset($request['deleteImg']) && $request['deleteImg'] == 1) && (empty($newfilename) && !empty($user->img))) {
                     $this->deleteImg($user->img, $this->controllerName);
                     $user->img = '';
-                } else {
+                } else if(isset($newfilename) && !empty($user->img)) {
                     $this->deleteImg($user->img, $this->controllerName);
-                    $user->img = isset($upload) ? $upload : $user->img;
+                    $user->img = isset($newfilename) ? $newfilename : $user->img;
                 }
                 if(!empty($request['position']) && !empty($request['level'])) {
                     $user->position = $request['position'];
@@ -304,9 +306,12 @@ class UsersController extends ApiController
                 $user->update_time = date('Y-m-d H:i:s');
             }
 
-            if($this->Users->save($user)){
+            if($this->Users->save($user)) {
+                if(isset($newfilename)) {
+                    $this->uploadFile($this->controllerName, $newfilename);
+                }
                 $payload = ['email' => $user->email, 'name' => $user->user_name];
-                $img_path = $this->baseUrl  . 'uploads/files/' . strtolower($this->controllerName) . DS . $user->img;
+                $img_path = $this->baseUrl . 'uploads/files/' . strtolower($this->controllerName) . DS . $user->img;
                 $args = array(
                     'token' => JwtToken::generateToken($payload),
                     'userData' => $user,
@@ -316,7 +321,6 @@ class UsersController extends ApiController
                 // Set the response
                 $this->returnResponse(200, $args);
             } else {
-                // Set the response
                 $this->returnResponse(901, ['message' => 'The user could not be saved. Please, try again.']);
             }
         }
