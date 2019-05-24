@@ -240,8 +240,7 @@ class UsersController extends ApiController
             if(!empty($_FILES['file'])){
                 $upload = $this->uploadFile($this->controllerName);
             }
-            //$user_name = $this->login['user_name'];
-            $user_name = 'HoangND';
+            $user_name = $this->login['user_name'];
             if(empty($user_name) || empty($request['full_name']) || empty($request['email'])) {
                 // Set the response
                 $this->returnResponse(903, 'Data can not empty.');

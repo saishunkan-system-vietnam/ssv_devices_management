@@ -26,7 +26,7 @@ function AddUser(props) {
         localStorage.setItem('newUser', value);
     }, [value]);
 
-    if(statusCode === 200){console.log('aaa');
+    if(statusCode == 200){
         alert.info('You can not access this page.');
         props.history.push('/dashboard');
     }
@@ -138,7 +138,7 @@ function AddUser(props) {
                                             <label htmlFor="image" className=" form-control-label">Image</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputImage} type="file" id="image" name="image" className="form-control"/>
+                                            <input ref={inputImage} type="file" id="image" name="file" className="form-control"/>
                                         </div>
                                     </div>
                                 </div>

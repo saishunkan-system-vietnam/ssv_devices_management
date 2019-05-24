@@ -133,7 +133,7 @@ function UpdateUser(props) {
                                     </div>
                                     <div className="row form-group col-lg-8">
                                         <div className="col col-md-3">
-                                            <label htmlFor="image" className=" form-control-label">ImaginputImagee</label>
+                                            <label htmlFor="image" className=" form-control-label">Image</label>
                                         </div>
                                         <div className="col-12 col-md-9">
                                             <input ref={inputImage} type="file" id="image" name="file" className="form-control" />
