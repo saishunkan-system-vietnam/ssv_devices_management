@@ -43,6 +43,13 @@ class BorrowController extends ApiController
                                 'conditions' => 'BorrowDevicesDetail.borrow_device_id = BorrowDevices.id'
                             ]
                         ])->toArray();
+        if (count($borrowDevices) > 0) {
+            foreach ($borrowDevices as $row) {
+                $row['BorrowDevicesDetail']['borrow_reason'] = html_entity_decode($row['BorrowDevicesDetail']['borrow_reason']);
+                $row['BorrowDevicesDetail']['return_reason'] = html_entity_decode($row['BorrowDevicesDetail']['return_reason']);
+                $row['BorrowDevicesDetail']['note_admin'] = html_entity_decode($row['BorrowDevicesDetail']['note_admin']);
+            }
+        }
 
         $args = array(
             'lstBorrowDevices' => $borrowDevices
@@ -72,9 +79,11 @@ class BorrowController extends ApiController
                                 'type' => 'INNER',
                                 'conditions' => 'BorrowDevicesDetail.borrow_device_id = BorrowDevices.id'
                             ]
-                        ])->toArray();
+                        ])->first();
         if (!empty($borrowDevices)) {
-            // Set return response (response code, api response)
+            $borrowDevices['BorrowDevicesDetail']['borrow_reason'] = html_entity_decode($borrowDevices['BorrowDevicesDetail']['borrow_reason']);
+            $borrowDevices['BorrowDevicesDetail']['return_reason'] = html_entity_decode($borrowDevices['BorrowDevicesDetail']['return_reason']);
+            $borrowDevices['BorrowDevicesDetail']['note_admin'] = html_entity_decode($borrowDevices['BorrowDevicesDetail']['note_admin']);
             $args = array(
                 'borrowDevices' => $borrowDevices
             );
@@ -108,7 +117,7 @@ class BorrowController extends ApiController
                 $borrowDevicesDetail = $this->BorrowDevicesDetail->newEntity();
                 $borrowDevicesDetail->borrow_device_id = $result->id;
                 $borrowDevicesDetail->device_id = (isset($request['device_id'])) ? $request['device_id'] : '';
-                $borrowDevicesDetail->borrow_reason = (isset($request['borrow_reason'])) ? $request['borrow_reason'] : '';
+                $borrowDevicesDetail->borrow_reason = (isset($request['borrow_reason'])) ? htmlentities($request['borrow_reason']) : '';
                 $borrowDevicesDetail->status = 0;
                 $borrowDevicesDetail->borrow_date = (isset($request['borrow_date'])) ? $request['borrow_date'] : '';
                 $borrowDevicesDetail->approved_date = (isset($request['approved_date'])) ? $request['approved_date'] : '';
@@ -117,7 +126,6 @@ class BorrowController extends ApiController
                 $borrowDevicesDetail->created_user = $this->login['user_name'];
                 $borrowDevicesDetail->is_deleted = 0;
                 $this->BorrowDevicesDetail->save($borrowDevicesDetail);
-
                 //send mail
                 $admin = $this->getUser(['level' => 5]);
                 $toEmail = $admin['email'];
@@ -161,6 +169,15 @@ class BorrowController extends ApiController
                 // Set return response (response code, api response)
                 $this->returnResponse(901, ['message' => $validateBorrowDevicesDetailError]);
                 return;
+            }
+            if (isset($request['note_admin'])) {
+                $request['note_admin'] = html_entity_decode($request['note_admin']);
+            }
+            if (isset($request['borrow_reason'])) {
+                $request['borrow_reason'] = html_entity_decode($request['borrow_reason']);
+            }
+            if (isset($request['return_reason'])) {
+                $request['return_reason'] = html_entity_decode($request['return_reason']);
             }
             $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $request);
             $borrowDevicesDetailUpdate->update_time = $this->dateNow;
@@ -245,8 +262,8 @@ class BorrowController extends ApiController
                 $borrowDevicesDetail->update_time = $this->dateNow;
                 $borrowDevicesDetail->status = 1;
                 $borrowDevicesDetail->update_user = $this->login['user_name'];
-                $this->BorrowDevicesDetail->save($borrowDevicesDetail);
-
+                $resultDetail = $this->BorrowDevicesDetail->save($borrowDevicesDetail);
+                $this->setStatusDevice(['id' => $resultDetail->device_id], 1);
                 //send mail
                 $user = $this->getUser(['id' => $borrowDevices['borrower_id']]);
                 $toEmail = $user['email'];
@@ -292,6 +309,9 @@ class BorrowController extends ApiController
                 $borrowDevices->handover_id = $this->login['id'];
                 $this->BorrowDevices->save($borrowDevices);
 
+                if (isset($request['note_admin'])) {
+                    $request['note_admin'] = html_entity_decode($request['note_admin']);
+                }
                 $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $request);
                 $borrowDevicesDetailUpdate->update_time = $this->dateNow;
                 $borrowDevicesDetailUpdate->status = 2;
@@ -337,6 +357,9 @@ class BorrowController extends ApiController
                 $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
+             if (isset($request['return_reason'])) {
+                $request['return_reason'] = html_entity_decode($request['return_reason']);
+            }
             $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $request);
             $borrowDevicesDetailUpdate->update_time = $this->dateNow;
             $borrowDevicesDetailUpdate->status = 3;
@@ -373,15 +396,24 @@ class BorrowController extends ApiController
                 $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
-            $borrowDevicesDetail->update_time = $this->dateNow;
-            $borrowDevicesDetail->status = 4;
-            $borrowDevicesDetail->update_user = $this->login['user_name'];
-            if ($this->BorrowDevicesDetail->save($borrowDevicesDetail)) {
+            try {
+                $this->conn->begin();
+                $borrowDevicesDetail->update_time = $this->dateNow;
+                $borrowDevicesDetail->status = 4;
+                $borrowDevicesDetail->update_user = $this->login['user_name'];
+                $resultDetail = $this->BorrowDevicesDetail->save($borrowDevicesDetail);
+                If ($this->setStatusDevice(['id' => $resultDetail->device_id], 0) == FALSE) {
+                    $this->returnResponse(901, ['message' => 'The borrow devices could not be confirm return. Please, try again.']);
+                    $this->conn->rollback();
+                    return;
+                }
+                $this->conn->commit();
                 // Set return response (response code, api response)
                 $this->returnResponse(200, ['message' => 'The borrow devices has been confirm return.']);
-            } else {
+            } catch (Exception $ex) {
+                $this->conn->rollback();
                 // Set return response (response code, api response)
-                $this->returnResponse(901, ['message' => 'The borrow devices could not be confirm return. Please, try again.']);
+                $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
             // Set return response (response code, api response)
@@ -439,6 +471,16 @@ class BorrowController extends ApiController
                 ->where([key($condition) => current($condition)])
                 ->first();
         return $borrowDevices;
+    }
+
+    private function setStatusDevice(array $condition, $status)
+    {
+        $device = $this->Devices
+                ->find('all')
+                ->where($condition)
+                ->first();
+        $device->status = $status;
+        return $this->Devices->save($device);
     }
 
 }
