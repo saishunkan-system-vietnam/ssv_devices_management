@@ -401,14 +401,14 @@ class BorrowController extends ApiController
         return $borrowInfo;
     }
 
-    private function sendMail($toEmail, $borrowInfo, $template)
+    private function sendMail($toEmail, $viewVars, $template)
     {
         $email = new Email('default');
         $email->setFrom('hoanghung888@gmail.com')
                 ->setTo($toEmail)
                 ->setSubject('Borrow devices')
                 ->setEmailFormat('html')
-                ->setViewVars($borrowInfo)
+                ->setViewVars($viewVars)
                 ->viewBuilder()
                 ->setTemplate($template);
         $email->send();
