@@ -58,6 +58,8 @@ class Device extends Entity
         'parent_device' => true,
         'brand' => true,
         'borrow_devices_detail' => true,
-        'child_devices' => true
+        'child_devices' => true,
+        'image'=>true,
+        'purchase_date'=>true
     ];
 }

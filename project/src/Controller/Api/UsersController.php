@@ -10,6 +10,7 @@ use RestApi\Utility\JwtToken;
 use Cake\Http\Client;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
+use Cake\Routing\Router;
 
 /**
  * Users Controller
@@ -22,6 +23,8 @@ class UsersController extends ApiController
 {
     private $login;
     protected $connection;
+    private $baseUrl;
+    private $controllerName;
 
     public function initialize()
     {
@@ -29,6 +32,8 @@ class UsersController extends ApiController
 
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
         $this->connection = ConnectionManager::get('default');
+        $this->baseUrl = Router::url('/', true);
+        $this->controllerName = $this->getRequest()->getParam('controller');
 
         $this->loadComponent('User');
         $this->loadModel('Users');
@@ -47,8 +52,10 @@ class UsersController extends ApiController
             ->find('all')
             ->where(['status' => 0])
             ->toArray();
+
         $args = array(
             'lstUser' => $users,
+            'baseUrl' => $this->baseUrl  . 'uploads/files/' . strtolower($this->controllerName),
             'message' => 'Get list user success.'
         );
         // Set the response
@@ -137,6 +144,8 @@ class UsersController extends ApiController
             'address' => $user->address,
             'birthdate' => date('Y-m-d', strtotime($user->birthdate)),
             'join_date' => date('Y-m-d', strtotime($user->join_date)),
+            'img' => $user->img,
+            'base_url' => $this->baseUrl,
         );
         if (!empty($user)) {
             // Set the response
@@ -223,7 +232,14 @@ class UsersController extends ApiController
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
             $session = $this->getRequest()->getSession();
-            $id = $request['id'];
+            $id = '';
+            if(isset($request['id'])){
+                $id = $request['id'];
+            }
+
+            if(!empty($_FILES['file'])){
+                $upload = $this->uploadFile($this->controllerName);
+            }
             $user_name = $this->login['user_name'];
             if(empty($user_name) || empty($request['full_name']) || empty($request['email'])) {
                 // Set the response
@@ -241,6 +257,7 @@ class UsersController extends ApiController
                 $user->address = $request['address'];
                 $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
                 $user->join_date = date('Y-m-d', strtotime($request['joindate']));
+                $user->img = isset($upload) ? $upload : '';
                 $user->position = 'Programmer';
                 $user->level = (int)1;
                 $user->created_user = $user_name;
@@ -248,7 +265,7 @@ class UsersController extends ApiController
                 $user->created_time = date('Y-m-d H:i:s');
                 $user->update_time = date('Y-m-d H:i:s');
                 $user->is_deleted = (int)0;
-                $user->status = $request['status'];
+                $user->status = (int)0;
             } else {
                 $user = $this->Users
                     ->find('all')
@@ -261,6 +278,7 @@ class UsersController extends ApiController
                 $user->address = $request['address'];
                 $user->birthdate = date('Y-m-d', strtotime($request['dateofbirth']));
                 $user->join_date = date('Y-m-d', strtotime($request['joindate']));
+                $user->img = isset($upload) ? $upload : $user->img;
                 if(!empty($request['position']) && !empty($request['level'])) {
                     $user->position = $request['position'];
                     $user->level = $request['level'];
@@ -268,11 +286,14 @@ class UsersController extends ApiController
                 $user->update_user = $user_name;
                 $user->update_time = date('Y-m-d H:i:s');
             }
+
             if($this->Users->save($user)){
                 $payload = ['email' => $user->email, 'name' => $user->user_name];
+                $img_path = $this->baseUrl  . 'uploads/files/' . strtolower($this->controllerName) . DS . $user->img;
                 $args = array(
                     'token' => JwtToken::generateToken($payload),
                     'userData' => $user,
+                    'img_path' => $img_path,
                     'message' => 'The user has been update profile success.'
                 );
                 // Set the response

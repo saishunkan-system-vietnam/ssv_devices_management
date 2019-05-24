@@ -18,39 +18,48 @@ function AddUser(props) {
     const [value] = React.useState(
         localStorage.getItem('newUser') || ''
     );
+    const [statusCode] = React.useState(
+        localStorage.getItem('statusUserCode') || ''
+    );
 
     React.useEffect(() => {
         localStorage.setItem('newUser', value);
     }, [value]);
 
+    if(statusCode == 200){
+        alert.info('You can not access this page.');
+        props.history.push('/dashboard');
+    }
     function handleUpdate(event) {
         event.preventDefault();
-        let params = {};
-        params.inputName = inputName.current.value;
-        params.inputFullName = inputFullName.current.value;
-        params.inputEmail = inputEmail.current.value;
-        params.inputDOB = inputDOB.current.value;
-        params.inputAddress = inputAddress.current.value;
-        params.inputJoinDate = inputJoinDate.current.value;
-        params.inputImage = inputImage.current.value;
+        var formData = new FormData();
 
-        UpdateProfile.UpdateProfile(params).then(responseJson => {
-            if (responseJson['0'] === 200 && responseJson['payload']['userData'] !== 'undefined') {
-                AuthServer.AuthServer(params).then(responseAuth => {
-                    if(responseAuth['0'] === 200){
-                        alert.success("The user has been update profile success!");
-                        props.history.push('/dashboard');
-                        console.log(responseAuth);
-                    } else if(responseAuth['0'] === 901){
-                        alert.error("The user could not be saved. Please, try again.");
-                    }
-                });
-                //console.log(responseJson);
-                //props.history.push('/dashboard');
+        formData.append("user_name", inputName.current.value);
+        formData.append("full_name", inputFullName.current.value);
+        formData.append("email", inputEmail.current.value);
+        formData.append("address", inputAddress.current.value);
+        formData.append("dateofbirth", inputDOB.current.value);
+        formData.append("joindate", inputJoinDate.current.value);
+        formData.append("file", inputImage.current.files[0]);
+
+        UpdateProfile.UpdateProfile(formData).then(response => {
+            console.log(response['0']);
+            if (response['0'] === 200) {
+                localStorage.setItem('UserData', response['payload']['userData']);
+                if(response['0'] === 200){
+                    alert.success(response['payload']['message']);
+                    props.history.push('/dashboard');
+                } else if(response['0'] === 901){
+                    alert.error(response['payload']['message']);
+                }
             } else {
-                console.log(responseJson);
+                alert.error(response['payload']['message']);
             }
         });
+    }
+
+    function goBack(){
+        props.history.goBack();
     }
 
     return (
@@ -129,7 +138,7 @@ function AddUser(props) {
                                             <label htmlFor="image" className=" form-control-label">Image</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputImage} type="file" id="image" name="image" className="form-control"/>
+                                            <input ref={inputImage} type="file" id="image" name="file" className="form-control"/>
                                         </div>
                                     </div>
                                 </div>
@@ -148,7 +157,9 @@ function AddUser(props) {
                     </div>
                     <div className="row">
                         <div className="col-md-12 text-center">
-                            <button id="singlebutton" name="singlebutton" className="btn btn-secondary">
+                            <button id="singlebutton" name="singlebutton" className="btn btn-secondary" onClick={(event) => {
+                                goBack();
+                            }}>
                                 <i className="fa fa-arrow-left" aria-hidden="true"></i> Back
                             </button>
                         </div>

@@ -104,7 +104,11 @@ class DevicesTable extends Table
         $validator
             ->dateTime('stock_date')
             ->allowEmptyDateTime('stock_date');
-
+        
+         $validator
+            ->dateTime('purchase_date')
+            ->allowEmptyDateTime('purchase_date');
+        
         $validator
             ->dateTime('warranty_period')
             ->allowEmptyDateTime('warranty_period');

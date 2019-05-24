@@ -18,10 +18,12 @@ var bgColors = { "Edit": "#339af0",
 function ListUsers(props) {
     const alert = useAlert();
     const [lstUsers, setLstUsers] = useState([]);
+    const [baseUrl, setBaseUrl] = useState([]);
 
     function handleGetLstUsers() {
         LstUsers.LstUsers().then(responseJson => {
             setLstUsers(responseJson['payload']['lstUser']);
+            setBaseUrl(responseJson['payload']['baseUrl']);
         });
     }
     useEffect(() => {
@@ -125,6 +127,17 @@ function ListUsers(props) {
         }
     }
 
+    function imgUser(baseUrl, img) {
+        if(img != null){
+            var url = baseUrl + '/' + img;
+            return <img src={url} style={{"width": "70px", "height": "70px", 'max-width' : '70px', 'padding' : '4px'}} />;
+        } else {
+            var baseUrl = baseUrl + "/img/not-available.jpg";
+            var url = baseUrl.replace('/uploads/files/users', '');
+            return <img src={url} style={{"width": "70px", "height": "70px", 'max-width' : '70px', 'padding' : '4px'}} />;
+        }
+    }
+
     return (
         <div className="main-content">
             <div className="section__content section__content--p30">
@@ -168,10 +181,11 @@ function ListUsers(props) {
                                         </tr>
                                         </thead>
                                         <tbody>
+
                                         {lstUsers.map(function(value, key){
                                            return <tr key={value.id}>
                                                <td>
-                                                   <img src="/images/icon/avatar-01.jpg" style={{"width": "50px", "height": "50px"}} />
+                                                   {imgUser(baseUrl, value.img)}
                                                </td>
                                                <td>{value.user_name}</td>
                                                <td>

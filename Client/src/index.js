@@ -7,6 +7,7 @@ import { Provider as AlertProvider, positions } from 'react-alert'
 import AlertTemplate from "react-alert-template-basic";
 import App from './App';
 
+
 const options = {
     position: positions.TOP_RIGHT,
     timeout: 5000,
