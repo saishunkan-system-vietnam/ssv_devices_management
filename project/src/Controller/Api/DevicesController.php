@@ -276,8 +276,10 @@ class DevicesController extends ApiController
             }
             $deviceUpdate = $this->Devices->patchEntity($device, $request);
             // if is exist $_FILES then upload new image
+            $imageOld=null;
             if (isset($_FILES) && !empty($_FILES)) {
-                $deviceUpdate->image = $this->uploadFile($this->nameController);
+                $imageOld=$deviceUpdate->image;
+                $deviceUpdate->image = $this->uploadFile($this->nameController);                
             }
 
             //if specification khac null ma hoa code 
@@ -287,6 +289,9 @@ class DevicesController extends ApiController
             $deviceUpdate->update_user = $this->login['user_name'];
             $deviceUpdate->update_time = $this->dateNow;
             if ($this->Devices->save($deviceUpdate)) {
+                if(!empty($imageOld)){
+                    $this->deleteImg($imageOld, $this->nameController);
+                }
                 $this->returnResponse(200, ['message' => 'The device has been saved.']);
             } else {
                 $this->returnResponse(901, ['message' => 'The device could not be saved. Please, try again.']);
