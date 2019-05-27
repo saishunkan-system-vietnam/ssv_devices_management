@@ -5,7 +5,7 @@ import '../index.css';
 
 function List() {
     const [lstCategories, setLstCategories] = useState([]);  
-    function handleGetLstUsers(){
+    function handleGetLstCategories(){
         lstCategory.lstCategory().then(responseJson => {
             setLstCategories(responseJson['payload']['lstCategories']);
         });
@@ -13,7 +13,7 @@ function List() {
 
     useEffect(() => {
         if(lstCategories.length == 0) {
-            handleGetLstUsers();
+            handleGetLstCategories();
         }
     });  
 
