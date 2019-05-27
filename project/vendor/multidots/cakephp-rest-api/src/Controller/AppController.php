@@ -160,18 +160,15 @@ class AppController extends Controller
        
     }
 
-    public function uploadFile($controllerName){
+    public function uploadFile($controllerName, $newfilename){
         $fileName = $_FILES['file']['name'];
         $file_basename = substr($fileName, 0, strripos($fileName, '.')); // get file extention
         $file_ext = substr($fileName, strripos($fileName, '.')); // get file name
         $filesize = $_FILES["file"]["size"];
         $allowed_file_types = array('.png','.jpg','.gif','.jpeg');
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $newfilename = $this->rand_string(50) . $file_ext;
         $uploadPath = WWW_ROOT . 'uploads/files/' . strtolower($controllerName) . DS;
         $uploadFile = $uploadPath . $newfilename;
         move_uploaded_file($_FILES["file"]["tmp_name"], $uploadFile);
-        return $newfilename;
     }
 
     public function deleteImg($filename, $controllerName){
