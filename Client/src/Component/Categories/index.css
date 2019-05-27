@@ -1,0 +1,36 @@
+.mt-70 {
+	margin-top: 70px;
+}
+
+.mt-10 {
+	margin-top: 10px;
+}
+
+.mt-5 {
+	margin-top: 5px;
+}
+
+.p-20 {
+	padding: 20px;
+}
+
+.layout {
+	background-color: white;
+}
+
+.fa {
+	padding: 0 5px;
+}
+.fa-edit {
+	color: rgb(51, 154, 240);
+}
+
+.fa-trash {
+	color: rgb(233, 87, 63);
+}
+
+.fa-eye {
+	color: #04B431;
+}
+
+

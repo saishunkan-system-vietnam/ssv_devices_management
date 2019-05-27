@@ -8,6 +8,10 @@ import AddUser from '../src/Component/Users/add';
 import UpdateUser from '../src/Component/Users/update';
 import Layout from '../src/Component/Master/index';
 
+import Categories from './Component/Categories/index'
+import List_cate from './Component/Categories/List/List'
+import Add_cate from './Component/Categories/Add'
+
 import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
   return (
@@ -34,6 +38,16 @@ function App() {
                         {...props}
                     />
                 )}  exact/>
+                <Route path="/categories" render={() => (
+                    <Layout
+                      content={<Categories content = {<List_cate />} />}
+                    />
+                )} exact/>  
+                <Route path="/categories/add" render={() => (
+                    <Layout
+                      content={<Categories content = {<Add_cate />} />}
+                    />
+                )} exact/>             
                   <Route path="/" component={Login} exact />
           </Router>
 
