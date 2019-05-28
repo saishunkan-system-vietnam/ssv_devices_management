@@ -4,7 +4,6 @@ import './index.css';
 function Categories(props) {   
 
     function renderContent(){
-        console.log('a');
         return  React.cloneElement(props.content);
     }
 

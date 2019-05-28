@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import Item from './Item';
 import lstCategory from '../../../api/listcategories';
-import '../index.css';
 
 function List() {
     const [lstCategories, setLstCategories] = useState([]);  
@@ -12,7 +11,7 @@ function List() {
     }   
 
     useEffect(() => {
-        if(lstCategories.length == 0) {
+        if(lstCategories.length === 0) {
             handleGetLstCategories();
         }
     });  

@@ -1,9 +1,8 @@
 import constants from '../constants/contants';
-function lstBrands() {
-    const url = constants.Url + constants.endpoint.list_brands;
-    //get data local Storage
-    let token = localStorage.getItem('Token') || '';
 
+function getCategory(id) {
+    const url = constants.Url + constants.endpoint.get_category + id;
+    let token = localStorage.getItem('Token') || '';
     return fetch(url, {
         method: 'GET',
         headers: {
@@ -20,5 +19,5 @@ function lstBrands() {
 }
 
 export default {
-    lstBrands
+    getCategory
 }

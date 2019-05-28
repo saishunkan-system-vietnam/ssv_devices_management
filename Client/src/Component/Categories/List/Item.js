@@ -1,6 +1,7 @@
 import React from 'react';
 
 function Item(p) {
+  let urlEdit=`/categories/edit/${p.id}`;
   return (   
     <tr>
         <td>{p.id}</td>
@@ -11,7 +12,7 @@ function Item(p) {
         <td>{p.update_user}</td>
         <td>{p.created_time}</td>
         <td>{p.update_time}</td>    						
-        <td><i className="fa fa-eye fa-lg"></i><i className="fa fa-edit fa-lg"></i><i className="fa fa-trash fa-lg"></i></td>                            
+        <td><i className="fa fa-eye fa-lg"></i><a href={urlEdit}><i className="fa fa-edit fa-lg"></i></a><i className="fa fa-trash fa-lg"></i></td>                            
     </tr>
   );
 }

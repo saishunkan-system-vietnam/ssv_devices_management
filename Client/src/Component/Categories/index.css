@@ -10,6 +10,11 @@
 	margin-top: 5px;
 }
 
+.ml-10 {
+	margin-left: 10px;
+}
+
+
 .p-20 {
 	padding: 20px;
 }
@@ -37,4 +42,7 @@
 	color: #04B431;
 }
 
+.hide{
+	display: none;
+}
 

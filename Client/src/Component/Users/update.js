@@ -17,7 +17,7 @@ function UpdateUser(props) {
 
     const alert = useAlert();
 
-    useEffect(() => {
+    useEffect(() => {        
         if(Object.keys(userEdit).length == 0) {
             handleGetUserInfo(props.match.params.id);
         }
