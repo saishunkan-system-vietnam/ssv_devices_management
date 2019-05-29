@@ -220,8 +220,24 @@ class DevicesController extends ApiController
                 $this->returnResponse(901, ['message' => 'Please select a image before add device.']);
                 return;
             }
+
+            $fileName = $_FILES['file']['name'];
+            $file_ext = substr($fileName, strripos($fileName, '.')); // get file name
+            $filesize = $_FILES["file"]["size"];
+            $allowed_file_types = array('.png', '.jpg', '.gif', '.jpeg');
+            if ($filesize > 200000) {
+                $this->returnResponse(903, ['message' => 'The file you are trying to upload is too large.']);
+                return;
+            }
+            if (!in_array($file_ext, $allowed_file_types)) {
+                $this->returnResponse(903, ['message' => "Only these file typs are allowed for upload: " . implode(', ', $allowed_file_types)]);
+                return;
+            }
+            $newfilename = $this->rand_string(50) . $file_ext;
+
             $device = $this->Devices->patchEntity($deviceNewEntity, $request);
-            $device->image = $this->uploadFile($this->nameController);
+            $this->uploadFile($this->nameController, $newfilename);
+            $device->image = $newfilename;
             if (!empty($device->specifications)) {
                 $device->specifications = htmlentities($device->specifications);
             }
@@ -276,8 +292,24 @@ class DevicesController extends ApiController
             }
             $deviceUpdate = $this->Devices->patchEntity($device, $request);
             // if is exist $_FILES then upload new image
+            $imageOld = null;
             if (isset($_FILES) && !empty($_FILES)) {
-                $deviceUpdate->image = $this->uploadFile($this->nameController);
+                $fileName = $_FILES['file']['name'];
+                $file_ext = substr($fileName, strripos($fileName, '.')); // get file name
+                $filesize = $_FILES["file"]["size"];
+                $allowed_file_types = array('.png', '.jpg', '.gif', '.jpeg');
+                if ($filesize > 200000) {
+                    $this->returnResponse(903, ['message' => 'The file you are trying to upload is too large.']);
+                    return;
+                }
+                if (!in_array($file_ext, $allowed_file_types)) {
+                    $this->returnResponse(903, ['message' => "Only these file typs are allowed for upload: " . implode(', ', $allowed_file_types)]);
+                    return;
+                }
+                $newfilename = $this->rand_string(50) . $file_ext;
+                $imageOld = $deviceUpdate->image;
+                $this->uploadFile($this->nameController, $newfilename);
+                $deviceUpdate->image = $newfilename;
             }
 
             //if specification khac null ma hoa code 
@@ -287,6 +319,9 @@ class DevicesController extends ApiController
             $deviceUpdate->update_user = $this->login['user_name'];
             $deviceUpdate->update_time = $this->dateNow;
             if ($this->Devices->save($deviceUpdate)) {
+                if (!empty($imageOld)) {
+                    $this->deleteImg($imageOld, $this->nameController);
+                }
                 $this->returnResponse(200, ['message' => 'The device has been saved.']);
             } else {
                 $this->returnResponse(901, ['message' => 'The device could not be saved. Please, try again.']);
