@@ -1,48 +1,63 @@
 .mt-70 {
-	margin-top: 70px;
+    margin-top: 70px;
 }
 
 .mt-10 {
-	margin-top: 10px;
+    margin-top: 10px;
 }
 
 .mt-5 {
-	margin-top: 5px;
+    margin-top: 5px;
 }
 
 .ml-10 {
-	margin-left: 10px;
+    margin-left: 10px;
 }
 
-
 .p-20 {
-	padding: 20px;
+    padding: 20px;
 }
 
 .pl-30 {
-	padding-left: 30px;
+    padding-left: 30px;
 }
 
 .layout {
-	background-color: white;
+    background-color: white;
 }
 
 .fa {
-	padding: 0 5px;
+    padding: 0 5px;
 }
+
 .fa-edit {
-	color: rgb(51, 154, 240);
+    color: rgb(51, 154, 240);
+}
+
+.fa-edit:hover {
+    color: blue;
 }
 
 .fa-trash {
-	color: rgb(233, 87, 63);
+    color: rgb(233, 87, 63);
+}
+
+.fa-trash:hover {
+    color: red;
 }
 
 .fa-eye {
-	color: #04B431;
+    color: #04B431;
 }
 
-.hide{
-	display: none;
+.fa-eye:hover {
+    color: green;
 }
 
+.hide {
+    display: none;
+}
+
+.dropdown-menu{
+    cursor: pointer;
+}

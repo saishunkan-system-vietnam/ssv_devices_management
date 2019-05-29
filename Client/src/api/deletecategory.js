@@ -1,8 +1,8 @@
 import constants from '../constants/contants';
 import axios from 'axios';
 
-function editCategory(formData) {
-    const url = constants.Url + constants.endpoint.edit_category;
+function deleteCategory(formData) {
+    const url = constants.Url + constants.endpoint.delete_category;
     let token = localStorage.getItem('Token') || '';
     const config = {
         headers: {
@@ -20,5 +20,5 @@ function editCategory(formData) {
 }
 
 export default {
-    editCategory
+    deleteCategory
 }

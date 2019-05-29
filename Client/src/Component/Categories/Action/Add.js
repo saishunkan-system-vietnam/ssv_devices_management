@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect } from 'react';
 import lstBrands from '../../../api/listbrands';
 import lstCategory from '../../../api/listcategories';
 import Option from './Option';
@@ -7,12 +7,11 @@ import addCategory from '../../../api/addcategory';
 import editCategory from '../../../api/editcategory';
 import { useAlert } from "react-alert";
 
-function Add(props) {
-    const [id, setId] = useState('');
-    const name = useFormInput('');
-    const isParent = useFormInput(false);
-    const id_parent = useFormInput(1);
-    const id_brand = useFormInput(1);
+function Add(props) {    
+    const name = useRef();
+    const isParent = useRef();
+    const id_parent = useRef();
+    const id_brand = useRef();
     const [listBrands, setLstBrands] = useState([]);
     const [lstCategories, setLstCategories] = useState([]);
     const [category, setCategory] = useState([]);
@@ -22,17 +21,18 @@ function Add(props) {
         e.preventDefault();
         var frm = new FormData();
         let idparent = 0;
-        if (isParent.value === false) {
-            idparent = id_parent.value;
+        if (isParent.current.checked === false) {
+            idparent = id_parent.current.value;
         }
         frm.append('id_parent', idparent);
-        frm.append('brands_id', id_brand.value);
-        frm.append('category_name', name.value);
-        if (id) {
-            frm.append('id', id);
+        frm.append('brands_id', id_brand.current.value);
+        frm.append('category_name', name.current.value);
+        if (category.length!=0) {
+            frm.append('id', category.id);
             editCategory.editCategory(frm).then(response => {
                 if (response['0'] === 200) {
                     alert.success(response.payload.message);
+                    props.history.push('/categories');
                 } else {
                     let obj = response.payload.message;
                     for (const key in obj) {
@@ -46,6 +46,7 @@ function Add(props) {
             addCategory.addCategory(frm).then(response => {
                 if (response['0'] === 200) {
                     alert.success(response.payload.message);
+                    props.history.push('/categories');
                 } else {
                     let obj = response.payload.message;
                     for (const key in obj) {
@@ -58,17 +59,6 @@ function Add(props) {
         }
     }
 
-    function useFormInput(initialValue) {
-        const [value, setValue] = useState(initialValue);
-        function hanldeChange(e) {
-            setValue(e.target.type === 'checkbox' ? e.target.checked : e.target.value);
-        }
-        return {
-            value,
-            onChange: hanldeChange
-        };
-    }
-
     function handleGetLstBrands() {
         lstBrands.lstBrands().then(responseJson => {
             setLstBrands(responseJson['payload']['lstBrands']);
@@ -78,45 +68,35 @@ function Add(props) {
         lstCategory.lstCategory().then(responseJson => {
             setLstCategories(responseJson['payload']['lstCategories']);
         });
+    }    
+    
+    function get_category(){
+        getCategory.getCategory(props.match.params.id).then(responseJson => {
+            let category = responseJson['payload']['category'];          
+            setCategory(category);            
+        });       
     }
 
-    function handleGetCategory(id) {
-        getCategory.getCategory(id).then(responseJson => {
-            let category = responseJson['payload']['category'];
-            setCategory(category);
-        });
-    }
-
-    if (id === '' && props.match) {
-        setId(props.match.params.id);
-        handleGetCategory(props.match.params.id);
-        
-    }
-
-    if (id !== '' && category.length !== 0) {
-        console.log(category);
-        name.value = category.category_name;       
-        id_brand.value = category.brands_id;
-        if (category.id_parent === 0) {
-            isParent.value = true;
-        } else {
-            id_parent.value = category.id_parent;
+    useEffect(() => {  
+        if(category.length==0 && props.match.params.id){
+            get_category();
         }        
-    }
 
-    useEffect(() => {      
-        
         if (lstCategories.length === 0) {
             handleGetLstCategories();
         }
-
         if (listBrands.length === 0) {
             handleGetLstBrands();
-        }
+        }  
     }, []);
+    
     var option_brand = listBrands.map((brand, index) => {
+        if(index===0){
+            setCategory('a');
+        }
         return <Option key={index} label={brand.brand_name} value={brand.id} />
     });
+
     var option_category_parent = lstCategories.map((category, index) => {
         let result = '';
         if (category.id_parent === 0) {
@@ -127,13 +107,13 @@ function Add(props) {
             />
         }
         return result;
-    });
-
+    });   
+console.log(category.brands_id);
     return (
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    <legend className="pl-30">Add new category</legend><hr />
+                    <legend className="pl-30">{category?'Update category':'Add new category'}</legend><hr />
 
                     <div className="form-group">
                         <div className="row">
@@ -141,7 +121,7 @@ function Add(props) {
                                 <label>Category name:</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                                <input type="text" className="form-control" id="namecate" placeholder="Input field"  defaultValue={...name} />
+                                <input type="text" className="form-control" id="namecate" placeholder="Input field" ref={name} defaultValue={category.category_name}/>
                             </div>
                         </div>
                     </div>
@@ -152,20 +132,20 @@ function Add(props) {
                                 <label>Brand:</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                                <select name="" className="form-control" {...id_brand}>
-                                    {option_brand}
+                                <select name="" className="form-control" ref={id_brand} defaultValue={category.brands_id} >
+                                    {option_brand}                                   
                                 </select>
                             </div>
                         </div>
                     </div>
 
-                    <div className={isParent.value === true ? "form-group hide" : "form-group"}>
+                    <div className={isParent === true ? "form-group hide" : "form-group"}>
                         <div className="row">
                             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
                                 <label>Category parent:</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                                <select name="" className="form-control" {...id_parent}>
+                                <select id="id_parent" className="form-control" ref={id_parent} >
                                     {option_category_parent}
                                 </select>
                             </div>
@@ -177,7 +157,7 @@ function Add(props) {
                             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
                                 <div className="checkbox">
                                     <label>
-                                        <input type="checkbox"  {...isParent} checked={isParent.value === true} />
+                                        <input type="checkbox" ref={isParent} />
                                         &nbsp; Category parent
                                 </label>
                                 </div>

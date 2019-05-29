@@ -13,6 +13,7 @@ let api = {
         'add_category': '/api/v1/category/add',
         'edit_category': '/api/v1/category/edit',
         'get_category': '/api/v1/category/view/',
+        'delete_category': '/api/v1/category/delete/',
         'list_brands': '/api/v1/brand',
     }
 }

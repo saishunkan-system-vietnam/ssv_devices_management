@@ -11,6 +11,7 @@ import Layout from '../src/Component/Master/index';
 import Categories from './Component/Categories/index';
 import List_cate from './Component/Categories/List/List';
 import Add_cate from './Component/Categories/Action/Add';
+import View_cate from './Component/Categories/Action/View';
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
@@ -43,14 +44,21 @@ function App() {
           content={<Categories content={<List_cate />} />}
         />
       )} exact />
-      <Route path="/categories/add" render={() => (
+      <Route path="/categories/add" render={(props) => (
         <Layout
-          content={<Categories content={<Add_cate />} />}
+          content={<Categories content={<Add_cate {...props} />} />}
+          {...props}
         />
       )} exact />
       <Route path="/categories/edit/:id" render={(props) => (
         <Layout
           content={<Categories content={<Add_cate {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/categories/view/:id" render={(props) => (
+        <Layout
+          content={<Categories content={<View_cate {...props} />} />}
           {...props}
         />
       )} exact />
