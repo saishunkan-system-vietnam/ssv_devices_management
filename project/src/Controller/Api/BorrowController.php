@@ -32,17 +32,34 @@ class BorrowController extends ApiController
     public function borrowDevices()
     {
         $borrowDevices = $this->BorrowDevices
-                        ->find('all')
-                        ->where(['BorrowDevices.is_deleted' => 0])
-                        ->select($this->BorrowDevices)
-                        ->select($this->BorrowDevicesDetail)
-                        ->join([
-                            'BorrowDevicesDetail' => [
-                                'table' => 'borrow_devices_detail',
-                                'type' => 'INNER',
-                                'conditions' => 'BorrowDevicesDetail.borrow_device_id = BorrowDevices.id'
-                            ]
-                        ])->toArray();
+                ->find('all')
+                ->where(['BorrowDevices.is_deleted' => 0])
+                ->select($this->BorrowDevices)
+                ->select($this->BorrowDevicesDetail)
+                ->select($this->Users)
+                ->select($this->Devices)
+                ->join([
+                    'BorrowDevicesDetail' => [
+                        'table' => 'borrow_devices_detail',
+                        'type' => 'INNER',
+                        'conditions' => 'BorrowDevicesDetail.borrow_device_id = BorrowDevices.id'
+                    ]
+                ])
+                ->join([
+                    'Users' => [
+                        'table' => 'users',
+                        'type' => 'Left',
+                        'conditions' => 'Users.id = BorrowDevices.borrower_id'
+                    ]
+                ])
+                ->join([
+                    'Devices' => [
+                        'table' => 'devices',
+                        'type' => 'INNER',
+                        'conditions' => 'Devices.id = BorrowDevicesDetail.device_id'
+                    ]
+                ])
+                ->toArray();
 
         $args = array(
             'lstBorrowDevices' => $borrowDevices
