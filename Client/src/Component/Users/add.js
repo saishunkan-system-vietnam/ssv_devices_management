@@ -62,6 +62,22 @@ function AddUser(props) {
         props.history.goBack();
     }
 
+    function deleteImg() {
+        document.getElementById('image').reset();
+    }
+
+    function readURL(e) {
+        let files =  e.target.files;
+        let reader = new FileReader();
+        reader.readAsDataURL(files[0]);
+        reader.onload = (e) => {
+            if(files[0]){
+                document.getElementById('showImg').style.display = 'block';
+                document.getElementById("showImg").src = e.target.result;
+            }
+        }
+    }
+
     return (
         <div className="main-content">
             <div className="section__content section__content--p30">
@@ -138,7 +154,16 @@ function AddUser(props) {
                                             <label htmlFor="image" className=" form-control-label">Image</label>
                                         </div>
                                         <div className="col-12 col-md-9">
-                                            <input ref={inputImage} type="file" id="image" name="file" className="form-control"/>
+                                            <div>
+                                            <img id="showImg" style={{"width": "120px", "height": "120px", 'max-width' : '120px', 'padding' : '4px', 'display' : 'none'}} />
+                                            {/*<input type="button" id="removeImage" value="x" className="btn-rmv" onClick={(event) => {*/}
+                                                {/*deleteImg(event);*/}
+                                            {/*}}/>*/}
+                                            </div>
+                                            <div id="deleteImg"></div>
+                                            <input ref={inputImage} type="file" id="image" name="file" className="form-control" onChange={(event) => {
+                                                readURL(event);
+                                            }}/>
                                         </div>
                                     </div>
                                 </div>
