@@ -14,6 +14,7 @@ let api = {
         'edit_category': '/api/v1/category/edit',
         'get_category': '/api/v1/category/view/',
         'delete_category': '/api/v1/category/delete/',
+        'filter_category': '/api/v1/category/filter',
         'list_brands': '/api/v1/brand',
     }
 }
