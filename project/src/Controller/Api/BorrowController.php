@@ -77,19 +77,35 @@ class BorrowController extends ApiController
             $this->returnResponse(903, ['message' => 'Id could not be found.']);
             return;
         }
-
-        $borrowDevices = $this->BorrowDevices
-                        ->find('all')
-                        ->where(['BorrowDevices.id' => $id])
-                        ->select($this->BorrowDevices)
-                        ->select($this->BorrowDevicesDetail)
-                        ->join([
-                            'BorrowDevicesDetail' => [
-                                'table' => 'borrow_devices_detail',
-                                'type' => 'INNER',
-                                'conditions' => 'BorrowDevicesDetail.borrow_device_id = BorrowDevices.id'
-                            ]
-                        ])->toArray();
+ $borrowDevices = $this->BorrowDevices
+                ->find('all')
+                ->where(['BorrowDevices.id' => $id])
+                ->select($this->BorrowDevices)
+                ->select($this->BorrowDevicesDetail)
+                ->select($this->Users)
+                ->select($this->Devices)
+                ->join([
+                    'BorrowDevicesDetail' => [
+                        'table' => 'borrow_devices_detail',
+                        'type' => 'INNER',
+                        'conditions' => 'BorrowDevicesDetail.borrow_device_id = BorrowDevices.id'
+                    ]
+                ])
+                ->join([
+                    'Users' => [
+                        'table' => 'users',
+                        'type' => 'Left',
+                        'conditions' => 'Users.id = BorrowDevices.borrower_id'
+                    ]
+                ])
+                ->join([
+                    'Devices' => [
+                        'table' => 'devices',
+                        'type' => 'INNER',
+                        'conditions' => 'Devices.id = BorrowDevicesDetail.device_id'
+                    ]
+                ])
+        ->first();
         if (!empty($borrowDevices)) {
             // Set return response (response code, api response)
             $args = array(

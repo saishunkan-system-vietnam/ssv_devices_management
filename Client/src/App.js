@@ -10,6 +10,7 @@ import Layout from '../src/Component/Master/index';
 
 import Borrow from '../src/Component/Borrow/index';
 import ListBorrow from '../src/Component/Borrow/List/List';
+import ViewBorrow from '../src/Component/Borrow/Action/View';
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
@@ -39,7 +40,13 @@ function App() {
       )} exact />
       <Route path="/borrow" render={() => (
         <Layout
-          content={<Borrow />}
+          content={<Borrow content={ < ListBorrow/> } />}
+        />
+      )} exact />
+      <Route path="/borrow/view/:id" render={(props) => (
+        <Layout
+          content={<Borrow content={<ViewBorrow {...props} />} />}
+          {...props}
         />
       )} exact />
       <Route path="/" component={Login} exact />

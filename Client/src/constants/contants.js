@@ -10,6 +10,7 @@ let api = {
         'restock_user' : '/api/v1/user/restock',
         'delete_user' : '/api/v1/user/delete',
         'list_borrow' : '/api/v1/borrow',
+        'view_borrow' : '/api/v1/borrow/view/',
     }
 }
 

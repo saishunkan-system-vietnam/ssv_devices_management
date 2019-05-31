@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 function Item(props) {
 
@@ -16,7 +16,7 @@ function Item(props) {
             <td>{props.update_user}</td>            
             <td>{props.created_time}</td>            
             <td>{props.update_time}</td>            
-            <td><i className="fa fa-eye fa-lg"></i><i className="fa fa-edit fa-lg"></i><i className="fa fa-trash fa-lg" ></i><i className="fa fa-check-circle fa-lg"></i><i className="fas fa-times-circle fa-lg"></i></td>
+            <td><a href={`/borrow/view/${props.id}`}><i className="fa fa-eye fa-lg"></i></a><i className="fa fa-edit fa-lg"></i><i className="fa fa-trash fa-lg" ></i><i className="fa fa-check-circle fa-lg"></i><i className="fas fa-times-circle fa-lg"></i></td>
         </tr>
     );
 }
