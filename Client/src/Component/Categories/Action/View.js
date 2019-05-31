@@ -48,77 +48,77 @@ function View(props) {
     return (
         <div className="row p-20">
 
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <legend className="pl-30">View category <strong>{category.category_name}</strong></legend>
                 <hr />
             </div>
 
 
-            <div class="col-xs-10 col-sm-10 col-md-10 col-lg-10 ml-70 pl-30">
+            <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 ml-70 pl-30">
 
-                <div class="row mt-10" >
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                <div className="row mt-10" >
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                         Name:
                      </div>
-                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category.category_name}
                     </div>
                 </div>
 
-                <div class="row  mt-10">
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                <div className="row  mt-10">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                         Category parent:
                      </div>
-                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category.id_parent}
                     </div>
                 </div>
 
-                <div class="row  mt-10">
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                <div className="row  mt-10">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                         Brand:
                      </div>
-                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category.brands_id}
                     </div>
                 </div>
-                <div class="row  mt-10">
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                <div className="row  mt-10">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                         User created:
                      </div>
-                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category.created_user}
                     </div>
                 </div>
-                <div class="row  mt-10">
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                <div className="row  mt-10">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                         User update:
                      </div>
-                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category.update_user}
                     </div>
                 </div>
-                <div class="row  mt-10">
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                <div className="row  mt-10">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                         Time created:
                      </div>
-                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category.created_time}
                     </div>
                 </div>
-                <div class="row  mt-10">
-                    <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                <div className="row  mt-10">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                         Time update:
                      </div>
-                    <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category.update_time}
                     </div>
                 </div>
-                <div class="row  mt-10">
-                    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <div className="row  mt-10">
+                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 
-                        <a href={`/categories/edit/${category.id}`} class="btn btn-primary">Edit</a>
-                        <button type="button" class="btn btn-danger ml-10" onClick={handleDelete}>Delete</button>
+                        <a href={`/categories/edit/${category.id}`} className="btn btn-primary">Edit</a>
+                        <button type="button" className="btn btn-danger ml-10" onClick={handleDelete}>Delete</button>
 
                     </div>
                 </div>
