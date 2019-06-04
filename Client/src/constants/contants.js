@@ -11,6 +11,9 @@ let api = {
         'delete_user' : '/api/v1/user/delete',
         'list_borrow' : '/api/v1/borrow',
         'view_borrow' : '/api/v1/borrow/view/',
+        'add_borrow' : '/api/v1/borrow/add',
+        'edit_borrow' : '/api/v1/borrow/edit',
+        'list_device' : '/api/v1/device',
     }
 }
 

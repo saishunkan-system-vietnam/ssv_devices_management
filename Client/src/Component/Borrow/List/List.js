@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BorrowItem from './Item';
 import List_Borrow from '../../../api/borrowList';
+import {Link} from 'react-router-dom';
 
 function ListBorrow() {
 
@@ -19,7 +20,6 @@ function ListBorrow() {
     })
 
     var listItem = lstBorrow.map((borrow, index) => {
-        console.log(borrow);
         let staust_name = '';
         if (Number(borrow.BorrowDevicesDetail.status) === 0) {            
             staust_name = <span className="label label-primary">Borrow request</span>;
@@ -32,7 +32,6 @@ function ListBorrow() {
         }else if (Number(borrow.BorrowDevicesDetail.status) === 4) {
             staust_name = <span className="label label-danger">Returned</span>;
         }
-        console.log(staust_name);
         return <BorrowItem
             key={index}
             id={borrow.id}
@@ -53,7 +52,7 @@ function ListBorrow() {
     return (
         <div>            
             <div className="row mt-10">
-                <button type="button" className="btn btn-primary add ml-10"><i className="fa fa-plus"></i></button>
+            <Link to="/borrow/add" className="btn btn-primary add ml-10"><i className="fa fa-plus"></i></Link>
             </div>
             <div className="row mt-10">
                 <div className="table-responsive table-data">

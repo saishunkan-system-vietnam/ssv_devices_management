@@ -14,14 +14,13 @@ function UpdateUser(props) {
     const inputImage = useRef();
     const [userEdit, setUserEdit] = useState({});
     const [flg_deleteImg, setFlgDeleteImg] = useState({});
-
     const alert = useAlert();
 
     useEffect(() => {
-        if(Object.keys(userEdit).length == 0) {
+        if(Object.keys(userEdit).length === 0) {
             handleGetUserInfo(props.match.params.id);
         }
-    });
+    });    
 
     function handleGetUserInfo(id) {
         ShowUser.ShowUser(id).then(responseJson => {

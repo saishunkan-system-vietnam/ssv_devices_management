@@ -110,3 +110,16 @@
 .label-danger {
     background-color: #d9534f;
 }
+
+.link{
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.show{
+    box-shadow: 1px 1px 5px silver;
+    padding: 20px;
+    background-color: lightblue;   
+    border-radius: 7px;
+}
+

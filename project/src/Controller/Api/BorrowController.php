@@ -7,8 +7,7 @@ use \Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
 use Cake\Mailer\Email;
 
-class BorrowController extends ApiController
-{
+class BorrowController extends ApiController {
 
     private $Devices;
     private $BorrowDevices;
@@ -17,20 +16,19 @@ class BorrowController extends ApiController
     private $Users;
     private $conn;
 
-    public function initialize()
-    {
+    public function initialize() {
         parent::initialize();
         $this->BorrowDevices = TableRegistry::getTableLocator()->get('BorrowDevices');
         $this->BorrowDevicesDetail = TableRegistry::getTableLocator()->get('BorrowDevicesDetail');
         $this->Devices = TableRegistry::getTableLocator()->get('Devices');
         $this->Users = TableRegistry::getTableLocator()->get('Users');
-        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+        $this->login = ["id" => 61, "user_name" => "Test", "level" => 1, "email" => "hoangnguyenit98@gmail.com"];
         $this->conn = ConnectionManager::get('default');
     }
 
     //get list BorrowDevices
-    public function borrowDevices()
-    {
+    public function borrowDevices() {
         $borrowDevices = $this->BorrowDevices
                 ->find('all')
                 ->where(['BorrowDevices.is_deleted' => 0])
@@ -61,6 +59,15 @@ class BorrowController extends ApiController
                 ])
                 ->toArray();
 
+        if (count($borrowDevices) > 0) {
+            foreach ($borrowDevices as $row) {
+                $row['BorrowDevicesDetail']['borrow_reason'] = html_entity_decode($row['BorrowDevicesDetail']['borrow_reason']);
+                $row['BorrowDevicesDetail']['return_reason'] = html_entity_decode($row['BorrowDevicesDetail']['return_reason']);
+                $row['BorrowDevicesDetail']['note_admin'] = html_entity_decode($row['BorrowDevicesDetail']['note_admin']);
+            }
+        }
+
+
         $args = array(
             'lstBorrowDevices' => $borrowDevices
         );
@@ -70,14 +77,13 @@ class BorrowController extends ApiController
     }
 
     //function view borrow devices
-    public function view($id = null)
-    {
+    public function view($id = null) {
         if (empty($id)) {
             // Set return response (response code, api response)
             $this->returnResponse(903, ['message' => 'Id could not be found.']);
             return;
         }
- $borrowDevices = $this->BorrowDevices
+        $borrowDevices = $this->BorrowDevices
                 ->find('all')
                 ->where(['BorrowDevices.id' => $id])
                 ->select($this->BorrowDevices)
@@ -105,9 +111,12 @@ class BorrowController extends ApiController
                         'conditions' => 'Devices.id = BorrowDevicesDetail.device_id'
                     ]
                 ])
-        ->first();
+                ->first();
         if (!empty($borrowDevices)) {
             // Set return response (response code, api response)
+            $borrowDevices['BorrowDevicesDetail']['borrow_reason'] = html_entity_decode($borrowDevices['BorrowDevicesDetail']['borrow_reason']);
+            $borrowDevices['BorrowDevicesDetail']['return_reason'] = html_entity_decode($borrowDevices['BorrowDevicesDetail']['return_reason']);
+            $borrowDevices['BorrowDevicesDetail']['note_admin'] = html_entity_decode($borrowDevices['BorrowDevicesDetail']['note_admin']);
             $args = array(
                 'borrowDevices' => $borrowDevices
             );
@@ -120,8 +129,7 @@ class BorrowController extends ApiController
 
     //function add borrow devices
     // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
-    public function add()
-    {
+    public function add() {
         if ($this->getRequest()->is('post')) {
             try {
                 $this->conn->begin();
@@ -145,7 +153,7 @@ class BorrowController extends ApiController
                 $borrowDevicesDetail->status = 0;
                 $borrowDevicesDetail->borrow_date = (isset($request['borrow_date'])) ? $request['borrow_date'] : '';
                 $borrowDevicesDetail->approved_date = (isset($request['approved_date'])) ? $request['approved_date'] : '';
-                $borrowDevicesDetail->delivery_date = (isset($request['delivery_date'])) ? $request['delivery_date'] : '';
+                $borrowDevicesDetail->return_date_expected = (isset($request['return_date_expected'])) ? $request['return_date_expected'] : '';
                 $borrowDevicesDetail->return_date = (isset($request['return_date'])) ? $request['return_date'] : '';
                 $borrowDevicesDetail->created_user = $this->login['user_name'];
                 $borrowDevicesDetail->is_deleted = 0;
@@ -172,8 +180,7 @@ class BorrowController extends ApiController
     }
 
     //function edit borrow devices
-    public function edit()
-    {
+    public function edit() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
@@ -212,8 +219,7 @@ class BorrowController extends ApiController
     }
 
     //function delete devices
-    public function delete()
-    {
+    public function delete() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
@@ -253,8 +259,7 @@ class BorrowController extends ApiController
 
     // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
     //function comfirm borrow devices
-    public function approve()
-    {
+    public function approve() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
@@ -302,8 +307,7 @@ class BorrowController extends ApiController
 
     // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
     //function comfirm borrow devices
-    public function noApprove()
-    {
+    public function noApprove() {
 
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
@@ -353,8 +357,7 @@ class BorrowController extends ApiController
 
     // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
     //function return devices
-    public function returnDevice()
-    {
+    public function returnDevice() {
 
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
@@ -372,6 +375,7 @@ class BorrowController extends ApiController
             }
             $borrowDevicesDetailUpdate = $this->BorrowDevicesDetail->patchEntity($borrowDevicesDetail, $request);
             $borrowDevicesDetailUpdate->update_time = $this->dateNow;
+            $borrowDevicesDetailUpdate->return_date = $this->dateNow;
             $borrowDevicesDetailUpdate->status = 3;
             $borrowDevicesDetailUpdate->update_user = $this->login['user_name'];
 
@@ -390,8 +394,7 @@ class BorrowController extends ApiController
 
     // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
     //function confirm return devices
-    public function confirmReturnDevice()
-    {
+    public function confirmReturnDevice() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
@@ -422,8 +425,7 @@ class BorrowController extends ApiController
         }
     }
 
-    private function getBorrowDeviceInfo($borrower_id, $borrowDevicesDetail)
-    {
+    private function getBorrowDeviceInfo($borrower_id, $borrowDevicesDetail) {
         $user = $this->getUser(['id' => $borrower_id]);
         $device = $this->Devices->get($borrowDevicesDetail->device_id);
         $borrowInfo = array(
@@ -434,8 +436,7 @@ class BorrowController extends ApiController
         return $borrowInfo;
     }
 
-    private function sendMail($toEmail, $viewVars, $template)
-    {
+    private function sendMail($toEmail, $viewVars, $template) {
         $email = new Email('default');
         $email->setFrom('hoanghung888@gmail.com')
                 ->setTo($toEmail)
@@ -447,8 +448,7 @@ class BorrowController extends ApiController
         $email->send();
     }
 
-    private function getUser($condition)
-    {
+    private function getUser($condition) {
         $user = $this->Users
                 ->find('all')
                 ->where([key($condition) => current($condition)])
@@ -456,8 +456,7 @@ class BorrowController extends ApiController
         return $user;
     }
 
-    private function getBorrowDevicesDetail($condition)
-    {
+    private function getBorrowDevicesDetail($condition) {
         $borrowDevicesDetail = $this->BorrowDevicesDetail
                 ->find('all')
                 ->where([key($condition) => current($condition)])
@@ -465,8 +464,7 @@ class BorrowController extends ApiController
         return $borrowDevicesDetail;
     }
 
-    private function getBorrowDevices($condition)
-    {
+    private function getBorrowDevices($condition) {
         $borrowDevices = $this->BorrowDevices
                 ->find('all')
                 ->where([key($condition) => current($condition)])
