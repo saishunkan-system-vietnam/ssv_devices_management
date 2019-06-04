@@ -11,7 +11,7 @@ function Login(props) {
         event.preventDefault();
         let params = {};
         params.username = username;
-        params.passwd = passwd;
+        params.password = passwd;
         signin.signin(params).then(responseJson => {
             localStorage.setItem('statusUserCode', responseJson['0']);
             if (responseJson['0'] === 200) {

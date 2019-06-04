@@ -30,7 +30,7 @@
     padding: 0 5px;
 }
 
-.fa-plus{
+.fa-plus {
     padding: 0;
 }
 
@@ -42,14 +42,6 @@
     color: blue;
 }
 
-.fa-trash {
-    color: rgb(233, 87, 63);
-}
-
-.fa-trash:hover {
-    color: red;
-}
-
 .fa-eye {
     color: #04B431;
 }
@@ -58,23 +50,47 @@
     color: green;
 }
 
+.fa-trash {
+    color: rgb(233, 87, 63);
+}
+
+.fa-trash:hover {
+    color: red;
+}
+
+.fa-check-circle {
+    color: blue;
+}
+
+.fa-check-circle:hover {
+    color: darkblue;
+}
+
+.fa-times-circle {
+    color: red;
+}
+
+.fa-times-circle:hover {
+    color: darkred;
+}
+
 .hide {
     display: none;
 }
 
-.dropdown-menu{
+.dropdown-menu {
     cursor: pointer;
 }
 
-.table-data{
+.table-data {
     height: 700px;
 }
 
 .w-100 thead tr th {
-   padding: 20px;
+    padding: 20px;
 }
 
-.add{
+.add {
     border-radius: 50px;
 }
 
@@ -111,15 +127,14 @@
     background-color: #d9534f;
 }
 
-.link{
+.link {
     cursor: pointer;
     font-weight: bold;
 }
 
-.show{
+.show {
     box-shadow: 1px 1px 5px silver;
     padding: 20px;
-    background-color: lightblue;   
+    background-color: lightblue;
     border-radius: 7px;
 }
-

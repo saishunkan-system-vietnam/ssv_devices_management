@@ -85,11 +85,11 @@ class UsersController extends ApiController
                 $this->returnResponse(903, ['message' => 'Username or Password can not empty.']);
                 return;
             }
-            $http = new Client();
+            $http = new Client();           
             $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
-            $data = json_decode($results->body);
+            $data = json_decode($results->body); 
             if(!empty($data->success) && $data->success == true) {
-                $userdata = $this->Users->find()
+                $userdata = $this->Users->find('all')
                     ->where(['status' => 0, 'user_name' => $username])
                     ->first();
                 if (!empty($userdata) && $userdata->id) {

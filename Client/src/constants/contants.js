@@ -13,6 +13,8 @@ let api = {
         'view_borrow' : '/api/v1/borrow/view/',
         'add_borrow' : '/api/v1/borrow/add',
         'edit_borrow' : '/api/v1/borrow/edit',
+        'delete_borrow' : '/api/v1/borrow/delete',
+        'approve_borrow' : '/api/v1/borrow/approve',
         'list_device' : '/api/v1/device',
     }
 }

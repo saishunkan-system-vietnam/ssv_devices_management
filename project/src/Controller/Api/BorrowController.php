@@ -268,8 +268,8 @@ class BorrowController extends ApiController {
                 return;
             }
             $borrowDevices = $this->getBorrowDevices(['id' => $request['id']]);
-            $borrowDevicesDetail = $this->getBorrowDevicesDetail(['borrow_device_id' => $request['id']]);
-            if (empty($borrowDevices) || empty($borrowDevicesDetail)) {
+            $getBorrowDevicesDetail = $this->getBorrowDevicesDetail(['borrow_device_id' => $request['id']]);
+            if (empty($borrowDevices) || empty($getBorrowDevicesDetail)) {
                 // Set return response (response code, api response)
                 $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
@@ -280,6 +280,7 @@ class BorrowController extends ApiController {
                 $borrowDevices->handover_id = $this->login['id'];
                 $this->BorrowDevices->save($borrowDevices);
 
+                $borrowDevicesDetail= $this->BorrowDevicesDetail->patchEntity($getBorrowDevicesDetail, $request);
                 $borrowDevicesDetail->update_time = $this->dateNow;
                 $borrowDevicesDetail->status = 1;
                 $borrowDevicesDetail->update_user = $this->login['user_name'];

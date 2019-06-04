@@ -11,7 +11,7 @@ function signin(params) {
 
         body: JSON.stringify({
             username: params.username,
-            passwd: params.passwd
+            password: params.password
         })
     }).then(response => {
         return response.json();

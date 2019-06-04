@@ -5,9 +5,10 @@ import ListDevice from "../../../api/deviceList";
 import BorrowView from '../../../api/borrowView';
 import BorrowEdit from '../../../api/borrowEdit';
 import { toShortDate } from '../../../common/date';
+import { Link } from 'react-router-dom';
 
 function Add(props) {
-    const [borrow, setBorrow] = useState();
+    const [borrow, setBorrow] = useState([]);
     const device_id = useFormInput('');
     const borrow_reason = useFormInput('');
     const borrow_date = useFormInput('');
@@ -24,11 +25,12 @@ function Add(props) {
         frm.append('borrow_date', borrow_date.value);
         frm.append('return_date_expected', return_date_expected.value);
         if (borrow) {
-            frm.append('id',borrow.id);
-            if(borrow.BorrowDevicesDetail.status===0){
+            frm.append('id', borrow.id);
+            if (borrow.BorrowDevicesDetail.status === '0') {
                 BorrowEdit.BorrowEdit(frm).then(res => {
                     if (res['0'] === 200) {
                         alert.success(res['payload']['message']);
+                        props.history.push('/borrow');
                     } else {
                         let obj = res['payload']['message'];
                         for (const key in obj) {
@@ -38,13 +40,14 @@ function Add(props) {
                         }
                     }
                 })
-            }else{
+            } else {
                 alert.error("This infomation borrow detail must be not changed.")
             }
         } else {
             BorrowAdd.BorrowAdd(frm).then(res => {
                 if (res['0'] === 200) {
                     alert.success(res['payload']['message']);
+                    props.history.push('/borrow');
                 } else {
                     let obj = res['payload']['message'];
                     for (const key in obj) {
@@ -65,7 +68,7 @@ function Add(props) {
                 device_id.onChange({ target: { type: 'text', value: res['payload']['lstDevices'][0].id } })
             })
         }
-        if (props.match.params.id) {
+        if (props.match.params.id && borrow.length === 0) {
             BorrowView.BorrowView(props.match.params.id).then(res => {
                 let borrow = res.payload.borrowDevices;
                 setBorrow(borrow);
@@ -140,7 +143,7 @@ function Add(props) {
                     <div className="row">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
                             <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Save</button>
-                            <a href="/categories" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</a>
+                            <Link to="/borrow" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</Link>
                         </div>
                     </div>
 

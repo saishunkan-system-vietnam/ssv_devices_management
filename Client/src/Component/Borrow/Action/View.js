@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import BorrowView from '../../../api/borrowView';
 import { useAlert } from "react-alert";
-import {toShortDate} from '../../../common/date';
-import {Link} from 'react-router-dom';
-// import { confirmAlert } from 'react-confirm-alert'; 
-// import DeleteCategory from '../../../api/deletecategory';
-
+import { toShortDate } from '../../../common/date';
+import { Link } from 'react-router-dom';
+import { confirmAlert } from 'react-confirm-alert';
+import BorrowDelete from '../../../api/borrowDelete';
 function View(props) {
     const [borrow, setBorrow] = useState([]);
     const [statusDevice, setStatusDevice] = useState(false);
@@ -40,33 +39,31 @@ function View(props) {
         )
     }
 
-    //console.log('data borrow', borrow);
-    //console.log( borrow.BorrowDevicesDetail);
-    // function handleDelete() {
-    //     confirmAlert({
-    //         customUI: ({ onClose }) => {
-    //             var formdata = new FormData();
-    //             formdata.append('id', category.id);
-    //             return (
-    //                 <div className='custom-ui'>
-    //                     <h1>Are you sure?</h1>
-    //                     <p>You want to delete this category?</p>
-    //                     <button onClick={() => DeleteCategory.deleteCategory(formdata).then(responseJson => {
-    //                         if (responseJson['0'] === 200) {
-    //                             alert.success("The category has been delete!");
-    //                             onClose();
-    //                             props.history.push('/categories');
-    //                         } else {
-    //                             alert.error("The category could not be delete. Please, try again.");
-    //                             onClose();
-    //                         }
-    //                     })}>Yes</button>
-    //                     <button onClick={onClose}>No</button>
-    //                 </div>
-    //             )
-    //         }
-    //     })
-    // }
+    function handleDelete() {
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                var frm = new FormData();
+                frm.append('id', borrow.id);
+                return (
+                    <div className='custom-ui'>
+                        <h1>Are you sure?</h1>
+                        <p>You want to delete this borrow?</p>
+                        <button onClick={() => BorrowDelete.BorrowDelete(frm).then(responseJson => {
+                            if (responseJson['0'] === 200) {
+                                alert.success("The infomation borrow has been delete!");
+                                onClose();
+                                props.history.push('/borrow');
+                            } else {
+                                alert.error("The infomation borrow could not be delete. Please, try again.");
+                                onClose();
+                            }
+                        })}>Yes, Delete borrow!</button>
+                        <button onClick={onClose}>No</button>
+                    </div>
+                )
+            }
+        })
+    }
 
     const handleClickName = () => {
         setStatusUser(!statusUser);
@@ -316,7 +313,7 @@ function View(props) {
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
 
                         <Link to={`/borrow/edit/${borrow.id}`} className="btn btn-primary">Edit</Link>
-                        <Link to={`/borrow/edit/`} className="btn btn-danger ml-10">Delete</Link>
+                        <button onClick={handleDelete} className="btn btn-danger ml-10">Delete</button>
 
                     </div>
                 </div>
