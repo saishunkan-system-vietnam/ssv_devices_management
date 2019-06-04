@@ -79,7 +79,7 @@ class UsersController extends ApiController
             $session = $this->getRequest()->getSession();
             $url = Configure::read('User.Url_AccessUser');
             $username = $request['username'];
-            $pwd = $request['passwd'];
+            $pwd = $request['password'];
             if(empty($username) || empty($pwd)){
                 // Set the response
                 $this->returnResponse(903, ['message' => 'Username or Password can not empty.']);
@@ -90,14 +90,21 @@ class UsersController extends ApiController
             $data = json_decode($results->body);
             if(!empty($data->success) && $data->success == true) {
                 $userdata = $this->Users->find()
-                    ->where(['is_deleted' => 0, 'user_name' => $username])
+                    ->where(['status' => 0, 'user_name' => $username])
                     ->first();
                 if (!empty($userdata) && $userdata->id) {
                     // Set the response
                     $payload = ['email' => $userdata->email, 'name' => $userdata->user_name];
                     $args = array(
                         'token' => JwtToken::generateToken($payload),
-                        'userName' => $request['username'],
+                        'userData' => array(
+                            'id' => $userdata->id,
+                            'username' => $username,
+                            'level' => $userdata->level,
+                            'role' => $userdata->position,
+                            'fullname' => $userdata->full_name,
+                            'email' => $userdata->email,
+                        ),
                         'message' => 'Logged in successfully.'
                     );
                     $this->returnResponse(200, $args);
@@ -139,6 +146,11 @@ class UsersController extends ApiController
         $user = $this->Users->find()
             ->where(['is_deleted' => 0, 'id' => $id, 'status' => 0])
             ->first();
+        if(empty($user)) {
+            // Set the response
+            $this->returnResponse(901, ['message' => 'There is no data, please check again.']);
+            return;
+        }
         $args = array(
             'id' => $user->id,
             'user_name' => $user->user_name,
@@ -148,15 +160,13 @@ class UsersController extends ApiController
             'birthdate' => date('Y-m-d', strtotime($user->birthdate)),
             'join_date' => date('Y-m-d', strtotime($user->join_date)),
             'img' => $user->img,
+            'level' => $user->level,
+            'role' => $user->position,
             'base_url' => $this->baseUrl,
         );
         if (!empty($user)) {
             // Set the response
             $this->returnResponse(200, ['userData' => $args]);
-            return;
-        } else {
-            // Set the response
-            $this->returnResponse(901, ['message' => 'There is no data, please check again.']);
             return;
         }
     }
