@@ -29,45 +29,8 @@ class BorrowController extends ApiController {
 
     //get list BorrowDevices
     public function borrowDevices() {
-        $borrowDevices = $this->BorrowDevices
-                ->find('all')
-                ->where(['BorrowDevices.is_deleted' => 0])
-                ->select($this->BorrowDevices)
-                ->select($this->BorrowDevicesDetail)
-                ->select($this->Users)
-                ->select($this->Devices)
-                ->join([
-                    'BorrowDevicesDetail' => [
-                        'table' => 'borrow_devices_detail',
-                        'type' => 'INNER',
-                        'conditions' => 'BorrowDevicesDetail.borrow_device_id = BorrowDevices.id'
-                    ]
-                ])
-                ->join([
-                    'Users' => [
-                        'table' => 'users',
-                        'type' => 'Left',
-                        'conditions' => 'Users.id = BorrowDevices.borrower_id'
-                    ]
-                ])
-                ->join([
-                    'Devices' => [
-                        'table' => 'devices',
-                        'type' => 'INNER',
-                        'conditions' => 'Devices.id = BorrowDevicesDetail.device_id'
-                    ]
-                ])
-                ->toArray();
 
-        if (count($borrowDevices) > 0) {
-            foreach ($borrowDevices as $row) {
-                $row['BorrowDevicesDetail']['borrow_reason'] = html_entity_decode($row['BorrowDevicesDetail']['borrow_reason']);
-                $row['BorrowDevicesDetail']['return_reason'] = html_entity_decode($row['BorrowDevicesDetail']['return_reason']);
-                $row['BorrowDevicesDetail']['note_admin'] = html_entity_decode($row['BorrowDevicesDetail']['note_admin']);
-            }
-        }
-
-
+        $borrowDevices = $this->where_list(['BorrowDevices.is_deleted' => 0]);
         $args = array(
             'lstBorrowDevices' => $borrowDevices
         );
@@ -274,17 +237,29 @@ class BorrowController extends ApiController {
                 $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
+
+            //check borrowing
+            $borrowing = $this->Devices->find('all')->where(['id' => $getBorrowDevicesDetail['device_id'], 'status' => 1])->toArray();
+            if (count($borrowing) > 0) {
+                $this->returnResponse(903, ['message' => 'This device was borrowed. Please, choose device other']);
+                return;
+            }
+
             try {
                 $this->conn->begin();
                 $borrowDevices->approved_id = $this->login['id'];
                 $borrowDevices->handover_id = $this->login['id'];
                 $this->BorrowDevices->save($borrowDevices);
 
-                $borrowDevicesDetail= $this->BorrowDevicesDetail->patchEntity($getBorrowDevicesDetail, $request);
+                $borrowDevicesDetail = $this->BorrowDevicesDetail->patchEntity($getBorrowDevicesDetail, $request);
                 $borrowDevicesDetail->update_time = $this->dateNow;
+                $borrowDevicesDetail->approved_date = $this->dateNow;
                 $borrowDevicesDetail->status = 1;
                 $borrowDevicesDetail->update_user = $this->login['user_name'];
-                $this->BorrowDevicesDetail->save($borrowDevicesDetail);
+                $result = $this->BorrowDevicesDetail->save($borrowDevicesDetail);
+
+                //change status -> 1
+                $this->changeStatusDevice($result->device_id, 1);
 
                 //send mail
                 $user = $this->getUser(['id' => $borrowDevices['borrower_id']]);
@@ -410,20 +385,74 @@ class BorrowController extends ApiController {
                 $this->returnResponse(903, ['message' => 'Not found data. Please, try again.']);
                 return;
             }
-            $borrowDevicesDetail->update_time = $this->dateNow;
-            $borrowDevicesDetail->status = 4;
-            $borrowDevicesDetail->update_user = $this->login['user_name'];
-            if ($this->BorrowDevicesDetail->save($borrowDevicesDetail)) {
-                // Set return response (response code, api response)
-                $this->returnResponse(200, ['message' => 'The borrow devices has been confirm return.']);
-            } else {
-                // Set return response (response code, api response)
-                $this->returnResponse(901, ['message' => 'The borrow devices could not be confirm return. Please, try again.']);
+            try {
+                $this->conn->begin();
+                $borrowDevicesDetail->status = 4;
+                $borrowDevicesDetail->update_time = $this->dateNow;
+                $borrowDevicesDetail->return_date = $this->dateNow;
+                $borrowDevicesDetail->update_user = $this->login['user_name'];
+                $result = $this->BorrowDevicesDetail->save($borrowDevicesDetail);
+
+                //change status -> 0
+                $this->changeStatusDevice($result->device_id, 0);
+
+                $this->conn->commit();
+                if ($result) {
+                    // Set return response (response code, api response)
+                    $this->returnResponse(200, ['message' => 'The borrow devices has been confirm return.']);
+                } else {
+                    // Set return response (response code, api response)
+                    $this->returnResponse(901, ['message' => 'The borrow devices could not be confirm return. Please, try again.']);
+                }
+            } catch (Exception $ex) {
+                $this->conn->rollback();
+                $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
             // Set return response (response code, api response)
             $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
+    }
+
+    // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
+    public function filter() {
+        if ($this->getRequest()->is('post')) {
+            $request = $this->getRequest()->getData();
+            $condition = ['BorrowDevices.is_deleted' => 0];
+            if (isset($request['status']) && !empty($request['status'])) {
+                switch ($request['status']) {
+                    case "borrow_request":
+                        $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 0]);
+                        break;
+                    case "borrowing":
+                        $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 1]);
+                        break;
+                    case "no_borrow":
+                        $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 2]);
+                        break;
+                    case "return_request":
+                        $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 3]);
+                        break;
+                    case "returned":
+                        $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 4]);
+                        break;
+                }
+            }
+            $borrowDevices = $this->where_list($condition);
+            $args = array(
+                'quantity'=> count($borrowDevices),
+                'lstBorrowDevices' => $borrowDevices                    
+            );
+
+            // Set return response (response code, api response)
+            $this->returnResponse(200, $args);
+        }
+    }
+
+    private function changeStatusDevice($id, $status) {
+        $device = $this->Devices->get($id);
+        $device->status = $status;
+        $this->Devices->save($device);
     }
 
     private function getBorrowDeviceInfo($borrower_id, $borrowDevicesDetail) {
@@ -470,6 +499,47 @@ class BorrowController extends ApiController {
                 ->find('all')
                 ->where([key($condition) => current($condition)])
                 ->first();
+        return $borrowDevices;
+    }
+
+    private function where_list(array $condition) {
+        $borrowDevices = $this->BorrowDevices
+                ->find('all')
+                ->where($condition)
+                ->select($this->BorrowDevices)
+                ->select($this->BorrowDevicesDetail)
+                ->select($this->Users)
+                ->select($this->Devices)
+                ->join([
+                    'BorrowDevicesDetail' => [
+                        'table' => 'borrow_devices_detail',
+                        'type' => 'INNER',
+                        'conditions' => 'BorrowDevicesDetail.borrow_device_id = BorrowDevices.id'
+                    ]
+                ])
+                ->join([
+                    'Users' => [
+                        'table' => 'users',
+                        'type' => 'Left',
+                        'conditions' => 'Users.id = BorrowDevices.borrower_id'
+                    ]
+                ])
+                ->join([
+                    'Devices' => [
+                        'table' => 'devices',
+                        'type' => 'INNER',
+                        'conditions' => 'Devices.id = BorrowDevicesDetail.device_id'
+                    ]
+                ])
+                ->toArray();
+
+        if (count($borrowDevices) > 0) {
+            foreach ($borrowDevices as $row) {
+                $row['BorrowDevicesDetail']['borrow_reason'] = html_entity_decode($row['BorrowDevicesDetail']['borrow_reason']);
+                $row['BorrowDevicesDetail']['return_reason'] = html_entity_decode($row['BorrowDevicesDetail']['return_reason']);
+                $row['BorrowDevicesDetail']['note_admin'] = html_entity_decode($row['BorrowDevicesDetail']['note_admin']);
+            }
+        }
         return $borrowDevices;
     }
 

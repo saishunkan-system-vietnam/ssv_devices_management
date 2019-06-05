@@ -249,10 +249,10 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Delivery date:
+                        Return date expected:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {borrow.BorrowDevicesDetail ? toShortDate(borrow.BorrowDevicesDetail.delivery_date) : ""}
+                        {borrow.BorrowDevicesDetail ? toShortDate(borrow.BorrowDevicesDetail.return_date_expected) : ""}
                     </div>
                 </div>
 
@@ -311,10 +311,9 @@ function View(props) {
                 </div>
                 <div className="row  mt-10">
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-
-                        <Link to={`/borrow/edit/${borrow.id}`} className="btn btn-primary">Edit</Link>
-                        <button onClick={handleDelete} className="btn btn-danger ml-10">Delete</button>
-
+                        {borrow.BorrowDevicesDetail && Number(borrow.BorrowDevicesDetail.status) === 0 ? <Link to={`/borrow/edit/${borrow.id}`} className="btn btn-primary">Edit</Link> : ""}
+                        {borrow.BorrowDevicesDetail && Number(borrow.BorrowDevicesDetail.status) !== 1 && Number(borrow.BorrowDevicesDetail.status) !== 3 ? <button onClick={handleDelete} className="btn btn-danger ml-10">Delete</button> : ""}
+                        <Link to="/borrow" className="btn btn-warning ml-10">Cancel</Link>
                     </div>
                 </div>
             </div>

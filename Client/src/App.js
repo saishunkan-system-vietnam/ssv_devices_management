@@ -12,6 +12,7 @@ import Borrow from '../src/Component/Borrow/index';
 import ListBorrow from '../src/Component/Borrow/List/List';
 import ViewBorrow from '../src/Component/Borrow/Action/View';
 import AddBrorrow from '../src/Component/Borrow/Action/Add';
+import NotificationBroken from '../src/Component/Borrow/Action/notificationBroken';
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
@@ -59,6 +60,12 @@ function App() {
       <Route path="/borrow/edit/:id" render={(props) => (
         <Layout
           content={<Borrow content={<AddBrorrow {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/borrow/notification_broken/:id" render={(props) => (
+        <Layout
+          content={<Borrow content={<NotificationBroken {...props} />} />}
           {...props}
         />
       )} exact />

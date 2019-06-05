@@ -24,7 +24,7 @@ function Add(props) {
         frm.append('borrow_reason', borrow_reason.value);
         frm.append('borrow_date', borrow_date.value);
         frm.append('return_date_expected', return_date_expected.value);
-        if (borrow) {
+        if (borrow.length!==0) {
             frm.append('id', borrow.id);
             if (borrow.BorrowDevicesDetail.status === '0') {
                 BorrowEdit.BorrowEdit(frm).then(res => {
@@ -72,11 +72,10 @@ function Add(props) {
             BorrowView.BorrowView(props.match.params.id).then(res => {
                 let borrow = res.payload.borrowDevices;
                 setBorrow(borrow);
-                device_id.onChange({ target: { type: 'text', value: borrow.BorrowDevicesDetail.id } });
+                device_id.onChange({ target: { type: 'text', value: borrow.BorrowDevicesDetail.device_id } });
                 borrow_reason.onChange({ target: { type: 'text', value: borrow.BorrowDevicesDetail.borrow_reason } });
                 return_date_expected.onChange({ target: { type: 'text', value: toShortDate(borrow.BorrowDevicesDetail.return_date_expected) } });
                 borrow_date.onChange({ target: { type: 'text', value: toShortDate(borrow.BorrowDevicesDetail.borrow_date) } });
-                console.log();
             });
         }
     });
@@ -104,7 +103,7 @@ function Add(props) {
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    {/* <legend className="pl-30">{id?'Update category':'Add new category'}</legend><hr /> */}
+                    <legend className="pl-30">{borrow.length!==0?'Update information borrow device':'Add new information borrow device'}</legend><hr />
 
                     <div className="form-group">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">

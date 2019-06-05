@@ -6,17 +6,16 @@ use RestApi\Controller\ApiController;
 use Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
 
-class MaintenancesController extends ApiController
-{
+class MaintenancesController extends ApiController {
 
     private $login;
     private $conn;
     private $Maintenances;
 
-    public function initialize()
-    {
+    public function initialize() {
         parent::initialize();
-        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+        $this->login = ["id" => 61, "user_name" => "Test", "level" => 1, "email" => "hoangnguyenit98@gmail.com"];
         $this->Maintenances = TableRegistry::getTableLocator()->get('Maintenances');
         $this->conn = ConnectionManager::get('default');
         $this->loadComponent('Maintenance');
@@ -27,8 +26,7 @@ class MaintenancesController extends ApiController
     }
 
     //function get list maintenances
-    public function index()
-    {
+    public function index() {
         $maintenances = $this->Maintenance->getList(['is_deleted' => 0]);
         if (!empty($maintenances)) {
             foreach ($maintenances as $row) {
@@ -42,8 +40,7 @@ class MaintenancesController extends ApiController
     }
 
     //function view maintenances
-    public function view($id = null)
-    {
+    public function view($id = null) {
         $maintenance = $this->Maintenance->first(['id' => $id]);
         if (!empty($maintenance)) {
             $maintenance['note'] = html_entity_decode($maintenance['note']);
@@ -57,8 +54,7 @@ class MaintenancesController extends ApiController
     }
 
     //function add new  maintenances
-    public function add()
-    {
+    public function add() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $validate = $this->Maintenances->newEntity($request);
@@ -102,8 +98,7 @@ class MaintenancesController extends ApiController
     }
 
     //function edit maintenance
-    public function edit()
-    {
+    public function edit() {
         if ($this->request->is('post')) {
             $request = $this->getRequest()->getData();
 
@@ -157,8 +152,7 @@ class MaintenancesController extends ApiController
 
     //status: 0-báo hỏng, 1- đợi bảo trì, 2-đang bảo trì, 3-đã bảo trì, 4-đã bảo trì nhưng vẫn hỏng, 5 bình thường
     //function delete maintenance
-    public function delete()
-    {
+    public function delete() {
         if ($this->request->is('post')) {
             $request = $this->getRequest()->getData();
 
@@ -186,8 +180,7 @@ class MaintenancesController extends ApiController
     }
 
     //function notification broken
-    public function notificationBroken()
-    {
+    public function notificationBroken() {
         if ($this->request->is('post')) {
             $request = $this->getRequest()->getData();
             $validate = $this->Maintenances->newEntity($request);
@@ -195,6 +188,11 @@ class MaintenancesController extends ApiController
             if (!empty($validateError)) {
                 //set return response ( response code, api response )
                 $this->returnResponse(901, ['message' => $validateError]);
+                return;
+            }
+            $exitDevice= $this->Maintenances->find('all')->where(['devices_id'=>$request['devices_id'],'status'=>0])->toArray();
+            if(count($exitDevice)>0){
+                $this->returnResponse(901, ['message' => 'This device was notification broken']);
                 return;
             }
             try {
@@ -231,8 +229,7 @@ class MaintenancesController extends ApiController
 
     //status: 0-báo hỏng, 1- đợi bảo trì, 2-đang bảo trì, 3-đã bảo trì, 4-đã bảo trì nhưng vẫn hỏng, 5-bình thường
     //function comfirm notification broken
-    public function comfirmNotificationBroken()
-    {
+    public function comfirmNotificationBroken() {
         if ($this->request->is('post')) {
             $request = $this->getRequest()->getData();
 
@@ -266,7 +263,7 @@ class MaintenancesController extends ApiController
                         'BorrowDevices.borrower_id' => $result->notificationer_broken,
                         'BorrowDevicesDetail.status' => 1,
                         'BorrowDevicesDetail.device_id' => $result->devices_id
-                    ]);
+                    ]);                    
                     if (!empty($borrow)) {
                         $borrowDetail = $this->Borrow->firstBorrowDevicesDetail(['id' => $borrow['BorrowDevicesDetail']['id']]);
                         $borrowDetail->status = 4;
@@ -309,8 +306,7 @@ class MaintenancesController extends ApiController
     }
 
     //function notification broken
-    public function noComfirmNotificationBroken()
-    {
+    public function noComfirmNotificationBroken() {
         if ($this->request->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
@@ -340,8 +336,7 @@ class MaintenancesController extends ApiController
         }
     }
 
-    private function setStatusDevice(array $condition, $status)
-    {
+    private function setStatusDevice(array $condition, $status) {
         $device = $this->Device->first($condition);
         if (!empty($device)) {
             $device->status = $status;
