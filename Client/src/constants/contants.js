@@ -18,6 +18,7 @@ let api = {
         'no_approve_borrow': '/api/v1/borrow/noapprove',
         'return_borrow': '/api/v1/borrow/returndevice',
         'return_confirm_borrow': '/api/v1/borrow/confirmreturndevice',
+        'filter_borrow': '/api/v1/borrow/filter',
         'notification_broken': '/api/v1/maintenance/notification_broken',
         'list_device': '/api/v1/device',
         'view_device': '/api/v1/device/view/',

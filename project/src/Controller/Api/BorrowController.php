@@ -418,12 +418,12 @@ class BorrowController extends ApiController {
     public function filter() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
-            $condition = ['BorrowDevices.is_deleted' => 0];
+            $condition = ['BorrowDevices.is_deleted' => 0];            
             if (isset($request['status']) && !empty($request['status'])) {
                 switch ($request['status']) {
-                    case "borrow_request":
-                        $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 0]);
-                        break;
+                    case 'borrow_request':
+                        $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 0]);     
+                         break;
                     case "borrowing":
                         $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 1]);
                         break;
@@ -436,17 +436,50 @@ class BorrowController extends ApiController {
                     case "returned":
                         $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 4]);
                         break;
+                    default : break;
                 }
             }
+           
             $borrowDevices = $this->where_list($condition);
+            $count = $this->countLstBorrowDevice();
             $args = array(
-                'quantity'=> count($borrowDevices),
-                'lstBorrowDevices' => $borrowDevices                    
+                'lstCount'=>$count,
+                'lstBorrowDevices' => $borrowDevices
             );
 
             // Set return response (response code, api response)
             $this->returnResponse(200, $args);
         }
+    }
+
+    private function countLstBorrowDevice() {
+        $borrowDevices = $this->where_list(['BorrowDevices.is_deleted' => 0]);
+        $count['borrow_request'] = 0;
+        $count['borrowing'] = 0;
+        $count['no_borrow'] = 0;
+        $count['return_request'] = 0;
+        $count['returned'] = 0;
+        foreach ($borrowDevices as $row) {
+            switch ($row['BorrowDevicesDetail']['status']) {
+                case 0:
+                    $count['borrow_request'] ++;
+                    break;
+                case 1:
+                    $count['borrowing'] ++;
+                    break;
+                case 2:
+                    $count['no_borrow'] ++;
+                    break;
+                case 3:
+                    $count['return_request'] ++;
+                    break;
+                case 4:
+                    $count['returned'] ++;
+                    break;
+                default : break;
+            }
+        }
+        return $count;
     }
 
     private function changeStatusDevice($id, $status) {
