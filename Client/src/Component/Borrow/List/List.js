@@ -16,14 +16,16 @@ function ListBorrow() {
     const [lstBorrow, setLstBorrow] = useState([]);
     const note_admin = useRef('');
     const return_reason = useRef('');
-    const [status, setStatus]=useState('');
-    const [status_name, setStatus_name]=useState('');
-    const [filter, setFilter]=useState(null);
+    const [status, setStatus] = useState('');
+    const [status_name, setStatus_name] = useState('');
+    const [filter, setFilter] = useState(null);
 
     var alert = useAlert();
     function handleGetLstBorrow() {
         List_Borrow.LstBorrow().then(responseJon => {
-            setLstBorrow(responseJon['payload']['lstBorrowDevices']);
+            if(responseJon){
+                setLstBorrow(responseJon['payload']['lstBorrowDevices']);
+            }
         })
     }
 
@@ -32,18 +34,20 @@ function ListBorrow() {
             handleGetLstBorrow();
         }
 
-        if(!filter){
-            handleGetFilter(status_name);            
+        if (!filter) {
+            handleGetFilter(status_name);
         }
 
     })
 
-    function handleGetFilter(_status_name){
-        var frm=new FormData();
-        frm.append('status',_status_name);
-        BorrowFilter.BorrowFilter(frm).then(res=>{            
-           setFilter(res.payload);
-           setLstBorrow(res.payload.lstBorrowDevices);
+    function handleGetFilter(_status_name) {
+        var frm = new FormData();
+        frm.append('status', _status_name);
+        BorrowFilter.BorrowFilter(frm).then(res => {
+            if (res) {
+                setFilter(res.payload);
+                setLstBorrow(res.payload.lstBorrowDevices);
+            }
         })
     }
 
@@ -240,9 +244,9 @@ function ListBorrow() {
         />
     });
 
-    function handleChange(_status,_status_name){
-        _status=(status===_status?'':_status);
-        _status_name=(status_name===_status_name?'':_status_name);
+    function handleChange(_status, _status_name) {
+        _status = (status === _status ? '' : _status);
+        _status_name = (status_name === _status_name ? '' : _status_name);
         setStatus_name(_status_name);
         setStatus(_status);
         handleGetFilter(_status_name);
@@ -251,11 +255,11 @@ function ListBorrow() {
         <div>
             <div className="row mt-10 filter">
                 <Link to="/borrow/add" className="btn btn-primary add ml-10"><i className="fa fa-plus"></i></Link>
-                <p><span onClick={()=>handleChange(0,"borrow_request")} className="label label-primary ml-10">{status===0?<i className="fas fa-check"></i>:""}Borrow request</span><span className="quantity">{filter && filter.lstCount?filter.lstCount.borrow_request:'' }</span></p>
-                <p><span onClick={()=>handleChange(1,"borrowing")} className="label label-success ml-10">{status===1?<i className="fas fa-check"></i>:""}Borrowing</span><span className="quantity">{filter && filter.lstCount?filter.lstCount.borrowing:'' }</span></p>
-                <p><span onClick={()=>handleChange(2,"no_borrow")} className="label label-default ml-10">{status===2?<i className="fas fa-check"></i>:""}Borrow faild</span><span className="quantity">{filter && filter.lstCount?filter.lstCount.no_borrow:'' }</span></p>
-                <p><span onClick={()=>handleChange(3,"return_request")} className="label label-warning ml-10">{status===3?<i className="fas fa-check"></i>:""}Return request</span><span className="quantity">{filter && filter.lstCount?filter.lstCount.return_request:'' }</span></p>
-                <p><span onClick={()=>handleChange(4,"returned")} className="label label-danger ml-10">{status===4?<i className="fas fa-check"></i>:""}Returned</span><span className="quantity">{filter && filter.lstCount?filter.lstCount.returned:'' }</span></p>
+                <p><span onClick={() => handleChange(0, "borrow_request")} className="label label-primary ml-10">{status === 0 ? <i className="fas fa-check"></i> : ""}Borrow request</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrow_request : ''}</span></p>
+                <p><span onClick={() => handleChange(1, "borrowing")} className="label label-success ml-10">{status === 1 ? <i className="fas fa-check"></i> : ""}Borrowing</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrowing : ''}</span></p>
+                <p><span onClick={() => handleChange(2, "no_borrow")} className="label label-default ml-10">{status === 2 ? <i className="fas fa-check"></i> : ""}Borrow faild</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.no_borrow : ''}</span></p>
+                <p><span onClick={() => handleChange(3, "return_request")} className="label label-warning ml-10">{status === 3 ? <i className="fas fa-check"></i> : ""}Return request</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.return_request : ''}</span></p>
+                <p><span onClick={() => handleChange(4, "returned")} className="label label-danger ml-10">{status === 4 ? <i className="fas fa-check"></i> : ""}Returned</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.returned : ''}</span></p>
             </div>
             <div className="row mt-10">
                 <div className="table-responsive table-data">
