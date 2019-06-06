@@ -387,7 +387,7 @@ class BorrowController extends ApiController
             // Set return response (response code, api response)
             $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
-    }
+    } 
 
     private function getBorrowDeviceInfo($borrower_id, $borrowDevicesDetail)
     {
