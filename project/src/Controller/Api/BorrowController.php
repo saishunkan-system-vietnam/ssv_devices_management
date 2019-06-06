@@ -423,7 +423,7 @@ class BorrowController extends ApiController {
                 switch ($request['status']) {
                     case 'borrow_request':
                         $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 0]);     
-                         break;
+                        break;
                     case "borrowing":
                         $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 1]);
                         break;
@@ -439,14 +439,12 @@ class BorrowController extends ApiController {
                     default : break;
                 }
             }
-           
             $borrowDevices = $this->where_list($condition);
             $count = $this->countLstBorrowDevice();
             $args = array(
                 'lstCount'=>$count,
                 'lstBorrowDevices' => $borrowDevices
             );
-
             // Set return response (response code, api response)
             $this->returnResponse(200, $args);
         }

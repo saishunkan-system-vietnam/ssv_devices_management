@@ -23,7 +23,7 @@ function ListBorrow() {
     var alert = useAlert();
     function handleGetLstBorrow() {
         List_Borrow.LstBorrow().then(responseJon => {
-            if(responseJon){
+            if (responseJon) {
                 setLstBorrow(responseJon['payload']['lstBorrowDevices']);
             }
         })
@@ -31,6 +31,7 @@ function ListBorrow() {
 
     useEffect(() => {
         if (lstBorrow.length === 0) {
+            console.log('a');
             handleGetLstBorrow();
         }
 
@@ -38,12 +39,14 @@ function ListBorrow() {
             handleGetFilter(status_name);
         }
 
-    })
+    },[])
 
     function handleGetFilter(_status_name) {
         var frm = new FormData();
         frm.append('status', _status_name);
         BorrowFilter.BorrowFilter(frm).then(res => {
+            // console.log(_status_name);
+            // console.log(res.payload);
             if (res && res.payload) {
                 setFilter(res.payload);
                 setLstBorrow(res.payload.lstBorrowDevices);
@@ -65,6 +68,7 @@ function ListBorrow() {
                                 alert.success("The infomation borrow has been delete!");
                                 onClose();
                                 handleGetLstBorrow();
+                                handleGetFilter('');
                             } else {
                                 alert.error("The infomation borrow could not be delete. Please, try again.");
                                 onClose();
@@ -92,6 +96,7 @@ function ListBorrow() {
                                 if (responseJson['0'] === 200) {
                                     alert.success(responseJson.payload.message);
                                     handleGetLstBorrow();
+                                    handleGetFilter('');
                                 } else {
                                     alert.error(responseJson.payload.message);
                                 }
@@ -128,6 +133,7 @@ function ListBorrow() {
                                 if (responseJson['0'] === 200) {
                                     alert.success(responseJson.payload.message);
                                     handleGetLstBorrow();
+                                    handleGetFilter('');
                                 } else {
                                     alert.error(responseJson.payload.message);
                                 }
@@ -164,6 +170,7 @@ function ListBorrow() {
                                 if (responseJson['0'] === 200) {
                                     alert.success(responseJson.payload.message);
                                     handleGetLstBorrow();
+                                    handleGetFilter('');
                                 } else {
                                     alert.error(responseJson.payload.message);
                                 }
@@ -192,6 +199,7 @@ function ListBorrow() {
                                 if (responseJson['0'] === 200) {
                                     alert.success(responseJson.payload.message);
                                     handleGetLstBorrow();
+                                    handleGetFilter('');
                                 } else {
                                     alert.error(responseJson.payload.message);
                                 }
