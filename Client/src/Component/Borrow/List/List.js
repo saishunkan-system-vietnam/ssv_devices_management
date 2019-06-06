@@ -44,7 +44,7 @@ function ListBorrow() {
         var frm = new FormData();
         frm.append('status', _status_name);
         BorrowFilter.BorrowFilter(frm).then(res => {
-            if (res) {
+            if (res && res.payload) {
                 setFilter(res.payload);
                 setLstBorrow(res.payload.lstBorrowDevices);
             }
