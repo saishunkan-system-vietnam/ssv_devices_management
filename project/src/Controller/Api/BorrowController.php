@@ -22,8 +22,7 @@ class BorrowController extends ApiController {
         $this->BorrowDevicesDetail = TableRegistry::getTableLocator()->get('BorrowDevicesDetail');
         $this->Devices = TableRegistry::getTableLocator()->get('Devices');
         $this->Users = TableRegistry::getTableLocator()->get('Users');
-//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
-        $this->login = ["id" => 61, "user_name" => "Test", "level" => 1, "email" => "hoangnguyenit98@gmail.com"];
+        $this->login = $this->getRequest()->getSession()->read('Auth.User');
         $this->conn = ConnectionManager::get('default');
     }
 
