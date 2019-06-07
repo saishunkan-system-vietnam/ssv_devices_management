@@ -83,6 +83,7 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('brand/add', ['controller' => 'Devices', 'action' => 'addBrand', 'allowWithoutToken' => true]);
     $routes->connect('brand/edit', ['controller' => 'Devices', 'action' => 'editBrand', 'allowWithoutToken' => true]);
     $routes->connect('brand/delete', ['controller' => 'Devices', 'action' => 'deleteBrand', 'allowWithoutToken' => true]);
+    $routes->connect('brand/filter', ['controller' => 'Devices', 'action' => 'filter', 'allowWithoutToken' => true]);
     
     //devices
     $routes->connect('device', ['controller' => 'Devices', 'action' => 'getLstDevices', 'allowWithoutToken' => true]);
