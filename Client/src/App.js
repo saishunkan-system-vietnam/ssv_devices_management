@@ -7,6 +7,8 @@ import Dashboard from '../src/Component/Dashboard/index';
 import AddUser from '../src/Component/Users/add';
 import UpdateUser from '../src/Component/Users/update';
 import Layout from '../src/Component/Master/index';
+import Brand from '../src/Component/Brands/index';
+import BrandList from '../src/Component/Brands/List/List';
 
 
 import Categories from './Component/Categories/index';
@@ -46,7 +48,6 @@ function App() {
           {...props}
         />
       )} exact />
-
       <Route path="/categories" render={() => (
         <Layout
           content={<Categories content={<List_cate />} />}
@@ -97,6 +98,11 @@ function App() {
         <Layout
           content={<Borrow content={<NotificationBroken {...props} />} />}
           {...props}
+        />
+      )} exact />
+      <Route path="/brand" render={() => (
+        <Layout
+          content={<Brand content={<BrandList />} />}
         />
       )} exact />
       <Route path="/" component={Login} exact />

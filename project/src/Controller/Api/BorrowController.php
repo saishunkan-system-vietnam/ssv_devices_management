@@ -412,7 +412,7 @@ class BorrowController extends ApiController {
             // Set return response (response code, api response)
             $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
-    }
+    } 
 
     // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
     public function filter() {
