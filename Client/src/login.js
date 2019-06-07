@@ -11,15 +11,15 @@ function Login(props) {
         event.preventDefault();
         let params = {};
         params.username = username;
-        params.passwd = passwd;
+        params.password = passwd;
         signin.signin(params).then(responseJson => {
             localStorage.setItem('statusUserCode', responseJson['0']);
-            if (responseJson['0'] == 200) {
+            if (responseJson['0'] === 200) {
                 localStorage.setItem('newUser', responseJson['payload']['userName']);
                 localStorage.setItem('Token', responseJson['payload']['token']);
                 alert.success("Login success");
                 props.history.push('/dashboard');
-            } else if(responseJson['0'] == 902) {
+            } else if(responseJson['0'] === 902) {
                 localStorage.setItem('newUser', responseJson['payload']['userName']);
                 localStorage.setItem('Token', responseJson['payload']['token']);
                 alert.success("Login success. Please update your profile!");

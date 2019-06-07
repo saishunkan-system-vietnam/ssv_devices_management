@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use Cake\ORM\Query;
@@ -21,16 +22,15 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\BorrowDevicesDetail[] patchEntities($entities, array $data, array $options = [])
  * @method \App\Model\Entity\BorrowDevicesDetail findOrCreate($search, callable $callback = null, $options = [])
  */
-class BorrowDevicesDetailTable extends Table
-{
+class BorrowDevicesDetailTable extends Table {
+
     /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
-    {
+    public function initialize(array $config) {
         parent::initialize($config);
 
         $this->setTable('borrow_devices_detail');
@@ -53,83 +53,69 @@ class BorrowDevicesDetailTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
-    {
+    public function validationDefault(Validator $validator) {
         $validator
-            ->allowEmptyString('id', 'create');
-        
-        $validator
-             ->integer('device_id')
-            ->requirePresence('device_id','create')
-            ->allowEmptyString('device_id', false);
-        
-        $validator  
-            ->scalar('borrow_reason')
-            ->allowEmptyString('borrow_reason');
+                ->allowEmptyString('id', 'create');
 
         $validator
-            ->scalar('return_reason')
-            ->allowEmptyString('return_reason');
+                ->integer('device_id')
+                ->requirePresence('device_id', 'create')
+                ->allowEmptyString('device_id', false);
 
         $validator
-            ->integer('status')
-            ->allowEmptyString('status');
+                ->scalar('borrow_reason')
+                ->allowEmptyString('borrow_reason');
 
         $validator
-            ->dateTime('borrow_date')
-            ->requirePresence('borrow_date', 'create')
-            ->allowEmptyDateTime('borrow_date', false);
+                ->scalar('return_reason')
+                ->allowEmptyString('return_reason');
 
         $validator
-            ->dateTime('approved_date')
-            ->allowEmptyDateTime('approved_date');
+                ->integer('status')
+                ->allowEmptyString('status');
 
         $validator
-            ->dateTime('delivery_date')
-            ->allowEmptyDateTime('delivery_date');
+                ->date('borrow_date')
+                ->requirePresence('borrow_date', 'create')
+                ->allowEmptyDateTime('borrow_date', false);
 
         $validator
-            ->dateTime('return_date')
-            ->requirePresence('return_date', 'create')
-            ->allowEmptyDateTime('return_date', false);
+                ->date('approved_date')
+                ->allowEmptyDateTime('approved_date');
 
         $validator
-            ->scalar('created_user')
-            ->maxLength('created_user', 100)
-            ->allowEmptyString('created_user');
+                ->date('return_date_expected')
+                ->requirePresence('return_date_expected', 'create')
+                ->allowEmptyDateTime('return_date_expected', false);
+
+//        $validator
+//            ->date('return_date')
+//            ->requirePresence('return_date', 'create')
+//            ->allowEmptyDateTime('return_date', false);
 
         $validator
-            ->scalar('update_user')
-            ->maxLength('update_user', 100)
-            ->allowEmptyString('update_user');
+                ->scalar('created_user')
+                ->maxLength('created_user', 100)
+                ->allowEmptyString('created_user');
 
         $validator
-            ->dateTime('created_time')
-            ->allowEmptyDateTime('created_time');
+                ->scalar('update_user')
+                ->maxLength('update_user', 100)
+                ->allowEmptyString('update_user');
 
         $validator
-            ->dateTime('update_time')
-            ->allowEmptyDateTime('update_time');
+                ->dateTime('created_time')
+                ->allowEmptyDateTime('created_time');
 
         $validator
-            ->boolean('is_deleted')
-            ->allowEmptyString('is_deleted', false);
+                ->dateTime('update_time')
+                ->allowEmptyDateTime('update_time');
+
+        $validator
+                ->boolean('is_deleted')
+                ->allowEmptyString('is_deleted', false);
 
         return $validator;
     }
 
-    /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
-     *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
-     */
-//    public function buildRules(RulesChecker $rules)
-//    {
-//        $rules->add($rules->existsIn(['borrow_device_id'], 'BorrowDevices'));
-//        $rules->add($rules->existsIn(['device_id'], 'Devices'));
-//
-//        return $rules;
-//    }
 }
