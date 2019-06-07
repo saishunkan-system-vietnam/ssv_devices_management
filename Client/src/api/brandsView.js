@@ -1,18 +1,16 @@
 import constants from '../constants/contants';
 
-function signin(params) {
-    const url = constants.Url + constants.endpoint.login;
-   return   fetch(url, {
-        method: 'POST',
+function BrandsView(id) {
+    const url = constants.Url + constants.endpoint.brand_view + id;
+    let token = localStorage.getItem('Token') || '';
+    return fetch(url, {
+        method: 'GET',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
         },
 
-        body: JSON.stringify({
-            username: params.username,
-            password: params.password
-        })
     }).then(response => {
         return response.json();
     }).catch(err => {
@@ -21,5 +19,5 @@ function signin(params) {
 }
 
 export default {
-    signin: signin
+    BrandsView
 }

@@ -66,7 +66,7 @@ class MaintenancesTable extends Table
                 ->requirePresence('devices_id', 'create');
 
         $validator
-                ->dateTime('broken_date')
+                ->date('broken_date')
                 ->requirePresence('broken_date', 'create')
                 ->allowEmptyDateTime('broken_date',FALSE);
 
@@ -96,8 +96,8 @@ class MaintenancesTable extends Table
                 ->allowEmptyString('is_deleted', false);
 
         $validator
-                ->scalar('note')
-                ->allowEmptyString('note');
+                ->requirePresence('note', 'create')
+                ->allowEmptyString('note',FALSE);
 
         $validator
                 ->scalar('maintenances_address')

@@ -1,18 +1,17 @@
 import constants from '../constants/contants';
+function lstCategory() {
+    const url = constants.Url + constants.endpoint.list_category;
+    //get data local Storage
+    let token = localStorage.getItem('Token') || '';
 
-function signin(params) {
-    const url = constants.Url + constants.endpoint.login;
-   return   fetch(url, {
-        method: 'POST',
+    return fetch(url, {
+        method: 'GET',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
         },
 
-        body: JSON.stringify({
-            username: params.username,
-            password: params.password
-        })
     }).then(response => {
         return response.json();
     }).catch(err => {
@@ -21,5 +20,5 @@ function signin(params) {
 }
 
 export default {
-    signin: signin
+    lstCategory
 }
