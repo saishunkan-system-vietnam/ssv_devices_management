@@ -17,6 +17,7 @@ class DevicesController extends ApiController {
 
     private $Brands;
     private $Devices;
+    private $Categories;
     private $login;
     private $nameController;
     private $baseUrl;
@@ -25,6 +26,7 @@ class DevicesController extends ApiController {
         parent::initialize();
         $this->Brands = TableRegistry::getTableLocator()->get('Brands');
         $this->Devices = TableRegistry::getTableLocator()->get('Devices');
+        $this->Categories = TableRegistry::getTableLocator()->get('Categories');
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
         $this->nameController = $this->getRequest()->controller;
         $this->baseUrl = Router::url('/', true);
@@ -156,9 +158,26 @@ class DevicesController extends ApiController {
 
     //function get list devices
     public function getLstDevices() {
-        $devices = $this->Devices
+        $devices = $this->Devices                
                 ->find('all')
-                ->where(['is_deleted' => 0])
+                ->select($this->Devices)
+                ->select($this->Categories)
+                ->select($this->Brands)
+                ->join([
+                    'Categories'=>[
+                        'table'=>'categories',
+                        'type'=>'LEFT',
+                        'conditions'=>'Categories.id = Devices.Categories_id'
+                    ]
+                ])
+                ->join([
+                    'Brands'=>[
+                        'table'=>'brands',
+                        'type'=>'LEFT',
+                        'conditions'=>'Brands.id = Devices.brand_id'
+                    ]
+                ])
+                ->where(['Devices.is_deleted' => 0])
                 ->toArray();
         if (count($devices) > 0) {
             foreach ($devices as $row) {
@@ -175,7 +194,27 @@ class DevicesController extends ApiController {
 
     //function view devices
     public function view($id = null) {
-        $devices = $this->getDevice(['id' => $id]);
+         $devices = $this->Devices                
+                ->find('all')
+                ->select($this->Devices)
+                ->select($this->Categories)
+                ->select($this->Brands)
+                ->join([
+                    'Categories'=>[
+                        'table'=>'categories',
+                        'type'=>'LEFT',
+                        'conditions'=>'Categories.id = Devices.Categories_id'
+                    ]
+                ])
+                ->join([
+                    'Brands'=>[
+                        'table'=>'brands',
+                        'type'=>'LEFT',
+                        'conditions'=>'Brands.id = Devices.brand_id'
+                    ]
+                ])
+                ->where(['Devices.id' => $id])
+                ->first();
         if (!empty($devices)) {
             $devices['specifications'] = html_entity_decode($devices['specifications']);
             $args = array(
@@ -245,8 +284,7 @@ class DevicesController extends ApiController {
     //function edit devices
     public function edit() {
         if ($this->getRequest()->is('post')) {
-            $request = $this->getRequest()->getData();
-
+            $request = $this->getRequest()->getData();     
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response (response code, api response)
                 $this->returnResponse(903, ['message' => 'ID could not be found']);

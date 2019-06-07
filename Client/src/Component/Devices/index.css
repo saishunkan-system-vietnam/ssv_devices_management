@@ -6,6 +6,10 @@
     margin-top: 10px;
 }
 
+.mt-20 {
+    margin-top: 20px;
+}
+
 .mt-5 {
     margin-top: 5px;
 }
@@ -58,8 +62,26 @@
     color: green;
 }
 
-.form{
+.form {
     box-shadow: 1px 1px 5px silver;
     background-color: lightblue;
     padding: 10px 40px;
+}
+
+.close-img {
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 100%;
+    background-color: red;
+    border-radius: 100%;
+    box-shadow: 1px 1px 5px silver;
+    color: white;
+    float: left;    
+    cursor: pointer;
+}
+
+.img {
+    max-width: 150px;
+    padding: 4px;
 }

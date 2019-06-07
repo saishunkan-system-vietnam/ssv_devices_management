@@ -1,28 +1,30 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 function Item(props) {
-
-  function onEdit() {
-    props.edit(props.brand.id);
-  }
-
+ 
   function handleOnClickDelete() {
     props.delete(props.brand.id);
   }
 
+  var {device,stt,baseUrl}=props;
+
   return (
     <tr>
-      <td>{props.index} </td>
-      <td>{props.brand.id} </td>
-      <td>{props.brand.brand_name} </td>
-      <td>{props.brand.created_user} </td>
-      <td>{props.brand.update_user} </td>
-      <td>{props.brand.created_time} </td>
-      <td>{props.brand.update_time} </td>
-      <td><i onClick={onEdit} className="fa fa-edit fa-lg"></i><i onClick={handleOnClickDelete} className="fa fa-trash fa-lg"></i></td>
+      <td>{stt} </td>
+      <td>{device.id} </td>
+      <td>{device.Categories.category_name} </td>
+      <td>{device.Brands.brand_name} </td>
+      <td><img style={{'maxWidth' : '70px', 'padding' : '4px'}} src={`${baseUrl}/${device.image?device.image:'../../../img/not-available.jpg'}`}/> </td>
+      <td>{device.name} </td>
+      <td>{device.status} </td>
+      <td>{device.created_user} </td>
+      <td>{device.update_user} </td>
+      <td>{device.created_time} </td>
+      <td>{device.update_time} </td>
+      <td><Link to={`/devices/view/${device.id}`}><i className="fa fa-eye fa-lg" ></i></Link><br/><Link to={`/devices/edit/${device.id}`}><i className="fa fa-edit fa-lg"></i></Link><br/><i onClick={handleOnClickDelete} className="fa fa-trash fa-lg"></i></td>
     </tr>
   );
 }
 
 export default Item;
-© 2019 GitHub, Inc.
