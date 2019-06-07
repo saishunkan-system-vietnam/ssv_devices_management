@@ -16,6 +16,19 @@ let api = {
         'delete_category': '/api/v1/category/delete/',
         'filter_category': '/api/v1/category/filter',
         'list_brands': '/api/v1/brand',
+        'list_borrow': '/api/v1/borrow',
+        'view_borrow': '/api/v1/borrow/view/',
+        'add_borrow': '/api/v1/borrow/add',
+        'edit_borrow': '/api/v1/borrow/edit',
+        'delete_borrow': '/api/v1/borrow/delete',
+        'approve_borrow': '/api/v1/borrow/approve',
+        'no_approve_borrow': '/api/v1/borrow/noapprove',
+        'return_borrow': '/api/v1/borrow/returndevice',
+        'return_confirm_borrow': '/api/v1/borrow/confirmreturndevice',
+        'filter_borrow': '/api/v1/borrow/filter',
+        'notification_broken': '/api/v1/maintenance/notification_broken',
+        'list_device': '/api/v1/device',
+        'view_device': '/api/v1/device/view/',
     }
 }
 

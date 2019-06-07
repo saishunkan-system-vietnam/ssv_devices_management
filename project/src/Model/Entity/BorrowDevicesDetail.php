@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Entity;
 
 use Cake\ORM\Entity;
@@ -25,8 +26,8 @@ use Cake\ORM\Entity;
  * @property \App\Model\Entity\BorrowDevice $borrow_device
  * @property \App\Model\Entity\Device $device
  */
-class BorrowDevicesDetail extends Entity
-{
+class BorrowDevicesDetail extends Entity {
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
@@ -44,7 +45,7 @@ class BorrowDevicesDetail extends Entity
         'status' => true,
         'borrow_date' => true,
         'approved_date' => true,
-        'delivery_date' => true,
+        'return_date_expected' => true,
         'return_date' => true,
         'created_user' => true,
         'update_user' => true,
@@ -53,6 +54,7 @@ class BorrowDevicesDetail extends Entity
         'is_deleted' => true,
         'borrow_device' => true,
         'device' => true,
-        'note_admin'=> true
+        'note_admin' => true
     ];
+
 }

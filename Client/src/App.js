@@ -8,10 +8,17 @@ import AddUser from '../src/Component/Users/add';
 import UpdateUser from '../src/Component/Users/update';
 import Layout from '../src/Component/Master/index';
 
+
 import Categories from './Component/Categories/index';
 import List_cate from './Component/Categories/List/List';
 import Add_cate from './Component/Categories/Action/Add';
 import View_cate from './Component/Categories/Action/View';
+
+import Borrow from '../src/Component/Borrow/index';
+import ListBorrow from '../src/Component/Borrow/List/List';
+import ViewBorrow from '../src/Component/Borrow/Action/View';
+import AddBrorrow from '../src/Component/Borrow/Action/Add';
+import NotificationBroken from '../src/Component/Borrow/Action/notificationBroken';
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
@@ -39,6 +46,7 @@ function App() {
           {...props}
         />
       )} exact />
+
       <Route path="/categories" render={() => (
         <Layout
           content={<Categories content={<List_cate />} />}
@@ -59,6 +67,35 @@ function App() {
       <Route path="/categories/view/:id" render={(props) => (
         <Layout
           content={<Categories content={<View_cate {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/borrow" render={() => (
+        <Layout
+          content={<Borrow content={< ListBorrow />} />}
+        />
+      )} exact />
+      <Route path="/borrow/view/:id" render={(props) => (
+        <Layout
+          content={<Borrow content={<ViewBorrow {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/borrow/add" render={(props) => (
+        <Layout
+          content={<Borrow content={<AddBrorrow {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/borrow/edit/:id" render={(props) => (
+        <Layout
+          content={<Borrow content={<AddBrorrow {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/borrow/notification_broken/:id" render={(props) => (
+        <Layout
+          content={<Borrow content={<NotificationBroken {...props} />} />}
           {...props}
         />
       )} exact />
