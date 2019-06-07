@@ -96,6 +96,7 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('category/add', ['controller' => 'Categories', 'action' => 'add', 'allowWithoutToken' => true]);
     $routes->connect('category/edit', ['controller' => 'Categories', 'action' => 'edit', 'allowWithoutToken' => true]);
     $routes->connect('category/delete', ['controller' => 'Categories', 'action' => 'delete', 'allowWithoutToken' => true]);
+    $routes->connect('category/filter', ['controller' => 'Categories', 'action' => 'filter', 'allowWithoutToken' => true]);
     
     // Maintenances
     $routes->connect('maintenance', ['controller' => 'Maintenances', 'action' => 'index', 'allowWithoutToken' => true]);

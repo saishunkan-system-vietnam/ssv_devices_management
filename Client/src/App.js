@@ -8,6 +8,12 @@ import AddUser from '../src/Component/Users/add';
 import UpdateUser from '../src/Component/Users/update';
 import Layout from '../src/Component/Master/index';
 
+
+import Categories from './Component/Categories/index';
+import List_cate from './Component/Categories/List/List';
+import Add_cate from './Component/Categories/Action/Add';
+import View_cate from './Component/Categories/Action/View';
+
 import Borrow from '../src/Component/Borrow/index';
 import ListBorrow from '../src/Component/Borrow/List/List';
 import ViewBorrow from '../src/Component/Borrow/Action/View';
@@ -37,6 +43,30 @@ function App() {
       <Route path="/user/edit/:id" render={(props) => (
         <Layout
           content={<UpdateUser  {...props} />}
+          {...props}
+        />
+      )} exact />
+
+      <Route path="/categories" render={() => (
+        <Layout
+          content={<Categories content={<List_cate />} />}
+        />
+      )} exact />
+      <Route path="/categories/add" render={(props) => (
+        <Layout
+          content={<Categories content={<Add_cate {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/categories/edit/:id" render={(props) => (
+        <Layout
+          content={<Categories content={<Add_cate {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/categories/view/:id" render={(props) => (
+        <Layout
+          content={<Categories content={<View_cate {...props} />} />}
           {...props}
         />
       )} exact />
