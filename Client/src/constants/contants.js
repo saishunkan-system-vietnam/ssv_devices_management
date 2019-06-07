@@ -9,6 +9,7 @@ let api = {
         'show_user': '/api/v1/user/show/',
         'restock_user': '/api/v1/user/restock',
         'delete_user': '/api/v1/user/delete',
+
         'list_category': '/api/v1/category',
         'add_category': '/api/v1/category/add',
         'edit_category': '/api/v1/category/edit',
@@ -29,6 +30,13 @@ let api = {
         'notification_broken': '/api/v1/maintenance/notification_broken',
         'list_device': '/api/v1/device',
         'view_device': '/api/v1/device/view/',
+
+        'brand_list': '/api/v1/brand',
+        'brand_view': '/api/v1/brand/view/',
+        'brand_add': '/api/v1/brand/add',
+        'brand_edit': '/api/v1/brand/edit',
+        'brand_delete': '/api/v1/brand/delete',
+        'brand_filter': '/api/v1/brand/filter',
     }
 }
 

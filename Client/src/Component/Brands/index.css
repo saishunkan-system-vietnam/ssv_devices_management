@@ -1,0 +1,65 @@
+.mt-70 {
+    margin-top: 70px;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-5 {
+    margin-top: 5px;
+}
+
+.ml-10 {
+    margin-left: 10px;
+}
+
+.ml-5 {
+    margin-left: 5px !important;
+}
+
+.p-20 {
+    padding: 20px;
+}
+
+.pl-30 {
+    padding-left: 30px;
+}
+
+.layout {
+    background-color: white;
+}
+
+.fa {
+    padding: 0 5px;
+}
+
+.fa-edit {
+    color: rgb(51, 154, 240);
+}
+
+.fa-edit:hover {
+    color: blue;
+}
+
+.fa-trash {
+    color: rgb(233, 87, 63);
+}
+
+.fa-trash:hover {
+    color: red;
+}
+
+.fa-eye {
+    color: #04B431;
+}
+
+.fa-eye:hover {
+    color: green;
+}
+
+.form{
+    box-shadow: 1px 1px 5px silver;
+    background-color: lightblue;
+    padding: 10px 40px;
+}

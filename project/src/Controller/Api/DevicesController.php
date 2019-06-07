@@ -13,8 +13,7 @@ use Cake\Routing\Router;
  *
  * @method \App\Model\Entity\Device[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class DevicesController extends ApiController
-{
+class DevicesController extends ApiController {
 
     private $Brands;
     private $Devices;
@@ -22,8 +21,7 @@ class DevicesController extends ApiController
     private $nameController;
     private $baseUrl;
 
-    public function initialize()
-    {
+    public function initialize() {
         parent::initialize();
         $this->Brands = TableRegistry::getTableLocator()->get('Brands');
         $this->Devices = TableRegistry::getTableLocator()->get('Devices');
@@ -33,12 +31,8 @@ class DevicesController extends ApiController
     }
 
     //function get list brands
-    public function getLstBrand()
-    {
-        $brands = $this->Brands
-                ->find('all')
-                ->where(['is_deleted' => 0])
-                ->toArray();
+    public function getLstBrand() {
+        $brands = $this->LstBrandsWhere(['is_deleted' => 0]);
         $agrs = array(
             'lstBrands' => $brands
         );
@@ -47,8 +41,7 @@ class DevicesController extends ApiController
     }
 
     //function view brand
-    public function viewBrand($id = null)
-    {
+    public function viewBrand($id = null) {
         $brand = $this->getBrand(['id' => $id]);
         if (!empty($brand)) {
             $agrs = array(
@@ -63,8 +56,7 @@ class DevicesController extends ApiController
     }
 
     //function add brand
-    public function addBrand()
-    {
+    public function addBrand() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $brandNewEntity = $this->Brands->newEntity();
@@ -92,8 +84,7 @@ class DevicesController extends ApiController
     }
 
     //function edit brand
-    public function editBrand()
-    {
+    public function editBrand() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
@@ -133,8 +124,7 @@ class DevicesController extends ApiController
     }
 
     //function delete brand
-    public function deleteBrand()
-    {
+    public function deleteBrand() {
 
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
@@ -165,8 +155,7 @@ class DevicesController extends ApiController
     }
 
     //function get list devices
-    public function getLstDevices()
-    {
+    public function getLstDevices() {
         $devices = $this->Devices
                 ->find('all')
                 ->where(['is_deleted' => 0])
@@ -185,8 +174,7 @@ class DevicesController extends ApiController
     }
 
     //function view devices
-    public function view($id = null)
-    {
+    public function view($id = null) {
         $devices = $this->getDevice(['id' => $id]);
         if (!empty($devices)) {
             $devices['specifications'] = html_entity_decode($devices['specifications']);
@@ -203,8 +191,7 @@ class DevicesController extends ApiController
     }
 
     //function add devices
-    public function add()
-    {
+    public function add() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $validate = $this->Devices->newEntity($request, ['validate' => 'serialnumber']);
@@ -256,8 +243,7 @@ class DevicesController extends ApiController
     }
 
     //function edit devices
-    public function edit()
-    {
+    public function edit() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
 
@@ -332,8 +318,7 @@ class DevicesController extends ApiController
     }
 
     //function delete device
-    public function delete()
-    {
+    public function delete() {
         if ($this->getRequest()->is(['post'])) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
@@ -363,8 +348,31 @@ class DevicesController extends ApiController
         }
     }
 
-    function getDevice(array $condition)
-    {
+    public function filter() {
+        if ($this->getRequest()->is('post')) {
+            $request = $this->getRequest()->getData();
+            $condition = ['is_deleted' => 0];
+            if (isset($request['brand_name']) && !empty($request['brand_name'])) {
+                $condition = array_merge($condition, ['brand_name LIKE' => '%' . $request['brand_name'] . '%']);
+            }
+            $brands = $this->LstBrandsWhere($condition);
+            $agrs = array(
+                'lstBrands' => $brands
+            );
+            //set return response (response code, api response)
+            $this->returnResponse(200, $agrs);
+        }
+    }
+
+    private function LstBrandsWhere(array $condition) {
+        $brands = $this->Brands
+                ->find('all')
+                ->where($condition)
+                ->toArray();
+        return $brands;
+    }
+
+    function getDevice(array $condition) {
         $device = $this->Devices
                 ->find('all')
                 ->where([key($condition) => current($condition)])
@@ -372,8 +380,7 @@ class DevicesController extends ApiController
         return $device;
     }
 
-    function getBrand(array $condition)
-    {
+    function getBrand(array $condition) {
         $brands = $this->Brands
                 ->find('all')
                 ->where([key($condition) => current($condition)])
