@@ -107,11 +107,11 @@ class DevicesTable extends Table
         
          $validator
             ->date('purchase_date')
-            ->allowEmptyDateTime('purchase_date');
+            ->allowEmptyDate('purchase_date');
         
         $validator
             ->date('warranty_period')
-            ->allowEmptyDateTime('warranty_period');
+            ->allowEmptyDate('warranty_period');
 
         $validator
             ->scalar('created_user')

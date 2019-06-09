@@ -83,7 +83,7 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('brand/add', ['controller' => 'Devices', 'action' => 'addBrand', 'allowWithoutToken' => true]);
     $routes->connect('brand/edit', ['controller' => 'Devices', 'action' => 'editBrand', 'allowWithoutToken' => true]);
     $routes->connect('brand/delete', ['controller' => 'Devices', 'action' => 'deleteBrand', 'allowWithoutToken' => true]);
-    $routes->connect('brand/filter', ['controller' => 'Devices', 'action' => 'filter', 'allowWithoutToken' => true]);
+    $routes->connect('brand/filter', ['controller' => 'Devices', 'action' => 'filterBrand', 'allowWithoutToken' => true]);
     
     //devices
     $routes->connect('device', ['controller' => 'Devices', 'action' => 'getLstDevices', 'allowWithoutToken' => true]);
@@ -91,6 +91,8 @@ Router::scope('/api/v1/', ['prefix' => 'Api'], function (RouteBuilder $routes) {
     $routes->connect('device/add', ['controller' => 'Devices', 'action' => 'add', 'allowWithoutToken' => true]);
     $routes->connect('device/edit', ['controller' => 'Devices', 'action' => 'edit', 'allowWithoutToken' => true]);
     $routes->connect('device/delete', ['controller' => 'Devices', 'action' => 'delete', 'allowWithoutToken' => true]);
+    $routes->connect('device/filter', ['controller' => 'Devices', 'action' => 'filterDevices', 'allowWithoutToken' => true]);
+    
      // Categories
     $routes->connect('category', ['controller' => 'Categories', 'action' => 'index', 'allowWithoutToken' => true]);
     $routes->connect('category/view/:id', ['controller' => 'Categories', 'action' => 'view', 'allowWithoutToken' => true], ['id' => '\d+', 'pass' => ['id']]);

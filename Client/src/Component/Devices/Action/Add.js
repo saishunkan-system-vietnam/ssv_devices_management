@@ -8,6 +8,8 @@ import DeviceAdd from '../../../api/deviceAdd';
 import DeviceEdit from '../../../api/deviceEdit';
 import GetDevice from '../../../api/deviceView';
 
+import {toShortDate} from '../../../common/date';
+
 function Add(props) {
 
     const [categories, setCategories] = useState(null);
@@ -29,11 +31,11 @@ function Add(props) {
 
     function onSave(e) {
         e.preventDefault();
-        // console.log(categories_id);
+        console.log(categories_id.value);
         // console.log(serial_number);
         // console.log(product_number);
         // console.log(name);
-        console.log(brand_id);
+        // console.log(brand_id);
         // console.log(specifications);
         // console.log(purchase_date);
         // console.log(warranty_period);
@@ -57,7 +59,7 @@ function Add(props) {
             DeviceEdit.DeviceEdit(frm).then(res => {
                 if (res['0'] === 200) {
                     alert.success(res.payload.message);
-                    props.history.push('/borrow');
+                    props.history.push('/devices');
                 } else {
                     var obj = res.payload.message;
                     if (typeof obj === 'object') {
@@ -75,7 +77,7 @@ function Add(props) {
             DeviceAdd.DeviceAdd(frm).then(res => {
                 if (res['0'] === 200) {
                     alert.success(res.payload.message);
-                    props.history.push('/borrow');
+                    props.history.push('/devices');
                 } else {
                     var obj = res.payload.message;
                     if (typeof obj === 'object') {
@@ -90,9 +92,6 @@ function Add(props) {
                 }
             })
         }
-
-
-
     }
 
     useEffect(() => {
@@ -108,9 +107,8 @@ function Add(props) {
                 brand_id.onChange({ target: { value: res.payload.lstBrands['0'].id } })
             })
         }
-        if (!device && props.match.params) {
+        if (!device && props.match.params.id) {
             GetDevice.DeviceView(props.match.params.id).then(res => {
-                console.log(res);
                 let _device = res.payload;
                 setBaseUrl(_device.baseUrl);
                 setDevice(_device.device);
@@ -120,10 +118,10 @@ function Add(props) {
                 name.onChange({ target: { value: _device.device.name } })
                 specifications.onChange({ target: { value: _device.device.specifications } })
                 if (_device.device.purchase_date) {
-                    purchase_date.onChange({ target: { value: _device.device.purchase_date } })
+                    purchase_date.onChange({ target: { value: toShortDate(_device.device.purchase_date) } })
                 }
                 if (_device.device.warranty_period) {
-                    warranty_period.onChange({ target: { value: _device.device.warranty_period } })
+                    warranty_period.onChange({ target: { value: toShortDate(_device.device.warranty_period) } })
                 }
 
             })
@@ -143,8 +141,9 @@ function Add(props) {
 
     function showOptionCategories() {
         let result = '';
-        result = categories.map((category, index) => {
-            return <option key={index} value={category.id}>{category.category_name}</option>
+        result = categories.map((category, index) => {  
+            let option= category.id_parent!==0?<option key={index} value={category.id}>{category.category_name}</option>:"";
+            return  option;
         })
         return result;
     }
@@ -181,7 +180,7 @@ function Add(props) {
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    {/* <legend className="pl-30">{borrow.length!==0?'Update information borrow device':'Add new information borrow device'}</legend><hr /> */}
+                    {/* <legend className="pl-30">{devices.length!==0?'Update information devices device':'Add new information devices device'}</legend><hr /> */}
 
                     <div className="row">
                         <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -276,7 +275,7 @@ function Add(props) {
                     <div className="row">
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 pl-30">
                             <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Save</button>
-                            <Link to="/borrow" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</Link>
+                            <Link to="/devices" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</Link>
                         </div>
                     </div>
 

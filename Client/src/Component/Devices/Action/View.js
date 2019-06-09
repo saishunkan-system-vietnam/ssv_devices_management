@@ -102,6 +102,33 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                        Name
+                    </div>
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                        {device ? device.name : ''}
+                    </div>
+                </div>
+
+                <div className="row  mt-20">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                        Serial number:
+                    </div>
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                        {device ? device.serial_number : ''}
+                    </div>
+                </div>
+
+                <div className="row  mt-20">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                        Product number:
+                    </div>
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                        {device ? device.product_number : ''}
+                    </div>
+                </div>
+
+                <div className="row  mt-20">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
                         Status:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
@@ -175,9 +202,8 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                        <Link to={`/borrow/edit/`} className="btn btn-primary">Edit</Link>
-                        <button className="btn btn-danger ml-10">Delete</button>
-                        <Link to="/borrow" className="btn btn-warning ml-10">Cancel</Link>
+                        {device? <Link to={`/devices/edit/${device.id}`} className="btn btn-primary">Edit</Link> : ''}
+                        <Link to="/devices" className="btn btn-warning ml-10">Cancel</Link>
                     </div>
                 </div>
             </div>

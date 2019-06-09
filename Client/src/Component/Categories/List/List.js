@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Item from './Item';
-import lstCategory from '../../../api/listcategories';
 import DeleteCategory from '../../../api/deletecategory';
 import FilterCategory from '../../../api/filtercategory';
 import { useAlert } from "react-alert";
+import lstCategory from '../../../api/listcategories';
 import lstBrands from '../../../api/listbrands';
 
 function List() {

@@ -40,6 +40,8 @@ let api = {
         'view_device': '/api/v1/device/view/',
         'add_device': '/api/v1/device/add',
         'edit_device': '/api/v1/device/edit',
+        'delete_device': '/api/v1/device/delete',
+        'filter_device': '/api/v1/device/filter',
     }
 }
 

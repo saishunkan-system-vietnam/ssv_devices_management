@@ -1,13 +1,13 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
+import { status } from '../status';
 
 function Item(props) {
- 
-  function handleOnClickDelete() {
-    props.delete(props.brand.id);
-  }
-
   var {device,stt,baseUrl}=props;
+
+  function handleOnClickDelete() {
+    props.onDelete(device.id);
+  }
 
   return (
     <tr>
@@ -17,7 +17,7 @@ function Item(props) {
       <td>{device.Brands.brand_name} </td>
       <td><img style={{'maxWidth' : '70px', 'padding' : '4px'}} src={`${baseUrl}/${device.image?device.image:'../../../img/not-available.jpg'}`}/> </td>
       <td>{device.name} </td>
-      <td>{device.status} </td>
+      <td>{status(device.status)} </td>
       <td>{device.created_user} </td>
       <td>{device.update_user} </td>
       <td>{device.created_time} </td>

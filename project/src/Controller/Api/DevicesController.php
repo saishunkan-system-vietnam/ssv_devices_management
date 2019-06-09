@@ -6,13 +6,6 @@ use RestApi\Controller\ApiController;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 
-/**
- * Devices Controller
- *
- * @property \App\Model\Table\DevicesTable $Devices
- *
- * @method \App\Model\Entity\Device[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
- */
 class DevicesController extends ApiController {
 
     private $Brands;
@@ -158,27 +151,9 @@ class DevicesController extends ApiController {
 
     //function get list devices
     public function getLstDevices() {
-        $devices = $this->Devices                
-                ->find('all')
-                ->select($this->Devices)
-                ->select($this->Categories)
-                ->select($this->Brands)
-                ->join([
-                    'Categories'=>[
-                        'table'=>'categories',
-                        'type'=>'LEFT',
-                        'conditions'=>'Categories.id = Devices.Categories_id'
-                    ]
-                ])
-                ->join([
-                    'Brands'=>[
-                        'table'=>'brands',
-                        'type'=>'LEFT',
-                        'conditions'=>'Brands.id = Devices.brand_id'
-                    ]
-                ])
-                ->where(['Devices.is_deleted' => 0])
-                ->toArray();
+
+        $devices = $this->lstDevicesWhere(['Devices.is_deleted' => 0]);
+
         if (count($devices) > 0) {
             foreach ($devices as $row) {
                 $row['specifications'] = html_entity_decode($row['specifications']);
@@ -194,23 +169,23 @@ class DevicesController extends ApiController {
 
     //function view devices
     public function view($id = null) {
-         $devices = $this->Devices                
+        $devices = $this->Devices
                 ->find('all')
                 ->select($this->Devices)
                 ->select($this->Categories)
                 ->select($this->Brands)
                 ->join([
-                    'Categories'=>[
-                        'table'=>'categories',
-                        'type'=>'LEFT',
-                        'conditions'=>'Categories.id = Devices.Categories_id'
+                    'Categories' => [
+                        'table' => 'categories',
+                        'type' => 'LEFT',
+                        'conditions' => 'Categories.id = Devices.Categories_id'
                     ]
                 ])
                 ->join([
-                    'Brands'=>[
-                        'table'=>'brands',
-                        'type'=>'LEFT',
-                        'conditions'=>'Brands.id = Devices.brand_id'
+                    'Brands' => [
+                        'table' => 'brands',
+                        'type' => 'LEFT',
+                        'conditions' => 'Brands.id = Devices.brand_id'
                     ]
                 ])
                 ->where(['Devices.id' => $id])
@@ -284,7 +259,7 @@ class DevicesController extends ApiController {
     //function edit devices
     public function edit() {
         if ($this->getRequest()->is('post')) {
-            $request = $this->getRequest()->getData();     
+            $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response (response code, api response)
                 $this->returnResponse(903, ['message' => 'ID could not be found']);
@@ -386,7 +361,7 @@ class DevicesController extends ApiController {
         }
     }
 
-    public function filter() {
+    public function filterBrand() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $condition = ['is_deleted' => 0];
@@ -400,6 +375,63 @@ class DevicesController extends ApiController {
             //set return response (response code, api response)
             $this->returnResponse(200, $agrs);
         }
+    }
+
+    public function filterDevices() {
+        
+        if ($this->getRequest()->is('post')) {
+            $request = $this->getRequest()->getData();
+            $condition = ['Devices.is_deleted' => 0];
+            if (isset($request['name']) && !empty($request['name'])) {
+                $condition = array_merge($condition, ['Devices.name LIKE' => '%'.$request['name'].'%']);
+            }
+            if (isset($request['status']) && !empty($request['status']) && $request['status'] > -1) {
+                $condition = array_merge($condition, ['Devices.status' => ($request['status']-1)]);
+            }
+            if (isset($request['brand_id']) && !empty($request['brand_id']) && $request['brand_id'] > -1) {
+                $condition = array_merge($condition, ['Devices.brand_id' => $request['brand_id']]);
+            }
+            if (isset($request['categories_id']) && !empty($request['categories_id']) && $request['categories_id'] > -1) {
+                $condition = array_merge($condition, ['Devices.categories_id' => $request['categories_id']]);
+            }
+            $devices = $this->lstDevicesWhere($condition);
+            if (count($devices) > 0) {
+                foreach ($devices as $row) {
+                    $row['specifications'] = html_entity_decode($row['specifications']);
+                }
+            }
+            $args = array(
+                'lstDevices' => $devices,
+                'baseUrl' => $this->baseUrl . 'uploads/files/' . strtolower($this->nameController)
+            );
+            //set return response (response code, api response)
+            $this->returnResponse(200, $args);
+        }
+    }
+
+    private function lstDevicesWhere(array $condition) {
+        $devices = $this->Devices
+                ->find('all')
+                ->select($this->Devices)
+                ->select($this->Categories)
+                ->select($this->Brands)
+                ->join([
+                    'Categories' => [
+                        'table' => 'categories',
+                        'type' => 'LEFT',
+                        'conditions' => 'Categories.id = Devices.Categories_id'
+                    ]
+                ])
+                ->join([
+                    'Brands' => [
+                        'table' => 'brands',
+                        'type' => 'LEFT',
+                        'conditions' => 'Brands.id = Devices.brand_id'
+                    ]
+                ])
+                ->where($condition)
+                ->toArray();
+        return $devices;
     }
 
     private function LstBrandsWhere(array $condition) {
