@@ -171,7 +171,7 @@ function Add(props) {
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    {/* <legend className="pl-30">{devices.length!==0?'Update information devices device':'Add new information devices device'}</legend><hr /> */}
+                    <legend className="pl-30">{device?'Update device':'Add new device'}</legend><hr />
 
                     <div className="row">
                         <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
