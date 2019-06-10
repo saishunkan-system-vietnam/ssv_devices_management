@@ -68,15 +68,15 @@ class MaintenancesTable extends Table
         $validator
                 ->date('broken_date')
                 ->requirePresence('broken_date', 'create')
-                ->allowEmptyDateTime('broken_date',FALSE);
+                ->allowEmptyDate('broken_date',FALSE);
 
         $validator
-                ->dateTime('maintenance_start_date')
-                ->allowEmptyDateTime('maintenance_start_date');
+                ->date('maintenance_start_date')
+                ->allowEmptyDate('maintenance_start_date');
 
         $validator
-                ->dateTime('maintenances_end_date')
-                ->allowEmptyDateTime('maintenances_end_date');
+                ->date('maintenances_end_date')
+                ->allowEmptyDate('maintenances_end_date');
 
         $validator
                 ->scalar('update_user')

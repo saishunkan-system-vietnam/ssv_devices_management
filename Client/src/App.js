@@ -22,6 +22,11 @@ import ViewBorrow from '../src/Component/Borrow/Action/View';
 import AddBrorrow from '../src/Component/Borrow/Action/Add';
 import NotificationBroken from '../src/Component/Borrow/Action/notificationBroken';
 
+import Maintenance from '../src/Component/Maintenance/index';
+import MaintenanceList from '../src/Component/Maintenance/List/List';
+import MaintenanceView from '../src/Component/Maintenance/Action/View';
+import MaintenanceAdd from '../src/Component/Maintenance/Action/Add';
+
 import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
   return (
@@ -103,6 +108,29 @@ function App() {
       <Route path="/brand" render={() => (
         <Layout
           content={<Brand content={<BrandList />} />}
+        />
+      )} exact />
+      <Route path="/maintenance" render={() => (
+        <Layout
+          content={<Maintenance content={< MaintenanceList />} />}
+        />
+      )} exact />
+      <Route path="/maintenance/view/:id" render={(props) => (
+        <Layout
+          content={<Maintenance content={<MaintenanceView {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/maintenance/add" render={(props) => (
+        <Layout
+          content={<Maintenance content={<MaintenanceAdd {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/maintenance/edit/:id" render={(props) => (
+        <Layout
+          content={<Maintenance content={<MaintenanceAdd {...props} />} />}
+          {...props}
         />
       )} exact />
       <Route path="/" component={Login} exact />
