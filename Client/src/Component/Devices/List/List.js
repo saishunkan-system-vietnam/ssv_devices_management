@@ -15,7 +15,7 @@ function List() {
 
     var alert = useAlert();
 
-    const [devices, setDevices] = useState(null);
+    const [devices, setDevices] = useState([]);
     const [baseUrl, setBaseUrl] = useState('');
     const [findBrand, setFindBrand] = useState({ name: 'All brands', id: -1 }); //-1 all , id brandid
     const [findCategory, setFindCategory] = useState({ name: 'All Categories', id: -1 }); //-1 all , id category
@@ -26,26 +26,26 @@ function List() {
 
     function getLstDevices() {
         DevicesList.LstDevice().then(res => {
-            setDevices(res.payload.lstDevices);
-            setBaseUrl(res.payload.baseUrl)
+            setDevices(res ? res.payload.lstDevices : null);
+            setBaseUrl(res ? res.payload.baseUrl : null);
         });
     }
 
     useEffect(() => {
-        if (!devices) {
+        if (devices.length === 0) {
             getLstDevices();
         }
         if (!lstBrands) {
             BrandsList.lstBrands().then(res => {
-                setLstBrands(res.payload.lstBrands);
+                setLstBrands(res ? res.payload.lstBrands : null);
             })
         }
         if (!lstCategories) {
             CategoriesList.lstCategory().then(res => {
-                setLstCategories(res.payload.lstCategories);
+                setLstCategories(res ? res.payload.lstCategories : null);
             })
         }
-    });
+    }, []);
 
     function handleDeleteBrand(id) {
         confirmAlert({
@@ -73,21 +73,15 @@ function List() {
         })
     }
 
-    const showItem = () => {
-        let result = '';
-        if (devices && devices.length > 0) {
-            result = devices.map((device, index) => {
-                return (<Item
-                    key={index}
-                    stt={index}
-                    baseUrl={baseUrl}
-                    device={device}
-                    onDelete={handleDeleteBrand}
-                />)
-            });
-        }
-        return result;
-    }
+    var showItem = devices.map((device, index) => {
+        return (<Item
+            key={index}
+            stt={index}
+            baseUrl={baseUrl}
+            device={device}
+            onDelete={handleDeleteBrand}
+        />)
+    });
 
     function find(brand_id, categories_id, name, status) {
         var frm = new FormData();
@@ -206,9 +200,7 @@ function List() {
                             </tr>
                         </thead>
                         <tbody>
-                            {
-                                devices && devices.length > 0 ? showItem() : ''
-                            }
+                            {showItem}
                         </tbody>
                     </table>
                 </div>

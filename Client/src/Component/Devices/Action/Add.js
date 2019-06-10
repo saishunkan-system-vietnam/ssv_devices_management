@@ -8,7 +8,7 @@ import DeviceAdd from '../../../api/deviceAdd';
 import DeviceEdit from '../../../api/deviceEdit';
 import GetDevice from '../../../api/deviceView';
 
-import {toShortDate} from '../../../common/date';
+import { toShortDate } from '../../../common/date';
 
 function Add(props) {
 
@@ -31,16 +31,6 @@ function Add(props) {
 
     function onSave(e) {
         e.preventDefault();
-        console.log(categories_id.value);
-        // console.log(serial_number);
-        // console.log(product_number);
-        // console.log(name);
-        // console.log(brand_id);
-        // console.log(specifications);
-        // console.log(purchase_date);
-        // console.log(warranty_period);
-        // console.log(image);
-
         var frm = new FormData();
         frm.append('categories_id', categories_id.value);
         frm.append('serial_number', serial_number.value);
@@ -113,6 +103,7 @@ function Add(props) {
                 setBaseUrl(_device.baseUrl);
                 setDevice(_device.device);
                 categories_id.onChange({ target: { value: _device.device.categories_id } })
+                brand_id.onChange({ target: { value: _device.device.brand_id } })
                 serial_number.onChange({ target: { value: _device.device.serial_number } })
                 product_number.onChange({ target: { value: _device.device.product_number } })
                 name.onChange({ target: { value: _device.device.name } })
@@ -141,9 +132,9 @@ function Add(props) {
 
     function showOptionCategories() {
         let result = '';
-        result = categories.map((category, index) => {  
-            let option= category.id_parent!==0?<option key={index} value={category.id}>{category.category_name}</option>:"";
-            return  option;
+        result = categories.map((category, index) => {
+            let option = category.id_parent !== 0 ? <option key={index} value={category.id}>{category.category_name}</option> : "";
+            return option;
         })
         return result;
     }
@@ -222,7 +213,7 @@ function Add(props) {
                                 <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 ">
                                     <input type="file" className="form-control" onChange={onChangeImage} />
                                     {image ? <div onClick={onCloseImg} className="close-img">x</div> : ''}
-                                    <img src={image ? image.path : device ? `${baseUrl}/${device.image?device.image:'../../../img/not-available.jpg'}` : ''} className="img-responsive img" />
+                                    <img src={image ? image.path : device ? `${baseUrl}/${device.image ? device.image : '../../../img/not-available.jpg'}` : ''} className="img-responsive img" />
 
                                 </div>
                             </div>

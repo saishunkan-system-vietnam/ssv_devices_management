@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert';
 import { status } from '../status';
 import DeviceView from '../../../api/deviceView';
+import DeviceDelete from '../../../api/deviceDelete';
 
 function View(props) {
+
+    var alert = useAlert();
 
     const [device, setCategory] = useState(null);
     const [baseUrl, setBaseUrl] = useState(null);
@@ -18,40 +21,31 @@ function View(props) {
             })
         }
     });
-    console.log(device);
 
-    // function handleDelete() {
-    //     confirmAlert({
-    //         customUI: ({ onClose }) => {
-    //             var frm = new FormData();
-    //             frm.append('id', borrow.id);
-    //             return (
-    //                 <div className='custom-ui'>
-    //                     <h1>Are you sure?</h1>
-    //                     <p>You want to delete this borrow?</p>
-    //                     <button onClick={() => BorrowDelete.BorrowDelete(frm).then(responseJson => {
-    //                         if (responseJson['0'] === 200) {
-    //                             alert.success("The infomation borrow has been delete!");
-    //                             onClose();
-    //                             props.history.push('/borrow');
-    //                         } else {
-    //                             alert.error("The infomation borrow could not be delete. Please, try again.");
-    //                             onClose();
-    //                         }
-    //                     })}>Yes, Delete borrow!</button>
-    //                     <button onClick={onClose}>No</button>
-    //                 </div>
-    //             )
-    //         }
-    //     })
-    // }
-
-    const handleClickName = () => {
-
-    }
-
-    const handleClickDevice = () => {
-
+    function handleDelete() {
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                var frm = new FormData();
+                frm.append('id', device.id);
+                return (
+                    <div className='custom-ui'>
+                        <h1>Are you sure?</h1>
+                        <p>You want to delete this device?</p>
+                        <button onClick={() => DeviceDelete.DeviceDelete(frm).then(responseJson => {
+                            if (responseJson['0'] === 200) {
+                                alert.success("The device has been delete!");
+                                onClose();
+                                props.history.push('/devices');
+                            } else {
+                                alert.error("The device could not be delete. Please, try again.");
+                                onClose();
+                            }
+                        })}>Yes!</button>
+                        <button onClick={onClose}>No</button>
+                    </div>
+                )
+            }
+        })
     }
 
     return (
@@ -96,7 +90,7 @@ function View(props) {
                         Image
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {device ? <img style={{ 'maxWidth': '100px', 'padding': '4px' }} src={`${baseUrl}/${device.image ? device.image : '../../../img/not-available.jpg'}`} /> : ''}
+                        {device ? <img style={{ 'maxWidth': '100px', 'padding': '4px' }} src={`${baseUrl}/${device.image ? device.image : '../../../img/not-available.jpg'}`} alt="Image" /> : ''}
                     </div>
                 </div>
 
@@ -202,7 +196,10 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                        {device? <Link to={`/devices/edit/${device.id}`} className="btn btn-primary">Edit</Link> : ''}
+                        {device ? <Link to={`/devices/edit/${device.id}`} className="btn btn-primary">Edit</Link> : ''}
+
+                        <button type="button" class="btn btn-danger ml-10" onClick={handleDelete}>Delete</button>
+
                         <Link to="/devices" className="btn btn-warning ml-10">Cancel</Link>
                     </div>
                 </div>
