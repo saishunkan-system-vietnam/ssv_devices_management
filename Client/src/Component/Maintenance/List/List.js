@@ -13,6 +13,7 @@ function ListBorrow() {
 
     const [maintenances, setMaintenances] = useState([]);
     const [status, setStatus] = useState(null);
+    const [status_name, setStatus_name] = useState(null);
     const [lstCountStatus, setLstCountStatus] = useState(null);
 
     var alert = useAlert();
@@ -31,9 +32,7 @@ function ListBorrow() {
         frm.append(name, status);
         MaintenanceFilter.MaintenanceFilter(frm).then(res => {
             setLstCountStatus(res.payload.lstCount);
-            if (status) {
-                setMaintenances(res.payload.lstMaintenances);
-            }
+            setMaintenances(res.payload.lstMaintenances);
         })
     }
 
@@ -72,6 +71,7 @@ function ListBorrow() {
                                 alert.success(res.payload.message);
                                 onClose();
                                 getListMaintenances();
+                                getFliter(status_name, status);
                             } else {
                                 alert.error(res.payload.message);
                                 onClose();
@@ -98,6 +98,7 @@ function ListBorrow() {
                                 alert.success(res.payload.message);
                                 onClose();
                                 getListMaintenances();
+                                getFliter(status_name, status);
                             } else {
                                 alert.error(res.payload.message);
                                 onClose();
@@ -124,6 +125,7 @@ function ListBorrow() {
                                 alert.success(res.payload.message);
                                 onClose();
                                 getListMaintenances();
+                                getFliter(status_name, status);
                             } else {
                                 alert.error(res.payload.message);
                                 onClose();
@@ -136,9 +138,16 @@ function ListBorrow() {
         })
     }
 
-    function handleChange(status, name) {
-        setStatus(status);
-getFliter(name,status);
+    function handleChange(_status, name) {
+        if (status !== _status) {
+            setStatus(_status);
+            getFliter(name, _status);
+            setStatus_name(name);
+        } else {
+            setStatus('');
+            setStatus_name('');
+            getFliter();
+        }
 
     }
 

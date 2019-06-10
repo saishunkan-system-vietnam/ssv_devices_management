@@ -29,12 +29,20 @@ function Add(props) {
         frm.append("status", status.value);
         frm.append("broken_date", broken_date.value);
         frm.append("note", note.value);
+        var start_date = '';
+        var end_date = "";
+        var address = "";
+        var total_pay = "";
         if (status.value !== "0" && status.value !== "1") {
-            frm.append("maintenance_start_date", maintenance_start_date.value);
-            frm.append("maintenances_end_date", maintenances_end_date.value);
-            frm.append("maintenances_address", maintenances_address.value);
-            frm.append("total_payment", total_payment);
+            start_date = maintenance_start_date.value;
+            end_date = maintenances_end_date.value;
+            address = maintenances_address.value;
+            total_pay = total_payment;
         }
+        frm.append("maintenance_start_date", start_date);
+        frm.append("maintenances_end_date", end_date);
+        frm.append("maintenances_address", address);
+        frm.append("total_payment", total_pay);
         if (maintenance_id) {
             frm.append("id", maintenance_id);
             MaintenanceEdit.MaintenanceEdit(frm).then(res => {
@@ -103,7 +111,6 @@ function Add(props) {
             maintenances_address.onChange({ target: { value: maintenance.maintenances_address } });
             if (maintenance.total_payment) {
                 setTotal_payment(maintenance.total_payment);
-                // total_payment.onChange({ target: { value: maintenance.total_payment } });
             }
         })
     }
@@ -135,23 +142,6 @@ function Add(props) {
     }
 
     function handleOnchange(e) {
-        // let _money = "";
-        // let _value = e.target.value.replace(",","");
-        // if (_value.length > 3) {
-        //     let dem = 0;
-        //     for (let i = _value.length - 1; i >= 0; i--) {
-        //         if (dem === 3) {
-        //             _money = _value[i] + ',' + _money;
-        //             dem = 0;
-        //         } else {
-        //             _money = _value[i] + _money;
-        //         }
-        //         dem++;
-        //     }
-        // }else{
-        //     _money=_value;
-        // }
-        // console.log(_money);        
         setTotal_payment(e.target.value);
     }
 

@@ -6,6 +6,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import MaintenanceView from '../../../api/maintenanceView';
 import { status } from '../status';
 import MaintenanceDelete from '../../../api/maintenanceDelete';
+import MaintenanceEdit from '../../../api/maintenanceEdit';
 
 function View(props) {
     const alert = useAlert();
@@ -14,7 +15,7 @@ function View(props) {
     const [statusDevice, setStatusDevice] = useState(false);
 
     useEffect(() => {
-        if (!maintenance && props.match.params.id) {            
+        if (!maintenance && props.match.params.id) {
             getMaintenance();
         }
     });
@@ -41,6 +42,37 @@ function View(props) {
                                 props.history.push('/maintenance');
                             } else {
                                 alert.error("The maintenance could not be delete. Please, try again.");
+                                onClose();
+                            }
+                        })}>Yes</button>
+                        <button onClick={onClose}>No</button>
+                    </div>
+                )
+            }
+        })
+    }
+
+    function changeStatus(_status) {
+        confirmAlert({
+            customUI: ({ onClose }) => {
+                var frm = new FormData();
+                frm.append('id', maintenance.id);
+                frm.append('status', _status);
+                frm.append('broken_date', toShortDate(maintenance.broken_date));
+                frm.append('note', maintenance.note);
+                frm.append('devices_id', maintenance.devices_id);
+                return (
+                    <div className='custom-ui'>
+                        <h1>Are you sure?</h1>
+                        <p>You want to change status of this maintenance?</p>
+                        <button onClick={() => MaintenanceEdit.MaintenanceEdit(frm).then(res => {
+                            console.log(res);
+                            if (res['0'] === 200) {
+                                alert.success("The maintenance has been changed!");
+                                onClose();
+                                props.history.push('/maintenance');
+                            } else {
+                                alert.error("The maintenance could not be changed status. Please, try again.");
                                 onClose();
                             }
                         })}>Yes</button>
@@ -249,7 +281,7 @@ function View(props) {
                         User created:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                    {maintenance ? maintenance.create_user : ""}
+                        {maintenance ? maintenance.create_user : ""}
                     </div>
                 </div>
 
@@ -258,7 +290,7 @@ function View(props) {
                         User update:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                    {maintenance ? maintenance.update_user : ""}
+                        {maintenance ? maintenance.update_user : ""}
                     </div>
                 </div>
 
@@ -267,7 +299,7 @@ function View(props) {
                         Time created:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                    {maintenance ? maintenance.create_time : ""}
+                        {maintenance ? maintenance.create_time : ""}
                     </div>
                 </div>
 
@@ -276,15 +308,18 @@ function View(props) {
                         Time update:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                    {maintenance ? maintenance.update_time : ""}
+                        {maintenance ? maintenance.update_time : ""}
                     </div>
                 </div>
 
                 <div className="row  mt-10">
-                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? <Link to={`/maintenance/edit/${maintenance.id}`} className="btn btn-primary">Edit</Link> : ""}
                         {maintenance ? <button onClick={handleDelete} className="btn btn-danger ml-10">Delete</button> : ""}
                         <Link to="/maintenance" className="btn btn-warning ml-10">Cancel</Link>
+                        {maintenance && maintenance.status === 1 ? <button type="button" onClick={() => changeStatus(2)} className="btn btn-success ml-10">Repairing</button> : ""}
+                        {maintenance && maintenance.status === 2 ? <button type="button" onClick={() => changeStatus(3)} className="btn btn-warning ml-10">Repaired</button> : ""}
+                        {maintenance && maintenance.status === 2 ? <button type="button" onClick={() => changeStatus(4)} className="btn btn-danger ml-10">Repair fail</button> : ""}
                     </div>
                 </div>
             </div>
