@@ -41,7 +41,7 @@ class Device extends Entity
      */
     protected $_accessible = [
         'parent_id' => true,
-        'id_cate' => true,
+        'categories_id' => true,
         'serial_number' => true,
         'product_number' => true,
         'name' => true,

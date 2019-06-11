@@ -10,7 +10,6 @@ import Layout from '../src/Component/Master/index';
 import Brand from '../src/Component/Brands/index';
 import BrandList from '../src/Component/Brands/List/List';
 
-
 import Categories from './Component/Categories/index';
 import List_cate from './Component/Categories/List/List';
 import Add_cate from './Component/Categories/Action/Add';
@@ -22,10 +21,17 @@ import ViewBorrow from '../src/Component/Borrow/Action/View';
 import AddBrorrow from '../src/Component/Borrow/Action/Add';
 import NotificationBroken from '../src/Component/Borrow/Action/notificationBroken';
 
+
+import Device from '../src/Component/Devices/index';
+import ListDevice from '../src/Component/Devices/List/List';
+import ViewDevice from '../src/Component/Devices/Action/View';
+import AddDevice from '../src/Component/Devices/Action/Add';
+
 import Maintenance from '../src/Component/Maintenance/index';
 import MaintenanceList from '../src/Component/Maintenance/List/List';
 import MaintenanceView from '../src/Component/Maintenance/Action/View';
 import MaintenanceAdd from '../src/Component/Maintenance/Action/Add';
+
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
@@ -110,6 +116,28 @@ function App() {
           content={<Brand content={<BrandList />} />}
         />
       )} exact />
+
+      <Route path="/devices" render={() => (
+        <Layout
+          content={<Device content={< ListDevice />} />}
+        />
+      )} exact />
+      <Route path="/devices/view/:id" render={(props) => (
+        <Layout
+          content={<Device content={<ViewDevice {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/devices/add" render={(props) => (
+        <Layout
+          content={<Device content={<AddDevice {...props} />} />}
+          {...props}
+        />
+      )} exact />
+       <Route path="/devices/edit/:id" render={(props) => (
+        <Layout
+          content={<Device content={<AddDevice {...props} />} />}
+
       <Route path="/maintenance" render={() => (
         <Layout
           content={<Maintenance content={< MaintenanceList />} />}
@@ -130,6 +158,7 @@ function App() {
       <Route path="/maintenance/edit/:id" render={(props) => (
         <Layout
           content={<Maintenance content={<MaintenanceAdd {...props} />} />}
+
           {...props}
         />
       )} exact />
