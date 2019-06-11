@@ -14,8 +14,7 @@ class MaintenancesController extends ApiController {
 
     public function initialize() {
         parent::initialize();
-//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
-        $this->login = ["id" => 61, "user_name" => "Test", "level" => 1, "email" => "hoangnguyenit98@gmail.com"];
+        $this->login = $this->getRequest()->getSession()->read('Auth.User');
         $this->Maintenances = TableRegistry::getTableLocator()->get('Maintenances');
         $this->conn = ConnectionManager::get('default');
         $this->loadComponent('Maintenance');
@@ -27,7 +26,7 @@ class MaintenancesController extends ApiController {
 
     //function get list maintenances
     public function index() {
-        $maintenances = $this->Maintenance->getList(['is_deleted' => 0]);
+        $maintenances = $this->Maintenance->ListMaintenancesWhere(['Maintenances.is_deleted' => 0]);
         if (!empty($maintenances)) {
             foreach ($maintenances as $row) {
                 $row['note'] = html_entity_decode($row['note']);
@@ -41,7 +40,7 @@ class MaintenancesController extends ApiController {
 
     //function view maintenances
     public function view($id = null) {
-        $maintenance = $this->Maintenance->first(['id' => $id]);
+        $maintenance = $this->Maintenance->view(['Maintenances.id' => $id]);
         if (!empty($maintenance)) {
             $maintenance['note'] = html_entity_decode($maintenance['note']);
             $maintenance['maintenances_address'] = html_entity_decode($maintenance['maintenances_address']);
@@ -190,8 +189,8 @@ class MaintenancesController extends ApiController {
                 $this->returnResponse(901, ['message' => $validateError]);
                 return;
             }
-            $exitDevice= $this->Maintenances->find('all')->where(['devices_id'=>$request['devices_id'],'status'=>0])->toArray();
-            if(count($exitDevice)>0){
+            $exitDevice = $this->Maintenances->find('all')->where(['devices_id' => $request['devices_id'], 'status' => 0])->toArray();
+            if (count($exitDevice) > 0) {
                 $this->returnResponse(901, ['message' => 'This device was notification broken']);
                 return;
             }
@@ -263,7 +262,7 @@ class MaintenancesController extends ApiController {
                         'BorrowDevices.borrower_id' => $result->notificationer_broken,
                         'BorrowDevicesDetail.status' => 1,
                         'BorrowDevicesDetail.device_id' => $result->devices_id
-                    ]);                    
+                    ]);
                     if (!empty($borrow)) {
                         $borrowDetail = $this->Borrow->firstBorrowDevicesDetail(['id' => $borrow['BorrowDevicesDetail']['id']]);
                         $borrowDetail->status = 4;
@@ -274,8 +273,6 @@ class MaintenancesController extends ApiController {
                         if ($result == FALSE) {
                             $update = False;
                         }
-                    } else {
-                        $update = FALSE;
                     }
                     if ($update == FALSE) {
                         $this->conn->rollback();
@@ -334,6 +331,71 @@ class MaintenancesController extends ApiController {
         } else {
             $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
+    }
+
+    public function filter() {
+        if ($this->getRequest()->is('post')) {
+            $request = $this->request->getData();
+            $condition = ['Maintenances.is_deleted' => 0];
+            if (isset($request['notification_broken']) && !empty($request['notification_broken'])) {
+                $condition = array_merge($condition, ['Maintenances.status' => $request['notification_broken']-1]);
+            }
+            if (isset($request['waiting_for_repair']) && !empty($request['waiting_for_repair'])) {
+                $condition = array_merge($condition, ['Maintenances.status' => $request['waiting_for_repair']-1]);
+            }
+            if (isset($request['repairing']) && !empty($request['repairing'])) {
+                $condition = array_merge($condition, ['Maintenances.status' => $request['repairing']-1]);
+            }
+            if (isset($request['repaired']) && !empty($request['repaired'])) {
+                $condition = array_merge($condition, ['Maintenances.status' => $request['repaired']-1]);
+            }
+            if (isset($request['repair_fail']) && !empty($request['repair_fail'])) {
+                $condition = array_merge($condition, ['Maintenances.status' => $request['repair_fail']-1]);
+            }
+            if (isset($request['no_confirm_notification']) && !empty($request['no_confirm_notification'])) {
+                $condition = array_merge($condition, ['Maintenances.status' => $request['no_confirm_notification']-1]);
+            }
+
+            $maintenances = $this->Maintenance->ListMaintenancesWhere($condition);
+            if (!empty($maintenances)) {
+                foreach ($maintenances as $row) {
+                    $row['note'] = html_entity_decode($row['note']);
+                    $row['maintenances_address'] = html_entity_decode($row['maintenances_address']);
+                }
+            }
+            $args = [
+                'lstMaintenances' => $maintenances,
+                'lstCount' => $this->getListCountStatus()
+            ];
+            //set return response ( response code, api response )
+            $this->returnResponse(200, $args);
+        }
+    }
+
+    private function getListCountStatus() {
+        $maintenances = $this->Maintenance->ListMaintenancesWhere(['Maintenances.is_deleted' => 0]);
+        $arrCount['notification_broken'] = 0;
+        $arrCount['waiting_for_repair'] = 0;
+        $arrCount['repairing'] = 0;
+        $arrCount['repaired'] = 0;
+        $arrCount['repair_fail'] = 0;
+        $arrCount['no_confirm_notification'] = 0;
+        foreach ($maintenances as $row) {
+            if ($row['status'] == 0) {
+                $arrCount['notification_broken'] ++;
+            } elseif ($row['status'] == 1) {
+                $arrCount['waiting_for_repair'] ++;
+            } elseif ($row['status'] == 2) {
+                $arrCount['repairing'] ++;
+            } elseif ($row['status'] == 3) {
+                $arrCount['repaired'] ++;
+            } elseif ($row['status'] == 4) {
+                $arrCount['repair_fail'] ++;
+            } elseif ($row['status'] == 5) {
+                $arrCount['no_confirm_notification'] ++;
+            }
+        }
+        return $arrCount;
     }
 
     private function setStatusDevice(array $condition, $status) {
