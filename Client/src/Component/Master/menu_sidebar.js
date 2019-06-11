@@ -6,7 +6,7 @@ function MenuSidebar() {
         <aside className="menu-sidebar d-none d-lg-block">
             <div className="logo">
                 <a href="brand.html">
-                    <img src="../../../images/icon/logo.png" alt="Cool Admin"/>
+                    <img src="../../../images/icon/logo.png" alt="Cool Admin" />
                 </a>
             </div>
             <div className="menu-sidebar__content js-scrollbar1">
@@ -31,6 +31,10 @@ function MenuSidebar() {
                         <li>
                             <a href={'/brand'}>
                                 <i className="far fa-check-square"></i>Brand</a>
+                        </li>
+                        <li>
+                            <a href={'/maintenance'}>
+                                <i className="fab fa-accessible-icon"></i>Maintenance</a>
                         </li>
                         <li>
                             <a href={'/user'}>

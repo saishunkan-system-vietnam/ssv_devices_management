@@ -36,12 +36,23 @@ let api = {
         'brand_delete': '/api/v1/brand/delete',
         'brand_filter': '/api/v1/brand/filter',
 
+
         'list_device': '/api/v1/device',
         'view_device': '/api/v1/device/view/',
         'add_device': '/api/v1/device/add',
         'edit_device': '/api/v1/device/edit',
         'delete_device': '/api/v1/device/delete',
         'filter_device': '/api/v1/device/filter',
+
+        'maintenance_list': '/api/v1/maintenance',
+        'maintenance_add': '/api/v1/maintenance/add',
+        'maintenance_edit': '/api/v1/maintenance/edit',
+        'maintenance_delete': '/api/v1/maintenance/delete',
+        'maintenance_view': '/api/v1/maintenance/view/',
+        'maintenance_comfirm_notification_broken': '/api/v1/maintenance/comfirm_notification_broken',
+        'maintenance_no_comfirm_notification_broken': '/api/v1/maintenance/no_comfirm_notification_broken',
+        'maintenance_filter': '/api/v1/maintenance/filter',
+
     }
 }
 

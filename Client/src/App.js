@@ -21,10 +21,17 @@ import ViewBorrow from '../src/Component/Borrow/Action/View';
 import AddBrorrow from '../src/Component/Borrow/Action/Add';
 import NotificationBroken from '../src/Component/Borrow/Action/notificationBroken';
 
+
 import Device from '../src/Component/Devices/index';
 import ListDevice from '../src/Component/Devices/List/List';
 import ViewDevice from '../src/Component/Devices/Action/View';
 import AddDevice from '../src/Component/Devices/Action/Add';
+
+import Maintenance from '../src/Component/Maintenance/index';
+import MaintenanceList from '../src/Component/Maintenance/List/List';
+import MaintenanceView from '../src/Component/Maintenance/Action/View';
+import MaintenanceAdd from '../src/Component/Maintenance/Action/Add';
+
 
 import { BrowserRouter as Router, Route } from "react-router-dom";
 function App() {
@@ -109,6 +116,7 @@ function App() {
           content={<Brand content={<BrandList />} />}
         />
       )} exact />
+
       <Route path="/devices" render={() => (
         <Layout
           content={<Device content={< ListDevice />} />}
@@ -129,6 +137,28 @@ function App() {
        <Route path="/devices/edit/:id" render={(props) => (
         <Layout
           content={<Device content={<AddDevice {...props} />} />}
+
+      <Route path="/maintenance" render={() => (
+        <Layout
+          content={<Maintenance content={< MaintenanceList />} />}
+        />
+      )} exact />
+      <Route path="/maintenance/view/:id" render={(props) => (
+        <Layout
+          content={<Maintenance content={<MaintenanceView {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/maintenance/add" render={(props) => (
+        <Layout
+          content={<Maintenance content={<MaintenanceAdd {...props} />} />}
+          {...props}
+        />
+      )} exact />
+      <Route path="/maintenance/edit/:id" render={(props) => (
+        <Layout
+          content={<Maintenance content={<MaintenanceAdd {...props} />} />}
+
           {...props}
         />
       )} exact />
