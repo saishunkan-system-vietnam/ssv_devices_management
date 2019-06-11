@@ -6,6 +6,7 @@ import MaintenanceEdit from '../../../api/maintenanceEdit';
 import MaintenanceView from '../../../api/maintenanceView';
 import { toShortDate } from '../../../common/date';
 import { Link } from 'react-router-dom';
+import { formatMoney } from '../../../common/fomat';
 
 function Add(props) {
 
@@ -142,8 +143,11 @@ function Add(props) {
     }
 
     function handleOnchange(e) {
-        setTotal_payment(e.target.value);
+        let money = e.target.value;
+        setTotal_payment(formatMoney(money));
     }
+
+
 
     var optionDevice = lstDevice.map((device, index) => {
         let result = '';
@@ -157,7 +161,7 @@ function Add(props) {
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    {/* <legend className="pl-30">{borrow.length!==0?'Update information borrow device':'Add new information borrow device'}</legend><hr /> */}
+                    <legend className="pl-30">{maintenance_id ? 'Update maintenance' : 'Add new maintenance'}</legend><hr />
 
                     <div className="form-group">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
@@ -216,7 +220,7 @@ function Add(props) {
 
 
                             <div className="form-group">
-                                <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Total pay:</label>
+                                <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Total pay (vnđ):</label>
                                 <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                     <input type="text" className="form-control" title="Total pay" onChange={handleOnchange} value={total_payment} />
                                 </div>

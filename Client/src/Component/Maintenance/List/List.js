@@ -31,8 +31,10 @@ function ListBorrow() {
         var frm = new FormData();
         frm.append(name, status);
         MaintenanceFilter.MaintenanceFilter(frm).then(res => {
-            setLstCountStatus(res.payload.lstCount);
-            setMaintenances(res.payload.lstMaintenances);
+            if (res) {
+                setLstCountStatus(res.payload.lstCount);
+                setMaintenances(res.payload.lstMaintenances);
+            }
         })
     }
 
@@ -173,7 +175,7 @@ function ListBorrow() {
                                 <th>Status</th>
                                 <th>Broken date</th>
                                 <th>Notificationer broken</th>
-                                <th>Total payment</th>
+                                <th>Total payment (vnđ)</th>
                                 <th>created_user</th>
                                 <th>update_user</th>
                                 <th>created_time</th>

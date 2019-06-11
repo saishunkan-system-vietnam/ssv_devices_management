@@ -7,6 +7,7 @@ import MaintenanceView from '../../../api/maintenanceView';
 import { status } from '../status';
 import MaintenanceDelete from '../../../api/maintenanceDelete';
 import MaintenanceEdit from '../../../api/maintenanceEdit';
+import { formatMoney } from '../../../common/fomat';
 
 function View(props) {
     const alert = useAlert();
@@ -269,10 +270,10 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Total payment
+                        Total payment:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {maintenance ? maintenance.total_payment : ""}
+                        {maintenance && maintenance.total_payment ? formatMoney(maintenance.total_payment) +" vnđ" : ""}
                     </div>
                 </div>
 

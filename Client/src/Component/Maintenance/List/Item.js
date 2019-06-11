@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { toShortDate } from '../../../common/date'
 import { status } from '../status';
+import { formatMoney } from '../../../common/fomat';
 
 function Item(props) {
 
@@ -10,9 +11,11 @@ function Item(props) {
     function onDelete() {
         props.onDelete(maintenance.id);
     }
+
     function onConfirm() {
         props.onConfirm(maintenance.id);
     }
+
     function onNoConfirm() {
         props.onNoConfirm(maintenance.id);
     }
@@ -25,7 +28,7 @@ function Item(props) {
             <td >{status(maintenance.status)}</td>
             <td >{toShortDate(maintenance.broken_date)}</td>
             <td >{maintenance.Users.user_name}</td>
-            <td >{maintenance.total_payment ? maintenance.total_payment.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') : ""}</td>
+            <td >{maintenance.total_payment ? formatMoney(maintenance.total_payment) : ""}</td>
             <td >{maintenance.create_user}</td>
             <td >{maintenance.update_user}</td>
             <td >{maintenance.create_time}</td>
