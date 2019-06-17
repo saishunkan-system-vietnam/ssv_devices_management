@@ -7,7 +7,7 @@ import addCategory from '../../../api/addcategory';
 import editCategory from '../../../api/editcategory';
 import { useAlert } from "react-alert";
 
-function Add(props) {   
+function Add(props) {
     const [id, setID] = useState('');
     const name = useFormInput('');
     const isParent = useFormInput(false);
@@ -16,7 +16,7 @@ function Add(props) {
     const [listBrands, setLstBrands] = useState([]);
     const [lstCategories, setLstCategories] = useState([]);
     const alert = useAlert();
-    
+
 
     const onSave = (e) => {
         e.preventDefault();
@@ -25,7 +25,6 @@ function Add(props) {
         if (isParent.value === false) {
             idparent = id_parent.value;
         }
-        console.log(idparent);
         frm.append('id_parent', idparent);
         frm.append('brands_id', id_brand.value);
         frm.append('category_name', name.value);
@@ -64,53 +63,42 @@ function Add(props) {
     function handleGetLstBrands() {
         lstBrands.lstBrands().then(responseJson => {
             setLstBrands(responseJson['payload']['lstBrands']);
-            id_brand.onChange({target:{type:'text',value:responseJson['payload']['lstBrands'][0].id}});
         });
     }
     function handleGetLstCategories() {
         lstCategory.lstCategory().then(responseJson => {
-            let lstCate=responseJson['payload']['lstCategories'];
-            setLstCategories(lstCate);   
-            if(lstCate.length>0){
-               for(let i=0;i<lstCate.length;i++){
-                    if(lstCate[i].id_parent===0 ){
-                        id_parent.onChange({target:{type:'text',value:responseJson['payload']['lstCategories'][i].id}});
-                        break;
-                    }                    
-                }
-            }              
+            setLstCategories(responseJson['payload']['lstCategories']);
         });
-    }    
-    
-    function get_category(){
+    }
+
+    function get_category() {
         getCategory.getCategory(props.match.params.id).then(responseJson => {
             let category = responseJson['payload']['category'];
             setID(category.id);
-            name.onChange({target:{type:'text',value:category.category_name}});
-            id_brand.onChange({target:{type:'text',value:category.brands_id}});
-            console.log(isParent);
-            if(category.id_parent===0){
-                 isParent.onChange({target:{type:'checkbox', checked: true}});
-            }else{
-                id_parent.onChange({target:{type:'text',value:category.id_parent}});
-           }
-           
-        });       
+            name.onChange({ target: { type: 'text', value: category.category_name } });
+            id_brand.onChange({ target: { type: 'text', value: category.brands_id } });
+            if (category.id_parent === 0) {
+                isParent.onChange({ target: { type: 'checkbox', checked: true } });
+            } else {
+                id_parent.onChange({ target: { type: 'text', value: category.id_parent } });
+            }
+
+        });
     }
 
-    useEffect(() => {  
-        if(id==='' && props.match.params.id){
+    useEffect(() => {
+        if (id === '' && props.match.params.id) {
             get_category();
-        }        
+        }
 
         if (lstCategories.length === 0) {
             handleGetLstCategories();
         }
         if (listBrands.length === 0) {
             handleGetLstBrands();
-        }  
-    },[]);
-    
+        }
+    }, []);
+
     var option_brand = listBrands.map((brand, index) => {
         return <Option key={index} label={brand.brand_name} value={brand.id} />
     });
@@ -125,12 +113,12 @@ function Add(props) {
             />
         }
         return result;
-    });   
+    });
 
-    function useFormInput(initialValue){
-        const [value, setValue]=useState(initialValue);
-        function hanldeChange(e){
-            setValue( e.target.type === 'checkbox' ? e.target.checked : e.target.value);   
+    function useFormInput(initialValue) {
+        const [value, setValue] = useState(initialValue);
+        function hanldeChange(e) {
+            setValue(e.target.type === 'checkbox' ? e.target.checked : e.target.value);
         }
         return {
             value,
@@ -142,7 +130,7 @@ function Add(props) {
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    <legend className="pl-30">{id?'Update category':'Add new category'}</legend><hr />
+                    <legend className="pl-30">{id ? 'Update category' : 'Add new category'}</legend><hr />
 
                     <div className="form-group">
                         <div className="row">
@@ -162,7 +150,8 @@ function Add(props) {
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                 <select className="form-control" {...id_brand} >
-                                    {option_brand}                                   
+                                    <option value="" disabled hidden >Select one brand</option>
+                                    {option_brand}
                                 </select>
                             </div>
                         </div>
@@ -175,6 +164,7 @@ function Add(props) {
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                 <select className="form-control" {...id_parent} >
+                                    <option value="" disabled hidden >Select one category parent</option>
                                     {option_category_parent}
                                 </select>
                             </div>
@@ -186,7 +176,7 @@ function Add(props) {
                             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
                                 <div className="checkbox">
                                     <label>
-                                        <input type="checkbox" {...isParent} checked={isParent.value===true} />
+                                        <input type="checkbox" {...isParent} checked={isParent.value === true} />
                                         &nbsp; Category parent
                                 </label>
                                 </div>

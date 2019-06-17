@@ -58,7 +58,7 @@ function List() {
             key={index}
             id={category.id}
             brands_id={category['Brands'].brand_name}
-            parent_id={category.id_parent==0?'parent':'children'}
+            parent_id={category.id_parent === 0 ? 'parent' : 'children'}
             name={category.category_name}
             created_user={category.created_user}
             created_time={category.created_time}
@@ -73,8 +73,8 @@ function List() {
         frm.append('id_parent', parent_id);
         frm.append('brands_id', brand_id);
         frm.append('category_name', name);
-        FilterCategory.filterCategory(frm).then(responseJson=>{
-           setLstCategories(responseJson['payload']['lstFilter']);
+        FilterCategory.filterCategory(frm).then(responseJson => {
+            setLstCategories(responseJson['payload']['lstFilter']);
         });
     }
 

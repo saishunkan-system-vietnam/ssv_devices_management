@@ -88,17 +88,16 @@ function Add(props) {
         if (!categories) {
             GetCategories.lstCategory().then(res => {
                 setCategories(res.payload.lstCategories);
-                categories_id.onChange({ target: { value: res.payload.lstCategories['0'].id } })
             })
         }
         if (!brands) {
             GetBrands.BrandList().then(res => {
                 setBrands(res.payload.lstBrands);
-                brand_id.onChange({ target: { value: res.payload.lstBrands['0'].id } })
             })
         }
         if (!device && props.match.params.id) {
             GetDevice.DeviceView(props.match.params.id).then(res => {
+                console.log(res);
                 let _device = res.payload;
                 setBaseUrl(_device.baseUrl);
                 setDevice(_device.device);
@@ -117,7 +116,8 @@ function Add(props) {
 
             })
         }
-    })
+        console.log('a');
+    }, [])
 
     function useFormInput(initValue) {
         const [value, setValue] = useState(initValue);
@@ -167,113 +167,119 @@ function Add(props) {
         setImage(null);
     }
 
-    return (
-        <div className="row p-20">
-            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <form>
-                    <legend className="pl-30">{device?'Update device':'Add new device'}</legend><hr />
+    function showTemplate() {
+        return (
+            <div className="row p-20">
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <form>
+                        <legend className="pl-30">{device ? 'Update device' : 'Add new device'}</legend><hr />
 
-                    <div className="row">
-                        <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                    <label>Category:</label>
+                        <div className="row">
+                            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <div className="form-group">
+                                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Category:</label>
+                                    </div>
+                                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <select className="form-control" {...categories_id} >
+                                            <option value="" disabled hidden >Select one category</option>
+                                            {categories ? showOptionCategories() : ''}
+                                        </select>
+                                    </div>
                                 </div>
-                                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                    <select className="form-control" {...categories_id} >
-                                        {categories ? showOptionCategories() : ''}
-                                    </select>
+
+                                <div className="form-group">
+                                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Brand:</label>
+                                    </div>
+                                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <select className="form-control" {...brand_id} >
+                                            <option value="" disabled hidden>Select one Brand</option>
+                                            {brands ? showOptionBrands() : ''}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="form-group">
+                                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Name:</label>
+                                    </div>
+                                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <input type="text" className="form-control" {...name} />
+                                    </div>
+                                </div>
+
+                                <div className="form-group">
+                                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Image:</label>
+                                    </div>
+                                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 ">
+                                        <input type="file" className="form-control" onChange={onChangeImage} />
+                                        {image ? <div onClick={onCloseImg} className="close-img">x</div> : ''}
+                                        <img src={image ? image.path : device ? `${baseUrl}/${device.image ? device.image : '../../../img/not-available.jpg'}` : ''} className="img-responsive img" />
+
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="form-group">
-                                <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                    <label>Brand:</label>
-                                </div>
-                                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                    <select className="form-control" {...brand_id} >
-                                        {brands ? showOptionBrands() : ''}
-                                    </select>
-                                </div>
-                            </div>
 
-                            <div className="form-group">
-                                <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                    <label>Name:</label>
+                            <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <div className="form-group">
+                                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Serial number:</label>
+                                    </div>
+                                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <input type="text" className="form-control" {...serial_number} />
+                                    </div>
                                 </div>
-                                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                    <input type="text" className="form-control" {...name} />
-                                </div>
-                            </div>
 
-                            <div className="form-group">
-                                <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                    <label>Image:</label>
+                                <div className="form-group">
+                                    <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                        <label>Product number:</label>
+                                    </div>
+                                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <input type="text" className="form-control" {...product_number} />
+                                    </div>
                                 </div>
-                                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 ">
-                                    <input type="file" className="form-control" onChange={onChangeImage} />
-                                    {image ? <div onClick={onCloseImg} className="close-img">x</div> : ''}
-                                    <img src={image ? image.path : device ? `${baseUrl}/${device.image ? device.image : '../../../img/not-available.jpg'}` : ''} className="img-responsive img" />
 
+                                <div className="form-group">
+                                    <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Specifications:</label>
+                                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <textarea className="form-control" rows="2" {...specifications} ></textarea>
+                                    </div>
+                                </div>
+
+
+                                <div className="form-group">
+                                    <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Purchase date:</label>
+                                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <input type="date" className="form-control" required="required" title="Purchase date" {...purchase_date} />
+                                    </div>
+                                </div>
+
+                                <div className="form-group">
+                                    <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Warranty period:</label>
+                                    <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                                        <input type="date" className="form-control" required="required" title="Warranty period date" {...warranty_period} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-
-                        <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                            <div className="form-group">
-                                <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                    <label>Serial number:</label>
-                                </div>
-                                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                    <input type="text" className="form-control" {...serial_number} />
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                    <label>Product number:</label>
-                                </div>
-                                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                    <input type="text" className="form-control" {...product_number} />
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Specifications:</label>
-                                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                    <textarea className="form-control" rows="2" {...specifications} ></textarea>
-                                </div>
-                            </div>
-
-
-                            <div className="form-group">
-                                <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Purchase date:</label>
-                                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                    <input type="date" className="form-control" required="required" title="Purchase date" {...purchase_date} />
-                                </div>
-                            </div>
-
-                            <div className="form-group">
-                                <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Warranty period:</label>
-                                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                    <input type="date" className="form-control" required="required" title="Warranty period date" {...warranty_period} />
-                                </div>
+                        <div className="row">
+                            <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 pl-30">
+                                <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Save</button>
+                                <Link to="/devices" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</Link>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="row">
-                        <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 pl-30">
-                            <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Save</button>
-                            <Link to="/devices" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</Link>
-                        </div>
-                    </div>
-
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
+
+    return showTemplate();
 }
 
 export default Add;
