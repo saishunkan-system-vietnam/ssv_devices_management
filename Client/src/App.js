@@ -137,7 +137,8 @@ function App() {
        <Route path="/devices/edit/:id" render={(props) => (
         <Layout
           content={<Device content={<AddDevice {...props} />} />}
-
+        />
+       )} exact />
       <Route path="/maintenance" render={() => (
         <Layout
           content={<Maintenance content={< MaintenanceList />} />}
