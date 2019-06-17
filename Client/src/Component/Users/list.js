@@ -147,24 +147,24 @@ function ListUsers(props) {
                             <div className="user-data m-b-30">
                                 <h3 className="title-3 m-b-30">
                                     <i className="fa fa-user"></i>user data</h3>
-                                <div className="filters m-b-45">
-                                    <div className="rs-select2--dark rs-select2--md rs-select2--border">
-                                        <select className="js-select2" name="property">
-                                            <option value="1" selected="selected">Manegemenet</option>
-                                            <option value="2">System Engineer</option>
-                                            <option value="3">Customer</option>
-                                        </select>
-                                        <div className="dropDownSelect2"></div>
-                                    </div>
-                                    <div className="rs-select2--dark rs-select2--md rs-select2--border">
-                                        <select className="js-select2 au-select-dark" name="time">
-                                            <option value="4" selected="selected">Administrator</option>
-                                            <option value="1">Staff</option>
-                                            <option value="2">Customer</option>
-                                        </select>
-                                        <div className="dropDownSelect2"></div>
-                                    </div>
-                                </div>
+                                {/*<div className="filters m-b-45">*/}
+                                    {/*<div className="rs-select2--dark rs-select2--md rs-select2--border">*/}
+                                        {/*<select className="js-select2" name="property">*/}
+                                            {/*<option value="1" selected="selected">Manegemenet</option>*/}
+                                            {/*<option value="2">System Engineer</option>*/}
+                                            {/*<option value="3">Customer</option>*/}
+                                        {/*</select>*/}
+                                        {/*<div className="dropDownSelect2"></div>*/}
+                                    {/*</div>*/}
+                                    {/*<div className="rs-select2--dark rs-select2--md rs-select2--border">*/}
+                                        {/*<select className="js-select2 au-select-dark" name="time">*/}
+                                            {/*<option value="4" selected="selected">Administrator</option>*/}
+                                            {/*<option value="1">Staff</option>*/}
+                                            {/*<option value="2">Customer</option>*/}
+                                        {/*</select>*/}
+                                        {/*<div className="dropDownSelect2"></div>*/}
+                                    {/*</div>*/}
+                                {/*</div>*/}
 
                                 <div className="table-responsive table-data">
                                     <table className="table">

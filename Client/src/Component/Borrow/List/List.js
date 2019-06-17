@@ -279,13 +279,9 @@ function ListBorrow() {
                                 <th>Device</th>
                                 <th>Status</th>
                                 <th>Borrow_date</th>
-                                <th>approved_date</th>
-                                <th>Return_date_expected</th>
-                                <th>return_date</th>
-                                <th>created_user</th>
-                                <th>update_user</th>
-                                <th>created_time</th>
-                                <th>update_time</th>
+                                <th>Approved date</th>
+                                <th>Return date</th>
+                                <th>Return date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
