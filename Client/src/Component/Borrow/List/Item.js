@@ -33,7 +33,7 @@ function Item(props) {
             <td> {toShortDate(props.borrow_date)} </td>
             <td> {toShortDate(props.approved_date)} </td>
             <td> {toShortDate(props.return_date_expected)}</td>
-            <td> {toShortDate(props.return_d)}</ td>
+            <td> {toShortDate(props.return_date)}</ td>
             <td>
                 <Link to={`/borrow/view/${props.id}`}> <i className="fa fa-eye fa-lg" > </i></Link >
                 {Number(props.status_code) === 0 ? <Link to={`/borrow/edit/${props.id}`} > < i className="fa fa-edit fa-lg" > </i></Link > : ''}

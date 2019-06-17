@@ -71,10 +71,11 @@ function Add(props) {
         if (props.match.params.id && borrow.length === 0) {
             BorrowView.BorrowView(props.match.params.id).then(res => {
                 let borrow = res.payload.borrowDevices;
+                console.log(borrow);
                 setBorrow(borrow);
                 device_id.onChange({ target: { type: 'text', value: borrow.BorrowDevicesDetail.device_id } });
                 borrow_reason.onChange({ target: { type: 'text', value: borrow.BorrowDevicesDetail.borrow_reason } });
-                return_date_expected.onChange({ target: { type: 'text', value: toShortDate(borrow.BorrowDevicesDetail.return_date_expected) } });
+                return_date_expected.onChange({ target: { type: 'text', value: borrow.BorrowDevicesDetail.return_date_expected } });
                 borrow_date.onChange({ target: { type: 'text', value: toShortDate(borrow.BorrowDevicesDetail.borrow_date) } });
             });
         }
@@ -135,7 +136,7 @@ function Add(props) {
                     <div className="form-group">
                         <label className="col-sm-2 control-label">Return date expected:</label>
                         <div className="col-sm-4">
-                            <input type="date" className="form-control" required="required" title="Return date expected" {...return_date_expected} />
+                            <input type="datetime-local" className="form-control" required="required" title="Return date expected" {...return_date_expected} />
                         </div>
                     </div>
 

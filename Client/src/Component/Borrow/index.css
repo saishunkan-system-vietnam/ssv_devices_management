@@ -26,7 +26,7 @@
     background-color: white;
 }
 
-.fa, .fas {
+.fa, .fas, .far {
     padding: 0 5px;
 }
 
@@ -155,7 +155,7 @@
     border-radius: 7px;
 }
 
-.filter .quantity{
+.filter .quantity {
     position: absolute;
     display: inline-block;
     top: -10px;
@@ -172,11 +172,12 @@
     font-size: 12px;
     box-shadow: 1px 1px 4px silver;
 }
-.filter .quantity{
+
+.filter .quantity {
     position: relative;
     display: inline-block;
 }
 
-.filter span{
+.filter span {
     cursor: pointer;
 }

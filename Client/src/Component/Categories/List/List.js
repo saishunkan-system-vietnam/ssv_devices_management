@@ -5,6 +5,7 @@ import FilterCategory from '../../../api/filtercategory';
 import { useAlert } from "react-alert";
 import lstCategory from '../../../api/listcategories';
 import lstBrands from '../../../api/listbrands';
+import NoData from '../../../common/NoData';
 
 function List() {
     const [lstCategories, setLstCategories] = useState([]);
@@ -53,20 +54,16 @@ function List() {
     });
 
 
-    var category_item = lstCategories.map((category, index) => {
+    var category_item = lstCategories.length !== 0 ? lstCategories.map((category, index) => {
         return <Item
             key={index}
             id={category.id}
             brands_id={category['Brands'].brand_name}
-            parent_id={category.id_parent === 0 ? 'parent' : 'children'}
+            parent_id={category.Category_parent.category_name ? category.Category_parent.category_name : category.category_name}
             name={category.category_name}
-            created_user={category.created_user}
-            created_time={category.created_time}
-            update_time={category.update_time}
-            update_user={category.update_user}
             onDelete={onDelete}
         />
-    });
+    }) : <NoData />;
 
     function find(parent_id, brand_id, name) {
         var frm = new FormData();
@@ -128,20 +125,14 @@ function List() {
                     <table className="table text-center">
                         <thead>
                             <tr>
-                                <th>id</th>
+                                <th>ID</th>
                                 <th>Brand</th>
-                                <th>id parent</th>
+                                <th>Parent</th>
                                 <th>Name</th>
-                                <th>User created</th>
-                                <th>User update</th>
-                                <th>Time created</th>
-                                <th>Time update</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {category_item}
-                        </tbody>
+                        {category_item}
                     </table>
                 </div>
             </div>

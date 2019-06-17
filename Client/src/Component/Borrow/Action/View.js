@@ -97,7 +97,7 @@ function View(props) {
                         Handover ID:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {borrow.handover_id}
+                        {borrow.User_handover ? borrow.User_handover.user_name : ''}
                     </div>
                 </div>
 
@@ -106,7 +106,7 @@ function View(props) {
                         Approved ID:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {borrow.approved_id}
+                        {borrow.User_approved ? borrow.User_approved.user_name : ''}
                     </div>
                 </div>
 
@@ -288,7 +288,7 @@ function View(props) {
                         Time created:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {borrow.BorrowDevicesDetail ? borrow.BorrowDevicesDetail.created_time : ""}
+                        {borrow.BorrowDevicesDetail ? toShortDate(borrow.BorrowDevicesDetail.created_time) : ""}
                     </div>
                 </div>
 
@@ -297,7 +297,7 @@ function View(props) {
                         Time update:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {borrow.BorrowDevicesDetail ? borrow.BorrowDevicesDetail.update_time : ""}
+                        {borrow.BorrowDevicesDetail ? toShortDate(borrow.BorrowDevicesDetail.update_time) : ""}
                     </div>
                 </div>
 

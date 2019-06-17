@@ -5,6 +5,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import { status } from '../status';
 import DeviceView from '../../../api/deviceView';
 import DeviceDelete from '../../../api/deviceDelete';
+import { toShortDate } from '../../../common/date';
 
 function View(props) {
 
@@ -144,7 +145,7 @@ function View(props) {
                         Purchase date:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {device ? device.purchase_date : ''}
+                        {device ? toShortDate(device.purchase_date) : ''}
                     </div>
                 </div>
 
@@ -153,7 +154,7 @@ function View(props) {
                         Warranty period date:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {device ? device.warranty_period : ''}
+                        {device ? toShortDate(device.warranty_period) : ''}
                     </div>
                 </div>
 
@@ -180,7 +181,7 @@ function View(props) {
                         Created time:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {device ? device.created_time : ''}
+                        {device ? toShortDate(device.created_time) : ''}
                     </div>
                 </div>
 
@@ -189,7 +190,7 @@ function View(props) {
                         Update Time:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {device ? device.update_time : ''}
+                        {device ? toShortDate(device.update_time) : ''}
                     </div>
                 </div>
 
@@ -198,7 +199,7 @@ function View(props) {
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         {device ? <Link to={`/devices/edit/${device.id}`} className="btn btn-primary">Edit</Link> : ''}
 
-                        <button type="button" class="btn btn-danger ml-10" onClick={handleDelete}>Delete</button>
+                        <button type="button" className="btn btn-danger ml-10" onClick={handleDelete}>Delete</button>
 
                         <Link to="/devices" className="btn btn-warning ml-10">Cancel</Link>
                     </div>

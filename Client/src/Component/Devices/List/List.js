@@ -76,7 +76,6 @@ function List() {
     var showItem = devices.map((device, index) => {
         return (<Item
             key={index}
-            stt={index}
             baseUrl={baseUrl}
             device={device}
             onDelete={handleDeleteBrand}
@@ -185,17 +184,12 @@ function List() {
                     <table className="table text-center">
                         <thead>
                             <tr>
-                                <th>STT</th>
                                 <th>ID</th>
                                 <th>Category</th>
                                 <th>Brand</th>
                                 <th>Image</th>
                                 <th>Name</th>
                                 <th>Status</th>
-                                <th>User created</th>
-                                <th>User update</th>
-                                <th>Time created</th>
-                                <th>Time update</th>
                                 <th>Action</th>
                             </tr>
                         </thead>

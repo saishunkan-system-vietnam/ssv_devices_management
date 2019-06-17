@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import getCategory from '../../../api/category';
 import { useAlert } from "react-alert";
-import { confirmAlert } from 'react-confirm-alert'; 
+import { confirmAlert } from 'react-confirm-alert';
 import DeleteCategory from '../../../api/deletecategory';
+import { Link } from 'react-router-dom';
+import { toShortDate } from '../../../common/date';
 
 function View(props) {
     const [category, setCategory] = useState([]);
@@ -70,7 +72,7 @@ function View(props) {
                         Category parent:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {category.id_parent}
+                        {category && category.Category_parent ? category.Category_parent.category_name : ''}
                     </div>
                 </div>
 
@@ -79,7 +81,7 @@ function View(props) {
                         Brand:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {category.brands_id}
+                        {category && category.Brands ? category.Brands.brand_name : ''}
                     </div>
                 </div>
                 <div className="row  mt-10">
@@ -103,7 +105,7 @@ function View(props) {
                         Time created:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {category.created_time}
+                        {toShortDate(category.created_time)}
                     </div>
                 </div>
                 <div className="row  mt-10">
@@ -111,15 +113,14 @@ function View(props) {
                         Time update:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {category.update_time}
+                        {toShortDate(category.update_time)}
                     </div>
                 </div>
                 <div className="row  mt-10">
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-
                         <a href={`/categories/edit/${category.id}`} className="btn btn-primary">Edit</a>
                         <button type="button" className="btn btn-danger ml-10" onClick={handleDelete}>Delete</button>
-
+                        <Link to="/categories" className="btn btn-warning ml-10">Cancel</Link>
                     </div>
                 </div>
             </div>
