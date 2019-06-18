@@ -5,6 +5,7 @@ import DeleteUser from '../../api/delete_user';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import { useAlert } from "react-alert";
+import { BehaviorSubject } from 'rxjs';
 
 var bgColors = { "Edit": "#339af0",
     "Confirm": "#20c997",
@@ -19,6 +20,9 @@ function ListUsers(props) {
     const alert = useAlert();
     const [lstUsers, setLstUsers] = useState([]);
     const [baseUrl, setBaseUrl] = useState([]);
+    //get data local Storage
+    const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('newUser')));
+    console.log(currentUserSubject.value);
 
     function handleGetLstUsers() {
         LstUsers.LstUsers().then(responseJson => {

@@ -15,12 +15,12 @@ function Login(props) {
         signin.signin(params).then(responseJson => {
             localStorage.setItem('statusUserCode', responseJson['0']);
             if (responseJson['0'] === 200) {
-                localStorage.setItem('newUser', responseJson['payload']['userName']);
+                localStorage.setItem('newUser', JSON.stringify(responseJson['payload']['userData']));
                 localStorage.setItem('Token', responseJson['payload']['token']);
                 alert.success("Login success");
                 props.history.push('/dashboard');
             } else if(responseJson['0'] === 902) {
-                localStorage.setItem('newUser', responseJson['payload']['userName']);
+                localStorage.setItem('newUser', JSON.stringify(responseJson['payload']['userData']));
                 localStorage.setItem('Token', responseJson['payload']['token']);
                 alert.success("Login success. Please update your profile!");
                 props.history.push('/user/update');
