@@ -12,6 +12,8 @@
     "react-confirm-alert": "^2.4.1",
     "react-dom": "^16.8.6",
     "react-ladda": "^6.0.0",
+    "react-metismenu": "^1.4.0",
+    "react-metismenu-router-link": "^2.1.0",
     "react-progress-button": "^5.1.0",
     "react-redux": "^7.0.3",
     "react-router-dom": "^5.0.0",

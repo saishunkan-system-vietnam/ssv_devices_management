@@ -1,48 +1,75 @@
 import React from 'react';
+import MetisMenu from 'react-metismenu';
+import RouterLink from 'react-metismenu-router-link';
 
 function MenuSidebar() {
-    return (
+    const menu = [
+        {
+            icon: 'fas fa-tachometer-alt',
+            label: 'Dashboard',
+            to: '/dashboard',
+        },
+        {
+            icon: 'fas fa-file-text',
+            label: 'Categories',
+            content: [
+                {
+                    icon: 'fa fa-shopping-bag',
+                    label: 'Brand',
+                    to: '/brand',
+                },
+                {
+                    icon: 'fa fa-tasks',
+                    label: 'Categories',
+                    to: '/categories',
+                },
+            ],
+        },
+        {
+            icon: 'bolt',
+            label: 'Devices',
+            content: [
+                {
+                    icon: 'fa fa-desktop',
+                    label: 'Devices',
+                    to: '/devices',
+                },
+                {
+                    icon: 'fa fa-american-sign-language-interpreting',
+                    label: 'Borrow Device',
+                    to: '/borrow',
+                },
+            ],
+        },
+        {
+            icon: 'fa fa-wrench',
+            label: 'Maintenance',
+            to: '/maintenance',
+        },
+        {
+            icon: 'fas fa-user',
+            label: 'User',
+            to: '/user',
+        },
+        // {
+        //     icon: 'external-link',
+        //     label: 'External Link',
+        //     externalLink: true,
+        //     to: 'https:www.google.com',
+        // },
+    ];
 
+    return (
         <aside className="menu-sidebar d-none d-lg-block">
             <div className="logo">
                 <a href="brand.html">
                     <img src="../../../images/icon/logo.png" alt="Cool Admin" />
                 </a>
             </div>
-            <div className="menu-sidebar__content js-scrollbar1">
-                <nav className="navbar-sidebar">
-                    <ul className="list-unstyled navbar__list">
-                        <li className="active">
-                            <a className="js-arrow" href={'/dashboard'}>
-                                <i className="fas fa-tachometer-alt"></i>Dashboard</a>
-                        </li>
-                        <li>
-                            <a href={'/categories'}>
-                                <i className="fas fa-chart-bar"></i>Category</a>
-                        </li>
-                        <li>
-                            <a href={'/devices'}>
-                                <i className="fas fa-table"></i>Devices</a>
-                        </li>
-                        <li>
-                            <a href={'/borrow'}>
-                                <i className="fas fa-chart-bar"></i>Borrow Device</a>
-                        </li>
-                        <li>
-                            <a href={'/brand'}>
-                                <i className="far fa-check-square"></i>Brand</a>
-                        </li>
-                        <li>
-                            <a href={'/maintenance'}>
-                                <i className="fab fa-accessible-icon"></i>Maintenance</a>
-                        </li>
-                        <li>
-                            <a href={'/user'}>
-                                <i className="fas fa-user"></i>User</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+        <MetisMenu
+            content={menu}
+            //LinkComponent={RouterLink}
+        />
         </aside>
     )
 }
