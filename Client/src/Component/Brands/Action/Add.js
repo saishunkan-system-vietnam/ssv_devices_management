@@ -11,9 +11,10 @@ function Add(props) {
 
     var alert = useAlert();
     function handleOnClose() {
+        setBrand(null);
+        setBrand_name('');
         props.changeShowForm();
     }
-
     useEffect(() => {
         if (props.id && !brand) {
             BrandsView.BrandsView(props.id).then(res => {
@@ -45,15 +46,7 @@ function Add(props) {
                     handleOnClose();
                 } else {
                     var obj = res.payload.message;
-                    if (typeof obj === 'object') {
-                        for (const key in obj) {
-                            for (const k in obj[key]) {
-                                alert.error(`${key}: ${obj[key][k]}`)
-                            }
-                        }
-                    } else {
-                        alert.error(res.payload.message);
-                    }
+                    messageFaild(obj);
                 }
             })
         } else {
@@ -64,35 +57,39 @@ function Add(props) {
                     handleOnClose();
                 } else {
                     var obj = res.payload.message;
-                    if (typeof obj === 'object') {
-                        for (const key in obj) {
-                            for (const k in obj[key]) {
-                                alert.error(`${key}: ${obj[key][k]}`)
-                            }
-                        }
-                    } else {
-                        alert.error(res.payload.message);
-                    }
+                    messageFaild(obj);
                 }
             });
         }
 
     }
 
+    function messageFaild(obj) {
+        if (typeof obj === 'object') {
+            for (const key in obj) {
+                for (const k in obj[key]) {
+                    alert.error(`${obj[key][k]}`);
+                }
+            }
+        } else {
+            alert.error(obj);
+        }
+    }
+
     return (
         <div className="row ml-5">
             <div className="col-xs-5 col-sm-5 col-md-5 col-lg-5">
                 <form className="form">
-                    <legend>Add new brand</legend><hr />
+                    <legend>{brand?'Cập nhập thông tin Thương hiệu':'Thêm mới Thương hiệu'}</legend><hr />
 
                     <div className="form-group">
                         <div className="row">
-                            <label>Brand name:</label>
-                            <input type="text" className="form-control" placeholder="Enter brand name...." onChange={handleOnChange} value={brand_name} />
+                            <label>Tên thương hiệu:</label>
+                            <input type="text" className="form-control" placeholder="Nhập tên thương hiệu...." onChange={handleOnChange} value={brand_name} />
                             <div className='mt-10'>
-                                <button type="button" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i>Save</button>
+                                <button type="button" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i>Lưu</button>
 
-                                <button onClick={handleOnClose} type="button" className="btn btn-danger ml-10"><i className="fa fa-times"></i>Cancel</button>
+                                <button onClick={handleOnClose} type="button" className="btn btn-danger ml-10"><i className="fa fa-times"></i>Hủy</button>
 
                             </div>
                         </div>

@@ -16,6 +16,7 @@ function List() {
     var alert = useAlert();
 
     function handleOnChangeShowForm() {
+        setBrand_id(null);
         setShowForm(!showForm);
     }
 
@@ -39,7 +40,6 @@ function List() {
     var brandItem = lstBrands.map((brand, index) => {
         return <BrandItem
             key={index}
-            index={index + 1}
             brand={brand}
             edit={onEdit}
             delete={handleDeleteBrand}
@@ -85,11 +85,11 @@ function List() {
         <div>
             {showForm ? <BrandAction changeShowForm={handleOnChangeShowForm} id={brand_id} changeData={getLstBrand} /> : ""}
             <div className="row mt-10">
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-inline">
-                    {showForm ? '' : <button onClick={handleOnChangeShowForm} type="button" className="btn btn-primary ml-10"><i className="fa fa-plus"></i> Add</button>}
-
-                    <input type="text" className="form-control ml-10" title="Search name" placeholder="Search brand name..." onChange={handleOnchangeInputSearch} />
-
+                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 form-inline">
+                    <input type="text" className="form-control ml-10" title="Search name" placeholder="Nhập brand name..." onChange={handleOnchangeInputSearch} />
+                </div>
+                <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                    {showForm ? '' : <button onClick={handleOnChangeShowForm} type="button" className="btn btn-primary mr-10"><i className="fa fa-plus"></i> Thêm mới</button>}
                 </div>
                 <hr />
             </div>
@@ -98,14 +98,13 @@ function List() {
                     <table className="table text-center">
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>User created</th>
-                                <th>User update</th>
-                                <th>Time created</th>
-                                <th>Time update</th>
-                                <th>Action</th>
+                                <th>Mã Thương hiệu</th>
+                                <th>Tên thương hiệu</th>
+                                <th>Người tạo</th>
+                                <th>Người cập nhập</th>
+                                <th>Thời gian tạo</th>
+                                <th>Thời gian cập nhập</th>
+                                <th>Công cụ</th>
                             </tr>
                         </thead>
                         <tbody>
