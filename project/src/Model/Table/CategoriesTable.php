@@ -47,20 +47,20 @@ class CategoriesTable extends Table {
                 ->allowEmptyString('id', 'create');
 
         $validator
-                ->integer('brands_id')
-                ->requirePresence('brands_id', 'create')
-                ->allowEmptyString('brands_id', false);
-        
+                ->integer('brands_id', 'Hãng sản xuất không hợp lệ.')
+                ->requirePresence('brands_id', 'create', 'Chọn hãng sản xuất để tiếp tục.')
+                ->allowEmptyString('brands_id', false, 'Chọn hãng sản xuất để tiếp tục.');
+
         $validator
                 ->integer('id_parent')
-                ->requirePresence('id_parent', 'create')
-                ->allowEmptyString('id_parent', false);
+                ->requirePresence('id_parent', 'Chọn Loại bố để tiếp tục.')
+                ->allowEmptyString('id_parent', false, 'Chọn Loại bố để tiếp tục.');
 
         $validator
                 ->scalar('category_name')
-                ->maxLength('category_name', 100)
-                ->requirePresence('category_name', 'create')
-                ->allowEmptyString('category_name', false);
+                ->maxLength('category_name', 100,'Tên loại thiết bị không được phép vượt quá 100 ký tự.')
+                ->requirePresence('category_name', 'create','Nhập tên loại để tiếp tục.')
+                ->allowEmptyString('category_name', false,'Nhập tên loại đẻ tiếp tục.');
 
         $validator
                 ->scalar('created_user')

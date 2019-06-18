@@ -1,4 +1,4 @@
-export function toShortDate(dateTime) {
+export function toShortDate(dateTime, format_date = true, format_time = false, format_UTC = false) {
     let _dateTime = new Date(dateTime);
     let date = '';
     if (!isNaN(_dateTime)) {
@@ -8,7 +8,15 @@ export function toShortDate(dateTime) {
         let hour = _dateTime.getHours() < 10 ? `0${_dateTime.getHours()}` : _dateTime.getHours();
         let minutes = _dateTime.getMinutes() < 10 ? `0${_dateTime.getMinutes()}` : _dateTime.getMinutes();
         let second = _dateTime.getSeconds() < 10 ? `0${_dateTime.getSeconds()}` : _dateTime.getSeconds();
-        date = `${year}-${month}-${day} ${hour}:${minutes}:${second}`;
+        if (format_date === true) {
+            date += `${year}-${month}-${day}`;
+        }
+        if (format_time === true) {
+            date += ` ${hour}:${minutes}:${second}`;
+        }
+        if (format_UTC === true) {
+            date = `${year}-${month}-${day}T${hour}:${minutes}:${second}`
+        }
     }
-    return date;
+    return date.trim();
 }

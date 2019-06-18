@@ -214,15 +214,15 @@ function ListBorrow() {
     var listItem = lstBorrow.map((borrow, index) => {
         let staust_name = '';
         if (Number(borrow.BorrowDevicesDetail.status) === 0) {
-            staust_name = <span className="label label-primary">Borrow request</span>;
+            staust_name = <span className="label label-primary">Yêu cầu mượn</span>;
         } else if (Number(borrow.BorrowDevicesDetail.status) === 1) {
-            staust_name = <span className="label label-success">Borrowing</span>;
+            staust_name = <span className="label label-success">Thiết bị đang mượn</span>;
         } else if (Number(borrow.BorrowDevicesDetail.status) === 2) {
-            staust_name = <span className="label label-default">Borrow faild</span>;
+            staust_name = <span className="label label-default">Mượn thất bại</span>;
         } else if (Number(borrow.BorrowDevicesDetail.status) === 3) {
-            staust_name = <span className="label label-warning">Return request</span>;
+            staust_name = <span className="label label-warning">Yêu cầu trả</span>;
         } else if (Number(borrow.BorrowDevicesDetail.status) === 4) {
-            staust_name = <span className="label label-danger">Returned</span>;
+            staust_name = <span className="label label-danger">Đã trả</span>;
         }
         let status_code = borrow.BorrowDevicesDetail.status;
 
@@ -259,18 +259,17 @@ function ListBorrow() {
     }
     return (
         <div>
-            <div className="row mt-10 filter">
+            <div className="row mt-10 filter">               
 
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <Link to="/borrow/add" className="btn btn-primary add ml-10"><i className="fa fa-plus"></i></Link>
+                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                    <span onClick={() => handleChange(0, "borrow_request")} className="label label-primary ml-10">{status === 0 ? <i className="fas fa-check"></i> : ""}Yêu cầu mượn</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrow_request : ''}</span>
+                    <span onClick={() => handleChange(1, "borrowing")} className="label label-success ml-10">{status === 1 ? <i className="fas fa-check"></i> : ""}Thiết bị đang mượn</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrowing : ''}</span>
+                    <span onClick={() => handleChange(2, "no_borrow")} className="label label-default ml-10">{status === 2 ? <i className="fas fa-check"></i> : ""}Mượn thất bại</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.no_borrow : ''}</span>
+                    <span onClick={() => handleChange(3, "return_request")} className="label label-warning ml-10">{status === 3 ? <i className="fas fa-check"></i> : ""}Yêu cầu trả</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.return_request : ''}</span>
+                    <span onClick={() => handleChange(4, "returned")} className="label label-danger ml-10">{status === 4 ? <i className="fas fa-check"></i> : ""}Đã trả</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.returned : ''}</span>
                 </div>
-
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <span onClick={() => handleChange(0, "borrow_request")} className="label label-primary ml-10">{status === 0 ? <i className="fas fa-check"></i> : ""}Borrow request</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrow_request : ''}</span>
-                    <span onClick={() => handleChange(1, "borrowing")} className="label label-success ml-10">{status === 1 ? <i className="fas fa-check"></i> : ""}Borrowing</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrowing : ''}</span>
-                    <span onClick={() => handleChange(2, "no_borrow")} className="label label-default ml-10">{status === 2 ? <i className="fas fa-check"></i> : ""}Borrow faild</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.no_borrow : ''}</span>
-                    <span onClick={() => handleChange(3, "return_request")} className="label label-warning ml-10">{status === 3 ? <i className="fas fa-check"></i> : ""}Return request</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.return_request : ''}</span>
-                    <span onClick={() => handleChange(4, "returned")} className="label label-danger ml-10">{status === 4 ? <i className="fas fa-check"></i> : ""}Returned</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.returned : ''}</span>
+                <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                    <Link to="/borrow/add" className="btn btn-primary mt-10 mr-10"><i className="fa fa-plus"></i>Thêm mới</Link>
                 </div>
 
             </div>
@@ -279,15 +278,15 @@ function ListBorrow() {
                     <table className="table text-center">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Borrower</th>
-                                <th>Device</th>
-                                <th>Status</th>
-                                <th>Borrow_date</th>
-                                <th>Approved date</th>
-                                <th>Return date</th>
-                                <th>Return date</th>
-                                <th>Action</th>
+                                <th>Mã Mượn</th>
+                                <th>Người mượn</th>
+                                <th>Thiết bị</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày mượn</th>
+                                <th>Ngày duyệt</th>
+                                <th>Dự kiến ngày trả</th>
+                                <th>Ngày trả</th>
+                                <th>Công cụ</th>
                             </tr>
                         </thead>
                         <tbody>

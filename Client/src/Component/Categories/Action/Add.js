@@ -7,6 +7,7 @@ import addCategory from '../../../api/addcategory';
 import editCategory from '../../../api/editcategory';
 import { useAlert } from "react-alert";
 
+
 function Add(props) {
     const [id, setID] = useState('');
     const name = useFormInput('');
@@ -36,27 +37,31 @@ function Add(props) {
                     props.history.push('/categories');
                 } else {
                     let obj = response.payload.message;
-                    for (const key in obj) {
-                        for (const k in obj[key]) {
-                            alert.error(`${key}: ${obj[key][k]}`)
-                        }
-                    }
+                    messageFaild(obj);
                 }
             })
         } else {
-            addCategory.addCategory(frm).then(response => {
-                if (response['0'] === 200) {
-                    alert.success(response.payload.message);
+            addCategory.addCategory(frm).then(res => {
+                if (res['0'] === 200) {
+                    alert.success(res.payload.message);
                     props.history.push('/categories');
                 } else {
-                    let obj = response.payload.message;
-                    for (const key in obj) {
-                        for (const k in obj[key]) {
-                            alert.error(`${key}: ${obj[key][k]}`)
-                        }
-                    }
+                    let obj = res.payload.message;
+                    messageFaild(obj);
                 }
             })
+        }
+    }
+
+    function messageFaild(obj) {
+        if (typeof obj === 'object') {
+            for (const key in obj) {
+                for (const k in obj[key]) {
+                    alert.error(`${obj[key][k]}`);
+                }
+            }
+        } else {
+            alert.error(obj);
         }
     }
 
@@ -130,15 +135,15 @@ function Add(props) {
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    <legend className="pl-30">{id ? 'Update category' : 'Add new category'}</legend><hr />
+                    <legend className="pl-30">{id ? 'Cập nhập loại thiết bị' : 'Thêm mới loại thiết bị'}</legend><hr />
 
                     <div className="form-group">
                         <div className="row">
                             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
-                                <label>Category name:</label>
+                                <label>Tên loại:</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                                <input type="text" className="form-control" placeholder="Enter category name...." {...name} />
+                                <input type="text" className="form-control" placeholder="Nhập tên loại...." {...name} />
                             </div>
                         </div>
                     </div>
@@ -146,11 +151,11 @@ function Add(props) {
                     <div className="form-group">
                         <div className="row">
                             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
-                                <label>Brand:</label>
+                                <label>Hãng sản xuất:</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                 <select className="form-control" {...id_brand} >
-                                    <option value="" disabled hidden >Select one brand</option>
+                                    <option value="" disabled hidden >---Chọn hãng sản xuất---</option>
                                     {option_brand}
                                 </select>
                             </div>
@@ -160,11 +165,11 @@ function Add(props) {
                     <div className={isParent.value === true ? "form-group hide" : "form-group"}>
                         <div className="row">
                             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
-                                <label>Category parent:</label>
+                                <label>Loại thiết bị bố</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                 <select className="form-control" {...id_parent} >
-                                    <option value="" disabled hidden >Select one category parent</option>
+                                    <option value="" disabled hidden >---Chọn loại bố---</option>
                                     {option_category_parent}
                                 </select>
                             </div>
@@ -177,7 +182,7 @@ function Add(props) {
                                 <div className="checkbox">
                                     <label>
                                         <input type="checkbox" {...isParent} checked={isParent.value === true} />
-                                        &nbsp; Category parent
+                                        &nbsp; Loại thiết bị bố
                                 </label>
                                 </div>
                             </div>
@@ -186,8 +191,8 @@ function Add(props) {
 
                     <div className="row">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
-                            <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Save</button>
-                            <a href="/categories" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</a>
+                            <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Lưu</button>
+                            <a href="/categories" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Hủy</a>
                         </div>
                     </div>
 

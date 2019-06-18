@@ -10,8 +10,8 @@ import NoData from '../../../common/NoData';
 function List() {
     const [lstCategories, setLstCategories] = useState([]);
     const alert = useAlert();
-    const [findCateParent, setFindCateParent] = useState({ name: 'All level categories', leve: -1 }); //-1 all , 1 parent, 2 children
-    const [findBrand, setFindBrand] = useState({ name: 'All brands', id: -1 }); //-1 all , id brandid
+    const [findCateParent, setFindCateParent] = useState({ name: 'Tất cả loại', leve: -1 }); //-1 all , 1 parent, 2 children
+    const [findBrand, setFindBrand] = useState({ name: 'Tất cả hãng', id: -1 }); //-1 all , id brandid
     const [findCateName, setCateName] = useState(''); //CateName
     const [listBrands, setLstBrands] = useState([]);
 
@@ -41,10 +41,10 @@ function List() {
         formdata.append('id', id);
         DeleteCategory.deleteCategory(formdata).then(responseJson => {
             if (responseJson['0'] === 200) {
-                alert.success("The category has been delete!");
+                alert.success(responseJson.payload.message);
                 handleGetLstCategories();
             } else {
-                alert.error("The category could not be delete. Please, try again.");
+                alert.error(responseJson.payload.message);
             }
         });
     }
@@ -97,9 +97,9 @@ function List() {
                         {findCateParent.name} <span className="caret"></span>
                     </button>
                     <ul className="dropdown-menu" role="menu">
-                        <li onClick={() => handleChangeCateParent('All level categories', -1)} >All level categories</li>
-                        <li onClick={() => handleChangeCateParent('Parent', 1)} >Parent</li>
-                        <li onClick={() => handleChangeCateParent('Children', 2)} >Children</li>
+                        <li onClick={() => handleChangeCateParent('Tất cả loại', -1)} >Tất cả loại</li>
+                        <li onClick={() => handleChangeCateParent('Loại bố', 1)} >Loại bố</li>
+                        <li onClick={() => handleChangeCateParent('Loại con', 2)} >Loại con</li>
                     </ul>
                 </div>
 
@@ -108,14 +108,14 @@ function List() {
                         {findBrand.name} <span className="caret"></span>
                     </button>
                     <ul className="dropdown-menu" role="menu">
-                        <li onClick={() => handleChangeBrand('All brands', -1)} >All brands</li>
+                        <li onClick={() => handleChangeBrand('Tất cả hãng', -1)} >Tất cả hãng</li>
                         {ListBrandItem}
                     </ul>
                 </div>
 
-                <input type="text" className="form-control ml-10 mt-10" placeholder="Enter name category" value={findCateName} onChange={handleOnChangeCateName} />
+                <input type="text" className="form-control ml-10 mt-10" placeholder="Nhập tên loại cần tìm..." value={findCateName} onChange={handleOnChangeCateName} />
 
-                <a href='/categories/add' className="btn btn-primary ml-10 mt-10"><i className="fa fa-plus"></i> Add new</a>
+                <a href='/categories/add' className="btn btn-primary ml-10 mt-10"><i className="fa fa-plus"></i> Thêm mới</a>
                 <hr />
             </div>
             <div className="row mt-10">
@@ -123,11 +123,11 @@ function List() {
                     <table className="table text-center">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Brand</th>
-                                <th>Parent</th>
-                                <th>Name</th>
-                                <th>Action</th>
+                                <th>Mã loại</th>
+                                <th>Hãng sản xuất</th>
+                                <th>Loại bố</th>
+                                <th>Tên loại</th>
+                                <th>Công cụ</th>
                             </tr>
                         </thead>
                         <tbody>

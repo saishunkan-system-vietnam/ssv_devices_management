@@ -10,14 +10,13 @@ function Item(p) {
       customUI: ({ onClose }) => {
         return (
           <div className='custom-ui'>
-            <h1>Are you sure?</h1>
-            <p>You want to delete this category?</p>
+            <h1>Đang tiến hàng xóa Loại thiết bị?</h1>
             <button onClick={() => {
               p.onDelete(p.id);
               onClose();
             }
-            }>Yes</button>
-            <button onClick={onClose}>No</button>
+            }>Xóa</button>
+            <button onClick={onClose}>Hủy</button>
           </div>
         )
       }

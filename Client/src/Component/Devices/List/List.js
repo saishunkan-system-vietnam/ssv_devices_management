@@ -19,9 +19,9 @@ function List() {
 
     const [devices, setDevices] = useState([]);
     const [baseUrl, setBaseUrl] = useState('');
-    const [findBrand, setFindBrand] = useState({ name: 'All brands', id: -1 }); //-1 all , id brandid
+    const [findBrand, setFindBrand] = useState({ name: 'Tất cả hãng', id: -1 }); //-1 all , id brandid
     const [findCategory, setFindCategory] = useState({ name: 'All Categories', id: -1 }); //-1 all , id category
-    const [findStatus, setFindStatus] = useState({ name: 'All Status', id: -1 }); //-1 all , 1 free time, 2 busy, 3 maintenancing
+    const [findStatus, setFindStatus] = useState({ name: 'Tất cả trạng thái', id: -1 }); //-1 all , 1 Đang rảnh, 2 Đang bận, 3 maintenancing
     const [findName, setFindName] = useState('');
     const [lstBrands, setLstBrands] = useState(null);
     const [lstCategories, setLstCategories] = useState(null);
@@ -156,7 +156,7 @@ function List() {
                         {findBrand.name} <span className="caret"></span>
                     </button>
                     <ul className="dropdown-menu" role="menu">
-                        <li onClick={() => handleChangeBrand('All brands', -1)} >All brands</li>
+                        <li onClick={() => handleChangeBrand('Tất cả hãng', -1)} >Tất cả hãng</li>
                         {showBrandItem()}
                     </ul>
                 </div>
@@ -166,10 +166,10 @@ function List() {
                         {findStatus.name} <span className="caret"></span>
                     </button>
                     <ul className="dropdown-menu" role="menu">
-                        <li onClick={() => onClickFindStatus("All status", -1)}>All status</li>
-                        <li onClick={() => onClickFindStatus("Free time", 1)}>Free time</li>
-                        <li onClick={() => onClickFindStatus("Busy", 2)}>Busy</li>
-                        <li onClick={() => onClickFindStatus("Is maintenancing", 3)}>Is maintenancing</li>
+                        <li onClick={() => onClickFindStatus("Tất cả trạng thái", -1)}>Tất cả trạng thái</li>
+                        <li onClick={() => onClickFindStatus("Đang rảnh", 1)}>Đang rảnh</li>
+                        <li onClick={() => onClickFindStatus("Đang bận", 2)}>Đang bận</li>
+                        <li onClick={() => onClickFindStatus("Đang bảo trì", 3)}>Đang bảo trì</li>
                     </ul>
                 </div>
 

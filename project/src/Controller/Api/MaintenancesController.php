@@ -5,12 +5,15 @@ namespace App\Controller\Api;
 use RestApi\Controller\ApiController;
 use Cake\ORM\TableRegistry;
 use Cake\Datasource\ConnectionManager;
+use Cake\Core\Configure;
 
 class MaintenancesController extends ApiController {
 
     private $login;
     private $conn;
     private $Maintenances;
+    private $message;
+    private $messageMaintenance;
 
     public function initialize() {
         parent::initialize();
@@ -22,6 +25,8 @@ class MaintenancesController extends ApiController {
         $this->loadComponent('Mail');
         $this->loadComponent('Device');
         $this->loadComponent('Borrow');
+        $this->message = Configure::read('Message');
+        $this->messageMaintenance = Configure::read('Maintenance');
     }
 
     //function get list maintenances
@@ -48,7 +53,7 @@ class MaintenancesController extends ApiController {
             //set return response ( response code, api response )
             $this->returnResponse(200, $args);
         } else {
-            $this->returnResponse(903, ['message' => 'There is no data. Please, try again.']);
+            $this->returnResponse(903, ['message' => $this->message['no_data']]);
         }
     }
 
@@ -81,18 +86,18 @@ class MaintenancesController extends ApiController {
                     $devices = $this->setStatusDevice(['id' => $result->devices_id], 2);
                     if ($devices === FALSE) {
                         $this->conn->rollback();
-                        $this->returnResponse(901, ['message' => 'The maintenance could not be saved. Please, try again.']);
+                        $this->returnResponse(901, ['message' => sprintf($this->message["add_error"], "thiết bị bảo trì")]);
                         return;
                     }
                 }
                 $this->conn->commit();
-                $this->returnResponse(200, ['message' => 'The maintenance has been saved.']);
+                $this->returnResponse(200, ['message' => sprintf($this->message["add_success"], "thiết bị bảo trì")]);
             } catch (Exception $ex) {
                 $this->conn->rollback();
                 $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -103,12 +108,12 @@ class MaintenancesController extends ApiController {
 
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response ( response code, api response )
-                $this->returnResponse(903, ['message' => 'ID could not be found. Please, try again.']);
+                $this->returnResponse(903, ['message' => $this->message['no_id']]);
                 return;
             }
             $maintenance = $this->Maintenance->first(['id' => $request['id']]);
             if (empty($maintenance)) {
-                $this->returnResponse(903, ['message' => 'There is no data. Please, try again.']);
+                $this->returnResponse(903, ['message' => $this->message['no_data']]);
                 return;
             }
             $validate = $this->Maintenances->newEntity($request);
@@ -134,18 +139,18 @@ class MaintenancesController extends ApiController {
                     $devices = $this->setStatusDevice(['id' => $result->devices_id], 0);
                     if ($devices === FALSE) {
                         $this->conn->rollback();
-                        $this->returnResponse(901, ['message' => 'The maintenance could not be saved. Please, try again.']);
+                        $this->returnResponse(901, ['message' => sprintf($this->message["edit_error"], "thiết bị bảo trì")]);
                         return;
                     }
                 }
                 $this->conn->commit();
-                $this->returnResponse(200, ['message' => 'The maintenance has been saved.']);
+                $this->returnResponse(200, ['message' => sprintf($this->message["edit_success"], "thiết bị bảo trì")]);
             } catch (Exception $ex) {
                 $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
             $this->conn->rollback();
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -157,24 +162,26 @@ class MaintenancesController extends ApiController {
 
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response ( response code, api response )
-                $this->returnResponse(903, ['message' => 'ID could not be found. Please, try again.']);
+                $this->returnResponse(903, ['message' => $this->message['no_id']]);
                 return;
             }
             $maintenance = $this->Maintenance->first(['id' => $request['id']]);
             if (empty($maintenance)) {
-                $this->returnResponse(903, ['message' => 'There is no data. Please, try again.']);
+                $this->returnResponse(903, ['message' => $this->message['no_data']]);
                 return;
             }
             $maintenance->update_time = $this->dateNow;
             $maintenance->update_user = $this->login['user_name'];
             $maintenance->is_deleted = 1;
             if ($this->Maintenances->save($maintenance)) {
-                $this->returnResponse(200, ['message' => 'The maintenance has been deleted.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(200, ['message' => sprintf($this->message["delete_success"], "thiết bị bảo trì")]);
             } else {
-                $this->returnResponse(901, ['message' => 'The maintenance could not be deleted. Please, try again.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(901, ['message' => sprintf($this->message["delete_error"], "thiết bị bảo trì")]);
             }
         } else {
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -191,7 +198,7 @@ class MaintenancesController extends ApiController {
             }
             $exitDevice = $this->Maintenances->find('all')->where(['devices_id' => $request['devices_id'], 'status' => 0])->toArray();
             if (count($exitDevice) > 0) {
-                $this->returnResponse(901, ['message' => 'This device was notification broken']);
+                $this->returnResponse(901, ['message' => $this->messageMaintenance['notificationBrokened_error']]);
                 return;
             }
             try {
@@ -217,12 +224,12 @@ class MaintenancesController extends ApiController {
                 $setTemplate = 'notificationBroken';
                 $this->Mail->sendMail($setTo, $setSubject, $setViewVars, $setTemplate);
                 $this->conn->commit();
-                $this->returnResponse(200, ['message' => 'The maintenance has been notification broken.']);
+                $this->returnResponse(200, $this->messageMaintenance['notificationBroken_success']);
             } catch (Exception $ex) {
                 $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -234,12 +241,12 @@ class MaintenancesController extends ApiController {
 
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response ( response code, api response )
-                $this->returnResponse(903, ['message' => 'ID could not be found. Please, try again.']);
+                $this->returnResponse(903, ['message' => $this->message['no_id']]);
                 return;
             }
             $maintenance = $this->Maintenance->first(['id' => $request['id']]);
             if (empty($maintenance)) {
-                $this->returnResponse(903, ['message' => 'There is no data. Please, try again.']);
+                $this->returnResponse(903, ['message' => $this->message['no_data']]);
                 return;
             }
             if ($maintenance['status'] > 0) {
@@ -276,7 +283,7 @@ class MaintenancesController extends ApiController {
                     }
                     if ($update == FALSE) {
                         $this->conn->rollback();
-                        $this->returnResponse(901, ['message' => 'The notification broken could not be comfirmed. Please, try again.']);
+                        $this->returnResponse(901, ['message' => $this->messageMaintenance['comfirmNotificationBroken_error']]);
                         return;
                     }
                 }
@@ -292,13 +299,13 @@ class MaintenancesController extends ApiController {
                 $setTemplate = 'confirmNotificationBroken';
                 $this->Mail->sendMail($setTo, $setSubject, $setViewVars, $setTemplate);
                 $this->conn->commit();
-                $this->returnResponse(200, ['message' => 'The notification broken has been comfirmed.']);
+                $this->returnResponse(200, ['message' => $this->messageMaintenance['comfirmNotificationBroken_success']]);
             } catch (Exception $ex) {
                 $this->conn->rollback();
                 $this->returnResponse(901, ['message' => $ex]);
             }
         } else {
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -308,28 +315,25 @@ class MaintenancesController extends ApiController {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response ( response code, api response )
-                $this->returnResponse(903, ['message' => 'ID could not be found. Please, try again.']);
+                $this->returnResponse(903, ['message' => $this->message['no_id']]);
                 return;
             }
             $maintenance = $this->Maintenance->first(['id' => $request['id']]);
             if (empty($maintenance)) {
-                $this->returnResponse(903, ['message' => 'There is no data. Please, try again.']);
+                $this->returnResponse(903, ['message' => $this->message['no_data']]);
                 return;
             }
-            if ($maintenance['status'] == 5) {
-                $this->returnResponse(905, ['message' => 'The maintenance has been no confirm notification broken. Please, choose maintenance other']);
-                return;
-            }
+
             $maintenance->update_user = $this->login['user_name'];
             $maintenance->update_time = $this->dateNow;
             $maintenance->status = 5;
             if ($this->Maintenances->save($maintenance)) {
-                $this->returnResponse(200, ['message' => 'The maintenance has been no confirm notification broken.']);
+                $this->returnResponse(200, ['message' => $this->messageMaintenance['noComfirmNotificationBroken_success']]);
             } else {
-                $this->returnResponse(901, ['message' => 'The maintenance could not be no confirm notification broken. Please, try again.']);
+                $this->returnResponse(901, ['message' => $this->messageMaintenance['noComfirmNotificationBroken_error']]);
             }
         } else {
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -338,22 +342,22 @@ class MaintenancesController extends ApiController {
             $request = $this->request->getData();
             $condition = ['Maintenances.is_deleted' => 0];
             if (isset($request['notification_broken']) && !empty($request['notification_broken'])) {
-                $condition = array_merge($condition, ['Maintenances.status' => $request['notification_broken']-1]);
+                $condition = array_merge($condition, ['Maintenances.status' => $request['notification_broken'] - 1]);
             }
             if (isset($request['waiting_for_repair']) && !empty($request['waiting_for_repair'])) {
-                $condition = array_merge($condition, ['Maintenances.status' => $request['waiting_for_repair']-1]);
+                $condition = array_merge($condition, ['Maintenances.status' => $request['waiting_for_repair'] - 1]);
             }
             if (isset($request['repairing']) && !empty($request['repairing'])) {
-                $condition = array_merge($condition, ['Maintenances.status' => $request['repairing']-1]);
+                $condition = array_merge($condition, ['Maintenances.status' => $request['repairing'] - 1]);
             }
             if (isset($request['repaired']) && !empty($request['repaired'])) {
-                $condition = array_merge($condition, ['Maintenances.status' => $request['repaired']-1]);
+                $condition = array_merge($condition, ['Maintenances.status' => $request['repaired'] - 1]);
             }
             if (isset($request['repair_fail']) && !empty($request['repair_fail'])) {
-                $condition = array_merge($condition, ['Maintenances.status' => $request['repair_fail']-1]);
+                $condition = array_merge($condition, ['Maintenances.status' => $request['repair_fail'] - 1]);
             }
             if (isset($request['no_confirm_notification']) && !empty($request['no_confirm_notification'])) {
-                $condition = array_merge($condition, ['Maintenances.status' => $request['no_confirm_notification']-1]);
+                $condition = array_merge($condition, ['Maintenances.status' => $request['no_confirm_notification'] - 1]);
             }
 
             $maintenances = $this->Maintenance->ListMaintenancesWhere($condition);

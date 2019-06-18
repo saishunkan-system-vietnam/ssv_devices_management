@@ -82,7 +82,7 @@ class UsersController extends ApiController
             $pwd = $request['password'];
             if(empty($username) || empty($pwd)){
                 // Set the response
-                $this->returnResponse(903, ['message' => 'Username or Password can not empty.']);
+                $this->returnResponse(903, ['message' => 'Phải nhập đủ thông tin của form.']);
                 return;
             }
             $http = new Client();           
@@ -122,7 +122,7 @@ class UsersController extends ApiController
                 }
             } else {
                 // Set the response
-                $this->returnResponse(901, ['message' => 'Wrong user name or password.']);
+                $this->returnResponse(901, ['message' => 'Tài khoản hoặc mật khẩu không chính xác.']);
                 return;
             }
         }
@@ -148,7 +148,7 @@ class UsersController extends ApiController
             ->first();
         if(empty($user)) {
             // Set the response
-            $this->returnResponse(901, ['message' => 'There is no data, please check again.']);
+            $this->returnResponse(901, ['message' => 'Không có dữ liệu. Vui lòng kiểm tra lại.']);
             return;
         }
         $args = array(
@@ -231,11 +231,11 @@ class UsersController extends ApiController
             if ($result) {
                 $this->responseCode = 200;
                 // Set the response
-                $this->returnResponse(200, ['message' => 'The user has been deleted']);
+                $this->returnResponse(200, ['message' => 'Xóa user thành công.']);
                 return;
             } else {
                 // Set the response
-                $this->returnResponse(901, ['message' => 'The user could not be deleted. Please, try again.']);
+                $this->returnResponse(901, ['message' => 'Xóa user không thành công. Vui lòng kiểm tra lại.']);
                 return;
             }
         }
@@ -255,11 +255,11 @@ class UsersController extends ApiController
                 $filesize = $_FILES["file"]["size"];
                 $allowed_file_types = array('.png','.jpg','.gif','.jpeg');
                 if($filesize > 200000){
-                    $this->returnResponse(903, ['message' => 'The file you are trying to upload is too large.']);
+                    $this->returnResponse(903, ['message' => 'Không thể tải ảnh quá lớn.']);
                     return;
                 }
                 if(!in_array($file_ext, $allowed_file_types)){
-                    $this->returnResponse(903, ['message' => "Only these file typs are allowed for upload: " . implode(', ',$allowed_file_types)]);
+                    $this->returnResponse(903, ['message' => "Chọn đúng định dạng ảnh: " . implode(', ',$allowed_file_types)]);
                     return;
                 }
                 $newfilename = $this->rand_string(50) . $file_ext;
@@ -267,7 +267,7 @@ class UsersController extends ApiController
             $user_name = $this->login['user_name'];
             if(empty($request['full_name']) || empty($request['email'])) {
                 // Set the response
-                $this->returnResponse(903, ['message' => 'Data can not empty.']);
+                $this->returnResponse(903, ['message' => 'Cần nhập đủ thông tin của form.']);
                 return;
             }
             if ($session->check('User.username')) {
@@ -326,12 +326,12 @@ class UsersController extends ApiController
                     'token' => JwtToken::generateToken($payload),
                     'userData' => $user,
                     'img_path' => $img_path,
-                    'message' => 'The user has been update profile success.'
+                    'message' => 'Cập nhập thông tin user thành công.'
                 );
                 // Set the response
                 $this->returnResponse(200, $args);
             } else {
-                $this->returnResponse(901, ['message' => 'The user could not be saved. Please, try again.']);
+                $this->returnResponse(901, ['message' => 'Cập nhập thông tin user thất bại. Vui lòng kiểm tra lại.']);
             }
         }
     }
@@ -343,7 +343,7 @@ class UsersController extends ApiController
             $user_name = $this->login['user_name'];
             if(empty($id)){
                 // Set the response
-                $this->returnResponse(903, ['message' => 'Id user can not empty.']);
+                $this->returnResponse(903, ['message' => 'Không tìm thấy id. Vui lòng kiểm tra lại.']);
                 return;
             }
             $query = $this->Users->query();
@@ -356,14 +356,14 @@ class UsersController extends ApiController
                 ->where(['id' => $id]);
             if($query->execute()){
                 // Set the response
-                $this->returnResponse(200, ['message' => 'The user has been restock.']);
+                $this->returnResponse(200, ['message' => 'Người dùng đã được bổ sung.']);
             } else {
                 // Set the response
-                $this->returnResponse(901, ['message' => 'The user could not be restock. Please, try again.']);
+                $this->returnResponse(901, ['message' => 'Người dùng bổ sung không thành công. Vui lòng kiểm tra lại.']);
             }
         } else {
             //set the response
-            $this->returnResponse(904, ['message' => 'Method is not correct.']);
+            $this->returnResponse(904, ['message' => 'Phương thức không hợp lệ']);
         }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use RestApi\Controller\ApiController;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Core\Configure;
 
 class DevicesController extends ApiController {
 
@@ -14,6 +15,7 @@ class DevicesController extends ApiController {
     private $login;
     private $nameController;
     private $baseUrl;
+    private $message;
 
     public function initialize() {
         parent::initialize();
@@ -23,6 +25,7 @@ class DevicesController extends ApiController {
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
         $this->nameController = $this->getRequest()->controller;
         $this->baseUrl = Router::url('/', true);
+        $this->message = Configure::read('Message');
     }
 
     //function get list brands
@@ -46,7 +49,7 @@ class DevicesController extends ApiController {
             $this->returnResponse(200, $agrs);
         } else {
             //set return response (response code, api response)
-            $this->returnResponse(903, ['message' => 'There are no data, please check again']);
+            $this->returnResponse(903, ['message' => $this->message['no_data']]);
         }
     }
 
@@ -66,15 +69,15 @@ class DevicesController extends ApiController {
             $brand = $this->Brands->patchEntity($brandNewEntity, $request);
             $brand->created_user = $this->login['user_name'];
             if ($this->Brands->save($brand)) {
-                //set return response (response code, api response)
-                $this->returnResponse(200, ['message' => 'The brand has been saved.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(200, ['message' => sprintf($this->message["add_success"], "hãng sản xuất")]);
             } else {
-                //set return response (response code, api response)
-                $this->returnResponse(901, ['message' => 'The brand could not be saved. Please, try again.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(901, ['message' => sprintf($this->message["add_error"], "hãng sản xuất")]);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -84,13 +87,13 @@ class DevicesController extends ApiController {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response (response code, api response)
-                $this->returnResponse(903, ['message' => 'ID could not be found']);
+                $this->returnResponse(903, ['message' => $this->message['no_id']]);
                 return;
             }
             $brand = $this->getBrand(['id' => $request['id']]);
             if (empty($brand)) {
                 //set return response (response code, api response)
-                $this->returnResponse(903, ['message' => 'There are no data, please check again']);
+                $this->returnResponse(903, ['message' => $this->message['no_data']]);
                 return;
             }
 
@@ -106,15 +109,15 @@ class DevicesController extends ApiController {
             $brandUpdate->update_user = $this->login['user_name'];
             $brandUpdate->update_time = $this->dateNow;
             if ($this->Brands->save($brandUpdate)) {
-                //set return response (response code, api response)
-                $this->returnResponse(200, ['message' => 'The brand has been saved change.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(200, ['message' => sprintf($this->message["edit_success"], "hãng sản xuất")]);
             } else {
-                //set return response (response code, api response)
-                $this->returnResponse(901, ['message' => 'The brand could not be saved change. Please, try again.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(901, ['message' => sprintf($this->message["edit_error"], "hãng sản xuất")]);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -125,27 +128,27 @@ class DevicesController extends ApiController {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response (response code, api response)
-                $this->returnResponse(903, ['message' => 'ID could not be found']);
+                $this->returnResponse(903, ['message' => $this->message['no_id']]);
                 return;
             }
             $brand = $this->getBrand(['id' => $request['id']]);
             if (empty($brand)) {
-                $this->returnResponse(903, ['message' => 'There are no data, please check again']);
+                $this->returnResponse(903, ['message' => $this->message['no_data']]);
                 return;
             }
             $brand->is_deleted = 1;
             $brand->update_user = $this->login['user_name'];
             $brand->update_time = $this->dateNow;
             if ($this->Brands->save($brand)) {
-                //set return response (response code, api response)
-                $this->returnResponse(200, ['message' => 'The brand has been deleted.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(200, ['message' => sprintf($this->message["delete_success"], "hãng sản xuất")]);
             } else {
-                //set return response (response code, api response)
-                $this->returnResponse(901, ['message' => 'The brand could not be deleted. Please, try again.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(901, ['message' => sprintf($this->message["delete_error"], "hãng sản xuất")]);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -200,7 +203,7 @@ class DevicesController extends ApiController {
             $this->returnResponse(200, $args);
         } else {
             //set return response (response code, api response)
-            $this->returnResponse(903, ['message' => 'There are no data, please check again']);
+            $this->returnResponse(903, ['message' => $this->message['no_data']]);
         }
     }
 
@@ -218,7 +221,7 @@ class DevicesController extends ApiController {
             $deviceNewEntity = $this->Devices->newEntity();
             if (!isset($_FILES) || empty($_FILES)) {
                 //set return response (response code, api response)
-                $this->returnResponse(901, ['message' => 'Please select a image before add device.']);
+                $this->returnResponse(200, ['message' => sprintf($this->message["no_img"])]);
                 return;
             }
 
@@ -227,11 +230,11 @@ class DevicesController extends ApiController {
             $filesize = $_FILES["file"]["size"];
             $allowed_file_types = array('.png', '.jpg', '.gif', '.jpeg');
             if ($filesize > 200000) {
-                $this->returnResponse(903, ['message' => 'The file you are trying to upload is too large.']);
+                $this->returnResponse(903, ['message' => sprintf($this->message["img_large"])]);
                 return;
             }
             if (!in_array($file_ext, $allowed_file_types)) {
-                $this->returnResponse(903, ['message' => "Only these file typs are allowed for upload: " . implode(', ', $allowed_file_types)]);
+                $this->returnResponse(903, ['message' => sprintf($this->message["img_large"], implode(', ', $allowed_file_types))]);
                 return;
             }
             $newfilename = $this->rand_string(50) . $file_ext;
@@ -244,15 +247,15 @@ class DevicesController extends ApiController {
             }
             $device->created_user = $this->login['user_name'];
             if ($this->Devices->save($device)) {
-                //set return response (response code, api response)
-                $this->returnResponse(200, ['message' => 'The device has been saved.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(200, ['message' => sprintf($this->message["add_success"], "thiết bị")]);
             } else {
-                //set return response (response code, api response)
-                $this->returnResponse(901, ['message' => 'The device could not be saved. Please, try again.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(901, ['message' => sprintf($this->message["add_error"], "thiết bị")]);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -262,7 +265,7 @@ class DevicesController extends ApiController {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response (response code, api response)
-                $this->returnResponse(903, ['message' => 'ID could not be found']);
+                $this->returnResponse(903, ['message' => $this->message['no_id']]);
                 return;
             }
 
@@ -276,7 +279,7 @@ class DevicesController extends ApiController {
             $device = $this->getDevice(['id' => $request['id']]);
             //chech null devices ?
             if (empty($device)) {
-                $this->returnResponse(903, ['message' => 'The is no data. Please, try again.']);
+                $this->returnResponse(903, ['message' => $this->message['no_data']]);
                 return;
             }
             //if request serial_number different serial_number of device then check unique
@@ -298,11 +301,11 @@ class DevicesController extends ApiController {
                 $filesize = $_FILES["file"]["size"];
                 $allowed_file_types = array('.png', '.jpg', '.gif', '.jpeg');
                 if ($filesize > 200000) {
-                    $this->returnResponse(903, ['message' => 'The file you are trying to upload is too large.']);
+                    $this->returnResponse(903, ['message' => sprintf($this->message["img_large"])]);
                     return;
                 }
                 if (!in_array($file_ext, $allowed_file_types)) {
-                    $this->returnResponse(903, ['message' => "Only these file typs are allowed for upload: " . implode(', ', $allowed_file_types)]);
+                    $this->returnResponse(903, ['message' => sprintf($this->message["img_large"], implode(', ', $allowed_file_types))]);
                     return;
                 }
                 $newfilename = $this->rand_string(50) . $file_ext;
@@ -311,7 +314,7 @@ class DevicesController extends ApiController {
                 $deviceUpdate->image = $newfilename;
             }
 
-            //if specification khac null ma hoa code 
+            //if specification khac null ma hoa code
             if (!empty($device->specifications)) {
                 $deviceUpdate->specifications = htmlentities($device->specifications);
             }
@@ -321,12 +324,14 @@ class DevicesController extends ApiController {
                 if (!empty($imageOld)) {
                     $this->deleteImg($imageOld, $this->nameController);
                 }
-                $this->returnResponse(200, ['message' => 'The device has been saved.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(200, ['message' => sprintf($this->message["edit_success"], "thiết bị")]);
             } else {
-                $this->returnResponse(901, ['message' => 'The device could not be saved. Please, try again.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(901, ['message' => sprintf($this->message["edit_error"], "thiết bị")]);
             }
         } else {
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -336,28 +341,28 @@ class DevicesController extends ApiController {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response (response code, api response)
-                $this->returnResponse(903, ['message' => 'ID could not be found']);
+                $this->returnResponse(903, ['message' => $this->message['no_id']]);
                 return;
             }
             $device = $this->getDevice(['id' => $request['id']]);
             if (empty($device)) {
                 //set return response (response code, api response)
-                $this->returnResponse(903, ['message' => 'There are no data, please check again']);
+                $this->returnResponse(903, ['message' => $this->message['no_data']]);
                 return;
             }
             $device->update_user = $this->login['user_name'];
             $device->update_time = $this->dateNow;
             $device->is_deleted = 1;
             if ($this->Devices->save($device)) {
-                //set return response (response code, api response)
-                $this->returnResponse(200, ['message' => 'The device has been deleted.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(200, ['message' => sprintf($this->message["delete_success"], "thiết bị")]);
             } else {
-                //set return response (response code, api response)
-                $this->returnResponse(901, ['message' => 'The device could not be deleted. Please, try again.']);
+                // Set return response (response code, api response)
+                $this->returnResponse(901, ['message' => sprintf($this->message["delete_error"], "thiết bị")]);
             }
         } else {
             // Set return response (response code, api response)
-            $this->returnResponse(904, ['message' => 'Method type is not correct.']);
+            $this->returnResponse(904, ['message' => $this->message['method_error']]);
         }
     }
 
@@ -378,15 +383,15 @@ class DevicesController extends ApiController {
     }
 
     public function filterDevices() {
-        
+
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $condition = ['Devices.is_deleted' => 0];
             if (isset($request['name']) && !empty($request['name'])) {
-                $condition = array_merge($condition, ['Devices.name LIKE' => '%'.$request['name'].'%']);
+                $condition = array_merge($condition, ['Devices.name LIKE' => '%' . $request['name'] . '%']);
             }
             if (isset($request['status']) && !empty($request['status']) && $request['status'] > -1) {
-                $condition = array_merge($condition, ['Devices.status' => ($request['status']-1)]);
+                $condition = array_merge($condition, ['Devices.status' => ($request['status'] - 1)]);
             }
             if (isset($request['brand_id']) && !empty($request['brand_id']) && $request['brand_id'] > -1) {
                 $condition = array_merge($condition, ['Devices.brand_id' => $request['brand_id']]);
