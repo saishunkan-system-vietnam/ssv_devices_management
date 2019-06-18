@@ -6,12 +6,13 @@ import { useAlert } from "react-alert";
 import lstCategory from '../../../api/listcategories';
 import lstBrands from '../../../api/listbrands';
 import NoData from '../../../common/NoData';
+import { Link } from 'react-router-dom';
 
 function List() {
     const [lstCategories, setLstCategories] = useState([]);
     const alert = useAlert();
-    const [findCateParent, setFindCateParent] = useState({ name: 'Tất cả loại', leve: -1 }); //-1 all , 1 parent, 2 children
-    const [findBrand, setFindBrand] = useState({ name: 'Tất cả hãng', id: -1 }); //-1 all , id brandid
+    const [findCateParent, setFindCateParent] = useState({ name: 'Tất cả danh mục', leve: -1 }); //-1 all , 1 parent, 2 children
+    const [findBrand, setFindBrand] = useState({ name: 'Tất cả thương hiệu', id: -1 }); //-1 all , id brandid
     const [findCateName, setCateName] = useState(''); //CateName
     const [listBrands, setLstBrands] = useState([]);
 
@@ -90,43 +91,49 @@ function List() {
 
     return (
         <div>
-            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-inline">
 
-                <div className="btn-group ml-10 mt-10">
-                    <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnCategory">
-                        {findCateParent.name} <span className="caret"></span>
-                    </button>
-                    <ul className="dropdown-menu" role="menu">
-                        <li onClick={() => handleChangeCateParent('Tất cả loại', -1)} >Tất cả loại</li>
-                        <li onClick={() => handleChangeCateParent('Loại bố', 1)} >Loại bố</li>
-                        <li onClick={() => handleChangeCateParent('Loại con', 2)} >Loại con</li>
-                    </ul>
+            <div class="row">
+                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 form-inline">
+
+                    <div className="btn-group ml-10 mt-10">
+                        <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnCategory">
+                            {findCateParent.name} <span className="caret"></span>
+                        </button>
+                        <ul className="dropdown-menu" role="menu">
+                            <li onClick={() => handleChangeCateParent('Tất cả danh mục', -1)} >Tất cả danh mục</li>
+                            <li onClick={() => handleChangeCateParent('Danh mục cha', 1)} >Danh mục cha</li>
+                            <li onClick={() => handleChangeCateParent('Danh mục con', 2)} >Danh mục con</li>
+                        </ul>
+                    </div>
+
+                    <div className="btn-group ml-10 mt-10">
+                        <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown" id="btnCategory">
+                            {findBrand.name} <span className="caret"></span>
+                        </button>
+                        <ul className="dropdown-menu" role="menu">
+                            <li onClick={() => handleChangeBrand('Tất cả thương hiệu', -1)} >Tất cả thương hiệu</li>
+                            {ListBrandItem}
+                        </ul>
+                    </div>
+
+                    <input type="text" className="form-control ml-10 mt-10" placeholder="Nhập tên danh mục..." value={findCateName} onChange={handleOnChangeCateName} />
+
                 </div>
-
-                <div className="btn-group ml-10 mt-10">
-                    <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown" id="btnCategory">
-                        {findBrand.name} <span className="caret"></span>
-                    </button>
-                    <ul className="dropdown-menu" role="menu">
-                        <li onClick={() => handleChangeBrand('Tất cả hãng', -1)} >Tất cả hãng</li>
-                        {ListBrandItem}
-                    </ul>
+                <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                    <Link to='/categories/add' className="btn btn-primary mr-10 mt-10"><i className="fa fa-plus"></i> Thêm mới</Link>
                 </div>
-
-                <input type="text" className="form-control ml-10 mt-10" placeholder="Nhập tên loại cần tìm..." value={findCateName} onChange={handleOnChangeCateName} />
-
-                <a href='/categories/add' className="btn btn-primary ml-10 mt-10"><i className="fa fa-plus"></i> Thêm mới</a>
-                <hr />
             </div>
+
+            <hr />
             <div className="row mt-10">
                 <div className="table-responsive table-data">
                     <table className="table text-center">
                         <thead>
                             <tr>
-                                <th>Mã loại</th>
-                                <th>Hãng sản xuất</th>
-                                <th>Loại bố</th>
-                                <th>Tên loại</th>
+                                <th>Mã danh mục</th>
+                                <th>Thương hiệu</th>
+                                <th>Danh mục cha</th>
+                                <th>Tên danh mục</th>
                                 <th>Công cụ</th>
                             </tr>
                         </thead>

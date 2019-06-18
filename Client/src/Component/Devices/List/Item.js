@@ -11,7 +11,7 @@ function Item(props) {
 
   return (
     <tr>
-      <td>{device.id} </td>
+      <td  className="text-center">{device.id} </td>
       <td>{device.Categories.category_name} </td>
       <td>{device.Brands.brand_name} </td>
       <td><img style={{ 'maxWidth': '70px', 'padding': '4px' }} src={`${baseUrl}/${device.image ? device.image : '../../../img/not-available.jpg'}`} alt="Image" /> </td>

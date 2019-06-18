@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use Cake\ORM\Query;
@@ -20,16 +21,15 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Brand[] patchEntities($entities, array $data, array $options = [])
  * @method \App\Model\Entity\Brand findOrCreate($search, callable $callback = null, $options = [])
  */
-class BrandsTable extends Table
-{
+class BrandsTable extends Table {
+
     /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
-    {
+    public function initialize(array $config) {
         parent::initialize($config);
 
         $this->setTable('brands');
@@ -47,40 +47,40 @@ class BrandsTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
-    {
+    public function validationDefault(Validator $validator) {
         $validator
-            ->nonNegativeInteger('id')
-            ->allowEmptyString('id', 'create');
+                ->nonNegativeInteger('id')
+                ->allowEmptyString('id', 'create');
 
         $validator
-            ->scalar('brand_name')
-            ->maxLength('brand_name', 100)
-            ->requirePresence('brand_name', 'create')
-            ->allowEmptyString('brand_name', false);
+                ->scalar('brand_name')
+                ->maxLength('brand_name', 100, 'Tên thương hiệu không thể nhập quá 100 ký tự.')
+                ->requirePresence('brand_name', 'create', 'Nhập tên thương hiệu để tiếp tục.')
+                ->allowEmptyString('brand_name', false, 'Tên thương hiệu không được bỏ trống.');
 
         $validator
-            ->scalar('created_user')
-            ->maxLength('created_user', 100)
-            ->allowEmptyString('created_user');
+                ->scalar('created_user')
+                ->maxLength('created_user', 100)
+                ->allowEmptyString('created_user');
 
         $validator
-            ->scalar('update_user')
-            ->maxLength('update_user', 100)
-            ->allowEmptyString('update_user');
+                ->scalar('update_user')
+                ->maxLength('update_user', 100)
+                ->allowEmptyString('update_user');
 
         $validator
-            ->dateTime('created_time')
-            ->allowEmptyDateTime('created_time');
+                ->dateTime('created_time')
+                ->allowEmptyDateTime('created_time');
 
         $validator
-            ->dateTime('update_time')
-            ->allowEmptyDateTime('update_time');
+                ->dateTime('update_time')
+                ->allowEmptyDateTime('update_time');
 
         $validator
-            ->boolean('is_deleted')
-            ->allowEmptyString('is_deleted', false);
+                ->boolean('is_deleted')
+                ->allowEmptyString('is_deleted', false);
 
         return $validator;
     }
+
 }

@@ -269,7 +269,7 @@ function ListBorrow() {
                     <span onClick={() => handleChange(4, "returned")} className="label label-danger ml-10">{status === 4 ? <i className="fas fa-check"></i> : ""}Đã trả</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.returned : ''}</span>
                 </div>
                 <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                    <Link to="/borrow/add" className="btn btn-primary mt-10 mr-10"><i className="fa fa-plus"></i>Thêm mới</Link>
+                    <Link to="/borrow/add" className="btn btn-primary mt-10 mr-10"><i className="fa fa-plus"></i> Thêm mới</Link>
                 </div>
 
             </div>

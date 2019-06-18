@@ -6,49 +6,49 @@ function MenuSidebar() {
     const menu = [
         {
             icon: 'fas fa-tachometer-alt',
-            label: 'Dashboard',
+            label: 'Trang chủ',
             to: '/dashboard',
         },
         {
             icon: 'fas fa-file-text',
-            label: 'Categories',
+            label: 'Danh mục',
             content: [
                 {
                     icon: 'fa fa-shopping-bag',
-                    label: 'Brand',
+                    label: 'Thương hiệu',
                     to: '/brand',
                 },
                 {
                     icon: 'fa fa-tasks',
-                    label: 'Categories',
+                    label: 'Danh mục',
                     to: '/categories',
                 },
             ],
         },
         {
             icon: 'bolt',
-            label: 'Devices',
+            label: 'Thiết bị',
             content: [
                 {
                     icon: 'fa fa-desktop',
-                    label: 'Devices',
+                    label: 'Thiết bị',
                     to: '/devices',
                 },
                 {
                     icon: 'fa fa-american-sign-language-interpreting',
-                    label: 'Borrow Device',
+                    label: 'Mượn thiết bị',
                     to: '/borrow',
                 },
             ],
         },
         {
             icon: 'fa fa-wrench',
-            label: 'Maintenance',
+            label: 'Bảo trì',
             to: '/maintenance',
         },
         {
             icon: 'fas fa-user',
-            label: 'User',
+            label: 'Người dùng',
             to: '/user',
         },
         // {

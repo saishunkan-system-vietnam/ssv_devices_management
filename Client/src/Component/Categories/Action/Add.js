@@ -135,15 +135,15 @@ function Add(props) {
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    <legend className="pl-30">{id ? 'Cập nhập loại thiết bị' : 'Thêm mới loại thiết bị'}</legend><hr />
+                    <legend className="pl-30">{id ? 'Cập nhập thông tin danh mục' : 'Thêm mới danh mục'}</legend><hr />
 
                     <div className="form-group">
                         <div className="row">
                             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
-                                <label>Tên loại:</label>
+                                <label>Tên danh mục:</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                                <input type="text" className="form-control" placeholder="Nhập tên loại...." {...name} />
+                                <input type="text" className="form-control" placeholder="Nhập tên danh mục...." {...name} />
                             </div>
                         </div>
                     </div>
@@ -151,11 +151,11 @@ function Add(props) {
                     <div className="form-group">
                         <div className="row">
                             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
-                                <label>Hãng sản xuất:</label>
+                                <label>Thương hiệu:</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                 <select className="form-control" {...id_brand} >
-                                    <option value="" disabled hidden >---Chọn hãng sản xuất---</option>
+                                    <option value="" disabled hidden >---chọn thương hiệu---</option>
                                     {option_brand}
                                 </select>
                             </div>
@@ -165,11 +165,11 @@ function Add(props) {
                     <div className={isParent.value === true ? "form-group hide" : "form-group"}>
                         <div className="row">
                             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
-                                <label>Loại thiết bị bố</label>
+                                <label>Danh mục cha</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                                 <select className="form-control" {...id_parent} >
-                                    <option value="" disabled hidden >---Chọn loại bố---</option>
+                                    <option value="" disabled hidden >---chọn danh mục cha---</option>
                                     {option_category_parent}
                                 </select>
                             </div>
@@ -182,7 +182,7 @@ function Add(props) {
                                 <div className="checkbox">
                                     <label>
                                         <input type="checkbox" {...isParent} checked={isParent.value === true} />
-                                        &nbsp; Loại thiết bị bố
+                                        &nbsp; Danh mục cha
                                 </label>
                                 </div>
                             </div>
