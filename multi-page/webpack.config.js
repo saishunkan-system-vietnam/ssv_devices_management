@@ -33,7 +33,7 @@ module.exports = (env, argv) => ({
   resolve:{
 		alias:{
 			src: path.resolve(__dirname, "src"),
-			components: path.resolve(__dirname, "src", "components")
+			components: path.resolve(__dirname, "src", "components"),
 		}
 	},
   module: {
@@ -58,18 +58,6 @@ module.exports = (env, argv) => ({
           {loader: "css-loader", options: {url: true, sourceMap: true}},
         ]
       },
-      // {
-      //   test: /\.css$/,
-      //   loader:'style-loader!css-loader'
-      // },
-      // {
-			// 	test: /\.css$/,
-			// 	use: [
-			// 	  "style-loader",
-      //     {loader: "css-loader", options: {modules: true}}
-			// 	  ],
-			// 	exclude: /node_modules/,
-      // },
       {
         test: /\.(svg|jpg|gif|png)$/,
         use: [
@@ -118,5 +106,20 @@ module.exports = (env, argv) => ({
           }
         }
       }
+    },
+    externals: {
+      // global app config object
+      config: JSON.stringify({
+        apiUrl: 'http://localhost',
+        apiEndpoint : {
+          auth : '/auth/signin',
+          login : '/api/v1/user/login',
+          update_profile : '/api/v1/user/profile',
+          lstusers : '/api/v1/user',
+          show_user : '/api/v1/user/show/',
+          restock_user : '/api/v1/user/restock',
+          delete_user : '/api/v1/user/delete',
+        }
+      })
     }
 });

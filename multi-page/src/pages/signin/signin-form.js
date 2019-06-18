@@ -1,17 +1,17 @@
 import React, {useEffect} from 'react';
 import {Formik, Field, Form, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
-// import {authenticationService} from '@/_services';
-// import {Role} from "@/_helpers";
+import {authenticationService} from '../../_services';
 import './signin.css';
 
 
 function LoginForm(props) {
+    console.log(props);
   useEffect(() => {
     // redirect to home if already logged in
-    // if (authenticationService.currentUserValue) {
-    //   props.history.push('/');
-    // }
+    if (authenticationService.currentUserValue) {
+        //props.history.push('/home');
+    }
   });
 
   return (
@@ -21,7 +21,7 @@ function LoginForm(props) {
           <div className="login-wrap">
             <div className="login-content">
               <div className="login-logo">
-                <img id={'logo-pic'} alt="Devices Management - Saishunkan System Vietnam"/>
+                  <img src={require('../../components/assets/images/icon/saishunkan-system-vietnam-logo.jpg')} alt="Devices Management - Saishunkan System Vietnam" />
               </div>
               <div className="login-form">
                 <Formik

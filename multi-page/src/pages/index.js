@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Menu from 'components/Menu';
+import Signin from '../pages/signin/signin-form';
 
-ReactDOM.render(<Menu />, document.getElementById('root'));
+ReactDOM.render(<Signin />, document.getElementById('root'));

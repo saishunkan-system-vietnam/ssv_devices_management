@@ -53,7 +53,7 @@ class UsersController extends ApiController
         $this->httpStatusCode = 200;
         $users = $this->Users
             ->find('all')
-            ->where(['status' => 0])
+            //->where(['status' => 0])
             ->toArray();
 
         $args = array(
@@ -62,7 +62,7 @@ class UsersController extends ApiController
             'message' => 'Get list user success.'
         );
         // Set the response
-        $this->returnResponse(903, $args);
+        $this->returnResponse(200, $args);
     }
 
     /**
@@ -85,9 +85,9 @@ class UsersController extends ApiController
                 $this->returnResponse(903, ['message' => 'Phải nhập đủ thông tin của form.']);
                 return;
             }
-            $http = new Client();           
+            $http = new Client();
             $results = $http->get($url.$username.'&passwd='.$pwd.'&session=Chat&format=cookie');
-            $data = json_decode($results->body); 
+            $data = json_decode($results->body);
             if(!empty($data->success) && $data->success == true) {
                 $userdata = $this->Users->find('all')
                     ->where(['status' => 0, 'user_name' => $username])

@@ -259,7 +259,7 @@ function ListBorrow() {
     }
     return (
         <div>
-            <div className="row mt-10 filter">               
+            <div className="row mt-10 filter">
 
                 <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                     <span onClick={() => handleChange(0, "borrow_request")} className="label label-primary ml-10">{status === 0 ? <i className="fas fa-check"></i> : ""}Yêu cầu mượn</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrow_request : ''}</span>
@@ -275,10 +275,10 @@ function ListBorrow() {
             </div>
             <div className="row mt-10">
                 <div className="table-responsive table-data">
-                    <table className="table text-center">
+                    <table className="table">
                         <thead>
                             <tr>
-                                <th>Mã Mượn</th>
+                                <th>Mã</th>
                                 <th>Người mượn</th>
                                 <th>Thiết bị</th>
                                 <th>Trạng thái</th>
