@@ -3,10 +3,10 @@ import './noData.css';
 
 function Item(p) {
     return (
-        <div class="main">
-            <div>
+        <div className="main">
+            <p>
                 There is no data
-            </div>
+            </p>
         </div>
     );
 }

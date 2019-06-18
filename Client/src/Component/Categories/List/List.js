@@ -54,16 +54,16 @@ function List() {
     });
 
 
-    var category_item = lstCategories.length !== 0 ? lstCategories.map((category, index) => {
+    var category_item = lstCategories.map((category, index) => {
         return <Item
             key={index}
             id={category.id}
             brands_id={category['Brands'].brand_name}
-            parent_id={category.Category_parent.category_name ? category.Category_parent.category_name : category.category_name}
+            parent_id={category.Category_parent && category.Category_parent.category_name ? category.Category_parent.category_name : category.category_name}
             name={category.category_name}
             onDelete={onDelete}
         />
-    }) : <NoData />;
+    });
 
     function find(parent_id, brand_id, name) {
         var frm = new FormData();
@@ -90,35 +90,33 @@ function List() {
 
     return (
         <div>
-            <div className="row mt-10">
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-inline">
+            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-inline">
 
-                    <div className="btn-group">
-                        <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnCategory">
-                            {findCateParent.name} <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            <li onClick={() => handleChangeCateParent('All level categories', -1)} >All level categories</li>
-                            <li onClick={() => handleChangeCateParent('Parent', 1)} >Parent</li>
-                            <li onClick={() => handleChangeCateParent('Children', 2)} >Children</li>
-                        </ul>
-                    </div>
-
-                    <div className="btn-group ml-10">
-                        <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown" id="btnCategory">
-                            {findBrand.name} <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            <li onClick={() => handleChangeBrand('All brands', -1)} >All brands</li>
-                            {ListBrandItem}
-                        </ul>
-                    </div>
-
-                    <input type="text" className="form-control ml-10" placeholder="Enter name category" value={findCateName} onChange={handleOnChangeCateName} />
-
-                    <a href='/categories/add' className="btn btn-primary ml-10"><i className="fa fa-plus"></i> Add new</a>
-                    <hr />
+                <div className="btn-group ml-10 mt-10">
+                    <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnCategory">
+                        {findCateParent.name} <span className="caret"></span>
+                    </button>
+                    <ul className="dropdown-menu" role="menu">
+                        <li onClick={() => handleChangeCateParent('All level categories', -1)} >All level categories</li>
+                        <li onClick={() => handleChangeCateParent('Parent', 1)} >Parent</li>
+                        <li onClick={() => handleChangeCateParent('Children', 2)} >Children</li>
+                    </ul>
                 </div>
+
+                <div className="btn-group ml-10 mt-10">
+                    <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown" id="btnCategory">
+                        {findBrand.name} <span className="caret"></span>
+                    </button>
+                    <ul className="dropdown-menu" role="menu">
+                        <li onClick={() => handleChangeBrand('All brands', -1)} >All brands</li>
+                        {ListBrandItem}
+                    </ul>
+                </div>
+
+                <input type="text" className="form-control ml-10 mt-10" placeholder="Enter name category" value={findCateName} onChange={handleOnChangeCateName} />
+
+                <a href='/categories/add' className="btn btn-primary ml-10 mt-10"><i className="fa fa-plus"></i> Add new</a>
+                <hr />
             </div>
             <div className="row mt-10">
                 <div className="table-responsive table-data">
@@ -132,8 +130,14 @@ function List() {
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        {category_item}
+                        <tbody>
+                            {category_item}
+                        </tbody>
                     </table>
+                    {
+                        lstCategories.length === 0 &&
+                        <NoData />
+                    }
                 </div>
             </div>
         </div>

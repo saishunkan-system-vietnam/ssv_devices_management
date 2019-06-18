@@ -52,6 +52,8 @@ class BorrowController extends ApiController {
                 ->select($this->BorrowDevicesDetail)
                 ->select($this->Users)
                 ->select($this->Devices)
+                ->select('User_approved.user_name')
+                ->select('User_handover.user_name')
                 ->join([
                     'BorrowDevicesDetail' => [
                         'table' => 'borrow_devices_detail',
@@ -71,6 +73,20 @@ class BorrowController extends ApiController {
                         'table' => 'devices',
                         'type' => 'INNER',
                         'conditions' => 'Devices.id = BorrowDevicesDetail.device_id'
+                    ]
+                ])
+                ->join([
+                    'User_approved' => [
+                        'table' => 'users',
+                        'type' => 'Left',
+                        'conditions' => 'User_approved.id = BorrowDevices.approved_id'
+                    ]
+                ])
+                 ->join([
+                    'User_handover' => [
+                        'table' => 'users',
+                        'type' => 'Left',
+                        'conditions' => 'User_handover.id = BorrowDevices.handover_id'
                     ]
                 ])
                 ->first();
@@ -411,17 +427,17 @@ class BorrowController extends ApiController {
             // Set return response (response code, api response)
             $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
-    } 
+    }
 
     // status: 0- borrow; 1- confirm borrow; 2- no confirm borrow; 3- return device; 4- confirm return device
     public function filter() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
-            $condition = ['BorrowDevices.is_deleted' => 0];            
+            $condition = ['BorrowDevices.is_deleted' => 0];
             if (isset($request['status']) && !empty($request['status'])) {
                 switch ($request['status']) {
                     case 'borrow_request':
-                        $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 0]);     
+                        $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 0]);
                         break;
                     case "borrowing":
                         $condition = array_merge($condition, ["BorrowDevicesDetail.status" => 1]);
@@ -441,7 +457,7 @@ class BorrowController extends ApiController {
             $borrowDevices = $this->where_list($condition);
             $count = $this->countLstBorrowDevice();
             $args = array(
-                'lstCount'=>$count,
+                'lstCount' => $count,
                 'lstBorrowDevices' => $borrowDevices
             );
             // Set return response (response code, api response)
@@ -559,6 +575,20 @@ class BorrowController extends ApiController {
                         'table' => 'devices',
                         'type' => 'INNER',
                         'conditions' => 'Devices.id = BorrowDevicesDetail.device_id'
+                    ]
+                ])
+                 ->join([
+                    'User_approved' => [
+                        'table' => 'users',
+                        'type' => 'Left',
+                        'conditions' => 'User_approved.id = BorrowDevices.approved_id'
+                    ]
+                ])
+                 ->join([
+                    'User_handover' => [
+                        'table' => 'users',
+                        'type' => 'Left',
+                        'conditions' => 'User_handover.id = BorrowDevices.handover_id'
                     ]
                 ])
                 ->toArray();

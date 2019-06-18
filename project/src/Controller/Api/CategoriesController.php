@@ -5,23 +5,20 @@ namespace App\Controller\Api;
 use RestApi\Controller\ApiController;
 use Cake\ORM\TableRegistry;
 
-class CategoriesController extends ApiController
-{
+class CategoriesController extends ApiController {
 
     private $login;
     private $Categories;
     private $Brands;
 
-    public function initialize()
-    {
+    public function initialize() {
         parent::initialize();
         $this->Categories = TableRegistry::getTableLocator()->get('Categories');
         $this->Brands = TableRegistry::getTableLocator()->get('Brands');
         $this->login = $this->getRequest()->getSession()->read('Auth.User');
     }
 
-    public function index()
-    {
+    public function index() {
         $categories = $this->Categories([['Categories.is_deleted' => 0]]);
         $args = array(
             'lstCategories' => $categories
@@ -31,21 +28,8 @@ class CategoriesController extends ApiController
     }
 
     //function view category
-    public function view($id = null)
-    {
-        $category = $this->Categories
-                ->find('all')
-                ->select($this->Categories)
-                ->select($this->Brands)
-                ->join([
-                    'Brands' => [
-                        'table' => 'brands',
-                        'type' => 'INNER',
-                        'conditions' => 'Brands.id = Categories.brands_id'
-                    ]
-                ])
-                ->where(['Categories.id' => $id])
-                ->first();
+    public function view($id = null) {
+        $category = $this->firstCategory($id);
         if (!empty($category)) {
             $args = array(
                 'category' => $category
@@ -59,8 +43,7 @@ class CategoriesController extends ApiController
     }
 
     //function add category
-    public function add()
-    {
+    public function add() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $categoryNewEntity = $this->Categories->newEntity();
@@ -88,8 +71,7 @@ class CategoriesController extends ApiController
     }
 
     //function update category
-    public function edit()
-    {
+    public function edit() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
@@ -127,8 +109,7 @@ class CategoriesController extends ApiController
     }
 
 //function delete category
-    public function delete()
-    {
+    public function delete() {
         if ($this->request->is('post')) {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
@@ -158,8 +139,7 @@ class CategoriesController extends ApiController
         }
     }
 
-    function getCategory(array $condition)
-    {
+    function getCategory(array $condition) {
         $category = $this->Categories
                 ->find('all')
                 ->where([key($condition) => current($condition)])
@@ -167,12 +147,12 @@ class CategoriesController extends ApiController
         return $category;
     }
 
-    function Categories($condition)
-    {
+    function Categories($condition) {
         $categories = $this->Categories
                 ->find('all')
                 ->select($this->Categories)
                 ->select($this->Brands)
+                ->select('Category_parent.category_name')
                 ->join([
                     'Brands' => [
                         'table' => 'brands',
@@ -180,22 +160,53 @@ class CategoriesController extends ApiController
                         'conditions' => 'Brands.id = Categories.brands_id'
                     ]
                 ])
+                ->join([
+                    "Category_parent" => [
+                        'table' => 'categories',
+                        'type' => 'LEFT',
+                        'conditions' => 'Category_parent.id=Categories.id_parent'
+                    ]
+                ])
                 ->where($condition)
                 ->toArray();
         return $categories;
     }
 
-    public function filter()
-    {
+    private function firstCategory($id) {
+        $category = $this->Categories
+                ->find('all')
+                ->select($this->Categories)
+                ->select($this->Brands)
+                ->select('Category_parent.category_name')
+                ->join([
+                    'Brands' => [
+                        'table' => 'brands',
+                        'type' => 'INNER',
+                        'conditions' => 'Brands.id = Categories.brands_id'
+                    ]
+                ])
+                ->join([
+                    "Category_parent" => [
+                        'table' => 'categories',
+                        'type' => 'LEFT',
+                        'conditions' => 'Category_parent.id=Categories.id_parent'
+                    ]
+                ])
+                ->where(['Categories.id' => $id])
+                ->first();
+        return $category;
+    }
+
+    public function filter() {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $condition = ['Categories.is_deleted' => 0];
             if (isset($request['id_parent']) && !empty($request['id_parent'] && $request['id_parent'] != -1)) {
-                if($request['id_parent']==1){
+                if ($request['id_parent'] == 1) {
                     $condition = array_merge($condition, ['Categories.id_parent' => 0]);
-                } else if($request['id_parent']==2) {
-                     $condition = array_merge($condition, ['Categories.id_parent <>' => 0]);
-                }            
+                } else if ($request['id_parent'] == 2) {
+                    $condition = array_merge($condition, ['Categories.id_parent <>' => 0]);
+                }
             }
             if (isset($request['brands_id']) && !empty($request['brands_id'] && $request['brands_id'] != -1)) {
                 $condition = array_merge($condition, ['Categories.brands_id' => $request['brands_id']]);
@@ -210,7 +221,7 @@ class CategoriesController extends ApiController
             // Set return response (response code, api response)       
             $this->returnResponse(200, $args);
         } else {
-            
+
             $this->returnResponse(904, ['message' => 'Method type is not correct.']);
         }
     }

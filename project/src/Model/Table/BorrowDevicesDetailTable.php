@@ -75,23 +75,18 @@ class BorrowDevicesDetailTable extends Table {
                 ->allowEmptyString('status');
 
         $validator
-                ->date('borrow_date')
+                ->dateTime('borrow_date')
                 ->requirePresence('borrow_date', 'create')
                 ->allowEmptyDateTime('borrow_date', false);
 
         $validator
-                ->date('approved_date')
+                ->dateTime('approved_date')
                 ->allowEmptyDateTime('approved_date');
 
         $validator
-                ->date('return_date_expected')
+                ->dateTime('return_date_expected')
                 ->requirePresence('return_date_expected', 'create')
                 ->allowEmptyDateTime('return_date_expected', false);
-
-//        $validator
-//            ->date('return_date')
-//            ->requirePresence('return_date', 'create')
-//            ->allowEmptyDateTime('return_date', false);
 
         $validator
                 ->scalar('created_user')

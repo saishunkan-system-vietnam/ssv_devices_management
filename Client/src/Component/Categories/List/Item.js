@@ -25,19 +25,17 @@ function Item(p) {
   }
 
   return (
-    <tbody>
-      <tr>
-        <td>{p.id}</td>
-        <td>{p.brands_id}</td>
-        <td>{p.parent_id}</td>
-        <td>{p.name}</td>
-        <td>
-          <a href={urlView}><i className="fa fa-eye fa-lg"></i></a>
-          <a href={urlEdit}><i className="fa fa-edit fa-lg"></i></a>
-          <i className="fa fa-trash fa-lg" onClick={handleDelete}></i>
-        </td>
-      </tr>
-    </tbody>
+    <tr>
+      <td>{p.id}</td>
+      <td>{p.brands_id}</td>
+      <td>{p.parent_id}</td>
+      <td>{p.name}</td>
+      <td>
+        <a href={urlView}><i className="fa fa-eye fa-lg"></i></a>
+        <a href={urlEdit}><i className="fa fa-edit fa-lg"></i></a>
+        <i className="fa fa-trash fa-lg" onClick={handleDelete}></i>
+      </td>
+    </tr>
   );
 }
 

@@ -10,6 +10,7 @@ import BorrowNoApprove from '../../../api/borrowNoApprove';
 import BorrowReturn from '../../../api/borrowReturn';
 import BorrowReturnConfirm from '../../../api/borrowReturnConfirm';
 import BorrowFilter from '../../../api/borrowFilter';
+import NoData from '../../../common/NoData';
 
 function ListBorrow() {
 
@@ -31,7 +32,6 @@ function ListBorrow() {
 
     useEffect(() => {
         if (lstBorrow.length === 0) {
-            console.log('a');
             handleGetLstBorrow();
         }
 
@@ -39,14 +39,12 @@ function ListBorrow() {
             handleGetFilter(status_name);
         }
 
-    },[])
+    }, [])
 
     function handleGetFilter(_status_name) {
         var frm = new FormData();
         frm.append('status', _status_name);
         BorrowFilter.BorrowFilter(frm).then(res => {
-            // console.log(_status_name);
-            // console.log(res.payload);
             if (res && res.payload) {
                 setFilter(res.payload);
                 setLstBorrow(res.payload.lstBorrowDevices);
@@ -262,12 +260,19 @@ function ListBorrow() {
     return (
         <div>
             <div className="row mt-10 filter">
-                <Link to="/borrow/add" className="btn btn-primary add ml-10"><i className="fa fa-plus"></i></Link>
-                <p><span onClick={() => handleChange(0, "borrow_request")} className="label label-primary ml-10">{status === 0 ? <i className="fas fa-check"></i> : ""}Borrow request</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrow_request : ''}</span></p>
-                <p><span onClick={() => handleChange(1, "borrowing")} className="label label-success ml-10">{status === 1 ? <i className="fas fa-check"></i> : ""}Borrowing</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrowing : ''}</span></p>
-                <p><span onClick={() => handleChange(2, "no_borrow")} className="label label-default ml-10">{status === 2 ? <i className="fas fa-check"></i> : ""}Borrow faild</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.no_borrow : ''}</span></p>
-                <p><span onClick={() => handleChange(3, "return_request")} className="label label-warning ml-10">{status === 3 ? <i className="fas fa-check"></i> : ""}Return request</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.return_request : ''}</span></p>
-                <p><span onClick={() => handleChange(4, "returned")} className="label label-danger ml-10">{status === 4 ? <i className="fas fa-check"></i> : ""}Returned</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.returned : ''}</span></p>
+
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <Link to="/borrow/add" className="btn btn-primary add ml-10"><i className="fa fa-plus"></i></Link>
+                </div>
+
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <span onClick={() => handleChange(0, "borrow_request")} className="label label-primary ml-10">{status === 0 ? <i className="fas fa-check"></i> : ""}Borrow request</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrow_request : ''}</span>
+                    <span onClick={() => handleChange(1, "borrowing")} className="label label-success ml-10">{status === 1 ? <i className="fas fa-check"></i> : ""}Borrowing</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.borrowing : ''}</span>
+                    <span onClick={() => handleChange(2, "no_borrow")} className="label label-default ml-10">{status === 2 ? <i className="fas fa-check"></i> : ""}Borrow faild</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.no_borrow : ''}</span>
+                    <span onClick={() => handleChange(3, "return_request")} className="label label-warning ml-10">{status === 3 ? <i className="fas fa-check"></i> : ""}Return request</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.return_request : ''}</span>
+                    <span onClick={() => handleChange(4, "returned")} className="label label-danger ml-10">{status === 4 ? <i className="fas fa-check"></i> : ""}Returned</span><span className="quantity">{filter && filter.lstCount ? filter.lstCount.returned : ''}</span>
+                </div>
+
             </div>
             <div className="row mt-10">
                 <div className="table-responsive table-data">
@@ -289,6 +294,10 @@ function ListBorrow() {
                             {listItem}
                         </tbody>
                     </table>
+                    {
+                        lstBorrow.length === 0 &&
+                        <NoData />
+                    }
                 </div>
 
             </div>

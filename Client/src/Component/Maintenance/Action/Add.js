@@ -147,16 +147,6 @@ function Add(props) {
         setTotal_payment(formatMoney(money));
     }
 
-
-
-    var optionDevice = lstDevice.map((device, index) => {
-        let result = '';
-        if (device.status === 0) {
-            result = <option key={index} value={device.id}>{device.name}</option>;
-        }
-        return result;
-    })
-
     return (
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -169,7 +159,7 @@ function Add(props) {
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <select className="form-control" {...devices_id} >
-                                {optionDevice}
+                                { optionDevice }
                             </select>
                         </div>
                     </div>

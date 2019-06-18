@@ -11,6 +11,8 @@ import DevicesList from '../../../api/deviceList';
 import DeviceDelete from '../../../api/deviceDelete';
 import DeviceFilter from '../../../api/deviceFilter';
 
+import NoData from '../../../common/NoData';
+
 function List() {
 
     var alert = useAlert();
@@ -137,48 +139,46 @@ function List() {
 
     return (
         <div>
-            <div className="row mt-10">
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-inline">
+            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-inline">
 
-                    <div className="btn-group">
-                        <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnCategory">
-                            {findCategory.name} <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            <li onClick={() => handleChangeCategory('All categories', -1)} >All categories</li>
-                            {ShowCategoryItem()}
-                        </ul>
-                    </div>
-
-                    <div className="btn-group ml-10">
-                        <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown" id="btnCategory">
-                            {findBrand.name} <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            <li onClick={() => handleChangeBrand('All brands', -1)} >All brands</li>
-                            {showBrandItem()}
-                        </ul>
-                    </div>
-
-                    <div className="btn-group ml-10">
-                        <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnCategory">
-                            {findStatus.name} <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            <li onClick={() => onClickFindStatus("All status", -1)}>All status</li>
-                            <li onClick={() => onClickFindStatus("Free time", 1)}>Free time</li>
-                            <li onClick={() => onClickFindStatus("Busy", 2)}>Busy</li>
-                            <li onClick={() => onClickFindStatus("Is maintenancing", 3)}>Is maintenancing</li>
-                        </ul>
-                    </div>
-
-                    <input type="text" className="form-control ml-10" title="Search name" onChange={handleChangeName} value={findName} placeholder="Search device name..." />
-
-                    <Link to="/devices/add" className="btn btn-primary ml-10"><i className="fa fa-plus"></i> Add</Link>
-
+                <div className="btn-group ml-10 mt-10">
+                    <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnCategory">
+                        {findCategory.name} <span className="caret"></span>
+                    </button>
+                    <ul className="dropdown-menu" role="menu">
+                        <li onClick={() => handleChangeCategory('All categories', -1)} >All categories</li>
+                        {ShowCategoryItem()}
+                    </ul>
                 </div>
-                <hr />
+
+                <div className="btn-group ml-10 mt-10">
+                    <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown" id="btnCategory">
+                        {findBrand.name} <span className="caret"></span>
+                    </button>
+                    <ul className="dropdown-menu" role="menu">
+                        <li onClick={() => handleChangeBrand('All brands', -1)} >All brands</li>
+                        {showBrandItem()}
+                    </ul>
+                </div>
+
+                <div className="btn-group ml-10 mt-10">
+                    <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnCategory">
+                        {findStatus.name} <span className="caret"></span>
+                    </button>
+                    <ul className="dropdown-menu" role="menu">
+                        <li onClick={() => onClickFindStatus("All status", -1)}>All status</li>
+                        <li onClick={() => onClickFindStatus("Free time", 1)}>Free time</li>
+                        <li onClick={() => onClickFindStatus("Busy", 2)}>Busy</li>
+                        <li onClick={() => onClickFindStatus("Is maintenancing", 3)}>Is maintenancing</li>
+                    </ul>
+                </div>
+
+                <input type="text" className="form-control ml-10 mt-10" title="Search name" onChange={handleChangeName} value={findName} placeholder="Search device name..." />
+
+                <Link to="/devices/add" className="btn btn-primary ml-10 mt-10"><i className="fa fa-plus"></i> Add</Link>
+
             </div>
+            <hr />
             <div className="row mt-10">
                 <div className="table-responsive table-data">
                     <table className="table text-center">
@@ -197,6 +197,10 @@ function List() {
                             {showItem}
                         </tbody>
                     </table>
+                    {
+                        devices.length===0 &&
+                        <NoData/>
+                    }
                 </div>
             </div>
         </div>

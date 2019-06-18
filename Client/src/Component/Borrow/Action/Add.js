@@ -129,7 +129,7 @@ function Add(props) {
                     <div className="form-group">
                         <label className="col-sm-2 control-label">Borrow date:</label>
                         <div className="col-sm-4">
-                            <input type="date" className="form-control" required="required" title="Borrow date" {...borrow_date} />
+                            <input type="datetime-local" className="form-control" required="required" title="Borrow date" {...borrow_date} />
                         </div>
                     </div>
 

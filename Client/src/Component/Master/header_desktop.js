@@ -132,7 +132,7 @@ function HeaderDesktop() {
                                         <img src="../../../images/icon/avatar-01.jpg" alt="John Doe"/>
                                     </div>
                                     <div className="content">
-                                        <a className="js-acc-btn" href={"#"}>john doe</a>
+                                        <a className="js-acc-btn" href={"/"}>john doe</a>
                                     </div>
                                     <div className="account-dropdown js-dropdown">
                                         <div className="info clearfix">

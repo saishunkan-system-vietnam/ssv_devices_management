@@ -7,8 +7,7 @@ import BrandEdit from '../../../api/brandEdit';
 function Add(props) {
 
     const [brand, setBrand] = useState(null);
-    const [brand_name, setBrand_name] = useState('');
-    var show=false;
+    const [brand_name, setBrand_name] = useState('');   
 
     var alert = useAlert();
     function handleOnClose() {
@@ -27,7 +26,6 @@ function Add(props) {
                 setBrand_name('');
             }
         }
-        show=true;
     });
 
     function handleOnChange(e) {
