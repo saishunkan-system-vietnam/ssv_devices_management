@@ -25,8 +25,7 @@ class BorrowController extends ApiController {
         $this->BorrowDevicesDetail = TableRegistry::getTableLocator()->get('BorrowDevicesDetail');
         $this->Devices = TableRegistry::getTableLocator()->get('Devices');
         $this->Users = TableRegistry::getTableLocator()->get('Users');
-//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
-        $this->login = ['id' => 61, 'user_name' => 'Test','level'=>2, 'full_name' => "Nguyễn Thị test", 'position' => 'Programmer', 'email' => 'hoangnguyenit98@gmail.com'];
+        $this->login = $this->getRequest()->getSession()->read('Auth.User');
         $this->conn = ConnectionManager::get('default');
         $this->message = Configure::read('Message');
         $this->messageBorrow = Configure::read('Borrow');
@@ -38,7 +37,7 @@ class BorrowController extends ApiController {
         if ($this->login['level'] !== 5) {
             $condition = array_merge($condition, ["BorrowDevices.borrower_id" => $this->login['id']]);
         }
-        $borrowDevices = $this->where_list(['BorrowDevices.is_deleted' => 0]);
+        $borrowDevices = $this->where_list($condition);
         $args = array(
             'lstBorrowDevices' => $borrowDevices
         );
@@ -478,7 +477,11 @@ class BorrowController extends ApiController {
     }
 
     private function countLstBorrowDevice() {
-        $borrowDevices = $this->where_list(['BorrowDevices.is_deleted' => 0]);
+        $condition = ['BorrowDevices.is_deleted' => 0];
+        if ($this->login['level'] !== 5) {
+            $condition = array_merge($condition, ["BorrowDevices.borrower_id" => $this->login['id']]);
+        }
+        $borrowDevices = $this->where_list($condition);
         $count['borrow_request'] = 0;
         $count['borrowing'] = 0;
         $count['no_borrow'] = 0;

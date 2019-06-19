@@ -43,10 +43,7 @@ function ListBorrow() {
 
     function handleGetFilter(_status_name) {
         var frm = new FormData();
-        frm.append('status', _status_name);
-        let user=JSON.parse(localStorage.getItem("newUser"));
-        frm.append('user_role', user.role);
-        frm.append('user_', user.role);
+        frm.append('status', _status_name);        
         BorrowFilter.BorrowFilter(frm).then(res => {
             if (res && res.payload) {
                 setFilter(res.payload);

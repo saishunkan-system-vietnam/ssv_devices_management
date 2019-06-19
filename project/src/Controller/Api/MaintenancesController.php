@@ -17,8 +17,7 @@ class MaintenancesController extends ApiController {
 
     public function initialize() {
         parent::initialize();
-//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
-        $this->login = ['id' => 61, 'user_name' => 'Test', 'full_name' => "Nguyễn Thị test", 'position' => 'Programmer', 'email' => 'hoangnguyenit98@gmail.com'];
+        $this->login = $this->getRequest()->getSession()->read('Auth.User');
         $this->Maintenances = TableRegistry::getTableLocator()->get('Maintenances');
         $this->conn = ConnectionManager::get('default');
         $this->loadComponent('Maintenance');

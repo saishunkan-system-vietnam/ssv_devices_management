@@ -13,7 +13,7 @@ function BrandList() {
             'Authorization': 'Bearer ' + token,
         },
 
-    }).then(response => {
+    }).then(response => {        
         return response.json();
     }).catch(err => {
         console.log(err);
