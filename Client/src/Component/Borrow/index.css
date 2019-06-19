@@ -146,9 +146,12 @@
 
 .show {
     box-shadow: 1px 1px 5px silver;
-    padding: 20px;
-    background-color: lightblue;
+    background-color: #fff;
     border-radius: 7px;
+}
+
+.dropdown-menu.show li{
+    padding: 2px 7px;
 }
 
 .filter .quantity {
