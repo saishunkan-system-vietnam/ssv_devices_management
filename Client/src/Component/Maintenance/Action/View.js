@@ -14,7 +14,6 @@ function View(props) {
     const [maintenance, setMaintenance] = useState(null);
     const [statusUsername, setStatusUsername] = useState(false);
     const [statusDevice, setStatusDevice] = useState(false);
-
     useEffect(() => {
         if (!maintenance && props.match.params.id) {
             getMaintenance();
@@ -34,8 +33,7 @@ function View(props) {
                 frm.append('id', maintenance.id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to delete this maintenance?</p>
+                        <h1>Bạn đang xóa thông tin bảo trì?</h1>
                         <button onClick={() => MaintenanceDelete.MaintenanceDelete(frm).then(res => {
                             if (res['0'] === 200) {
                                 alert.success("The maintenance has been delete!");
@@ -45,8 +43,8 @@ function View(props) {
                                 alert.error("The maintenance could not be delete. Please, try again.");
                                 onClose();
                             }
-                        })}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        })}>Xóa</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -64,20 +62,21 @@ function View(props) {
                 frm.append('devices_id', maintenance.devices_id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to change status of this maintenance?</p>
-                        <button onClick={() => MaintenanceEdit.MaintenanceEdit(frm).then(res => {
-                            console.log(res);
-                            if (res['0'] === 200) {
-                                alert.success("The maintenance has been changed!");
-                                onClose();
-                                props.history.push('/maintenance');
-                            } else {
-                                alert.error("The maintenance could not be changed status. Please, try again.");
-                                onClose();
-                            }
-                        })}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        <h1>Bạn đang thay đổi thông tin trạng thái bảo trì?</h1>                       
+                        <button onClick={() => {
+                            MaintenanceEdit.MaintenanceEdit(frm).then(res => {
+                                if (res['0'] === 200) {
+                                    alert.success(res.payload.message);
+                                    onClose();
+                                    props.history.push('/maintenance');
+                                } else {
+                                    alert.error(res.payload.message);
+                                    onClose();
+                                }
+                            })
+                        }
+                        } >Đồng ý</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -96,7 +95,7 @@ function View(props) {
         <div className="row p-20">
 
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <legend className="pl-30">View maintenance</legend>
+                <legend className="pl-30">Thông tin chi tiết bảo trì</legend>
                 <hr />
             </div>
 
@@ -104,7 +103,7 @@ function View(props) {
 
                 <div className="row mt-10" >
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        ID:
+                        Mã bảo trì:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? maintenance.id : ""}
@@ -114,7 +113,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Device:
+                        Thiết bị:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 link" onClick={handleClickDevice}>
                         {maintenance && maintenance.Devices ? maintenance.Devices.name : ""}
@@ -123,7 +122,7 @@ function View(props) {
                 <div className={statusDevice ? 'show' : "hide"}>
                     <div className="row  mt-10">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            Device ID
+                            Mã thiết bị
                         </div>
                         <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                             {maintenance && maintenance.Devices ? maintenance.Devices.id : ""}
@@ -141,7 +140,7 @@ function View(props) {
 
                     <div className="row  mt-10">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            Specifications:
+                            Thông số:
                         </div>
                         <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                             {maintenance && maintenance.Devices ? maintenance.Devices.specifications : ""}
@@ -151,7 +150,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Status:
+                        Trạng thái:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? status(maintenance.status) : ""}
@@ -160,7 +159,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Broken date:
+                        Ngày bị hỏng:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? status(maintenance.borrow_date) : ""}
@@ -169,7 +168,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Notificationer broken:
+                        Người báo hỏng:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8 link" onClick={handleClickUsername}>
                         {maintenance && maintenance.Users ? maintenance.Users.user_name : ""}
@@ -179,7 +178,7 @@ function View(props) {
                 <div className={statusUsername ? 'show' : "hide"}>
                     <div className="row  mt-10">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            User ID:
+                            Mã người dùng:
                     </div>
                         <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                             {maintenance && maintenance.Users ? maintenance.Users.id : ""}
@@ -188,7 +187,7 @@ function View(props) {
 
                     <div className="row  mt-10">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            Name:
+                            Tên:
                     </div>
                         <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                             {maintenance && maintenance.Users ? maintenance.Users.full_name : ""}
@@ -197,7 +196,7 @@ function View(props) {
 
                     <div className="row  mt-10">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            User name:
+                            Tài khoản:
                     </div>
                         <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                             {maintenance && maintenance.Users ? maintenance.Users.user_name : ""}
@@ -206,7 +205,7 @@ function View(props) {
 
                     <div className="row  mt-10">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            Position:
+                            Chức vụ:
                     </div>
                         <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                             {maintenance && maintenance.Users ? maintenance.Users.position : ""}
@@ -215,7 +214,7 @@ function View(props) {
 
                     <div className="row  mt-10">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            Team:
+                            Nhóm:
                     </div>
                         <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                             {maintenance && maintenance.Users ? maintenance.Users.team : ""}
@@ -234,7 +233,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Broken reason:
+                        Ghi chú hỏng:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? maintenance.note : ""}
@@ -243,7 +242,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Maintenance start date:
+                        Ngày bắt đầu bảo trì:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? maintenance.maintenance_start_date : ""}
@@ -252,7 +251,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Maintenance end date:
+                        Ngày kết thúc bảo trì:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? maintenance.maintenances_end_date : ""}
@@ -261,7 +260,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Maintenances address:
+                        Địa chỉ bảo trì:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? maintenance.maintenances_address : ""}
@@ -270,16 +269,16 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Total payment:
+                        Tổng chi phí phải trả:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {maintenance && maintenance.total_payment ? formatMoney(maintenance.total_payment) +" vnđ" : ""}
+                        {maintenance && maintenance.total_payment ? formatMoney(maintenance.total_payment) + " vnđ" : ""}
                     </div>
                 </div>
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        User created:
+                        Người tạo:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? maintenance.create_user : ""}
@@ -288,7 +287,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        User update:
+                        Người cập nhập:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {maintenance ? maintenance.update_user : ""}
@@ -297,30 +296,30 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Time created:
+                        Thời gian tạo:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {maintenance ? maintenance.create_time : ""}
+                        {maintenance ? toShortDate(maintenance.create_time) : ""}
                     </div>
                 </div>
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Time update:
+                        Thời gian cập nhập:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {maintenance ? maintenance.update_time : ""}
+                        {maintenance ? toShortDate(maintenance.update_time) : ""}
                     </div>
                 </div>
 
                 <div className="row  mt-10">
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {maintenance ? <Link to={`/maintenance/edit/${maintenance.id}`} className="btn btn-primary">Edit</Link> : ""}
-                        {maintenance ? <button onClick={handleDelete} className="btn btn-danger ml-10">Delete</button> : ""}
-                        <Link to="/maintenance" className="btn btn-warning ml-10">Cancel</Link>
-                        {maintenance && maintenance.status === 1 ? <button type="button" onClick={() => changeStatus(2)} className="btn btn-success ml-10">Repairing</button> : ""}
-                        {maintenance && maintenance.status === 2 ? <button type="button" onClick={() => changeStatus(3)} className="btn btn-warning ml-10">Repaired</button> : ""}
-                        {maintenance && maintenance.status === 2 ? <button type="button" onClick={() => changeStatus(4)} className="btn btn-danger ml-10">Repair fail</button> : ""}
+                        {maintenance ? <Link to={`/maintenance/edit/${maintenance.id}`} className="btn btn-primary">Sửa</Link> : ""}
+                        {maintenance ? <button onClick={handleDelete} className="btn btn-danger ml-10">Xóa</button> : ""}
+                        <Link to="/maintenance" className="btn btn-warning ml-10">Hủy</Link>
+                        {maintenance && maintenance.status === 1 ? <button type="button" onClick={() => changeStatus(2)} className="btn btn-success ml-10">Đang bảo trì</button> : ""}
+                        {maintenance && maintenance.status === 2 ? <button type="button" onClick={() => changeStatus(3)} className="btn btn-warning ml-10">Bảo trì thành công</button> : ""}
+                        {maintenance && maintenance.status === 2 ? <button type="button" onClick={() => changeStatus(4)} className="btn btn-danger ml-10">Bảo trì thất bại</button> : ""}
                     </div>
                 </div>
             </div>

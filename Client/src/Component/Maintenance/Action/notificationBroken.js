@@ -62,11 +62,11 @@ function Add(props) {
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    <legend className="pl-30">Notification broken</legend><hr />
+                    <legend className="pl-30">Thông báo hỏng</legend><hr />
 
                     <div className="form-group">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            <label>Devices ID:</label>
+                            <label>Mã thiết bị:</label>
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <input type="text" className="form-control" value={device && device.id ? device.id : ""} disabled />
@@ -75,7 +75,7 @@ function Add(props) {
 
                     <div className="form-group">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            <label>Devices name:</label>
+                            <label>Tên:</label>
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <input type="text" className="form-control" value={device && device.name ? device.name : ""} disabled />
@@ -83,14 +83,14 @@ function Add(props) {
                     </div>
 
                     <div className="form-group">
-                        <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Broken reason:</label>
+                        <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Ghi chú hỏng:</label>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <textarea className="form-control" rows="4" {...note}></textarea>
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <label className="col-sm-2 control-label">Broken date:</label>
+                        <label className="col-sm-2 control-label">Ngày hỏng:</label>
                         <div className="col-sm-4">
                             <input type="date" className="form-control" required="required" title="Borrow date" {...broken_date} />
                         </div>
@@ -98,8 +98,8 @@ function Add(props) {
 
                     <div className="row">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
-                            <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Save</button>
-                            <Link to="/borrow" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</Link>
+                            <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Lưu</button>
+                            <Link to="/borrow" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Hủy</Link>
                         </div>
                     </div>
 

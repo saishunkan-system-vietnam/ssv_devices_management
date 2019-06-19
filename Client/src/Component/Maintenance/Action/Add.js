@@ -18,7 +18,7 @@ function Add(props) {
     const maintenances_end_date = useFormInput('');
     const note = useFormInput('');
     const maintenances_address = useFormInput('');
-    const [total_payment, setTotal_payment] = useState('');
+    const [total_payment, setTotal_payment] = useState(0);
     const [maintenance_id, setMaintenance_id] = useState(null);
 
     const alert = useAlert();
@@ -38,7 +38,7 @@ function Add(props) {
             start_date = maintenance_start_date.value;
             end_date = maintenances_end_date.value;
             address = maintenances_address.value;
-            total_pay = total_payment;
+            total_pay = total_payment.toString().replace(/,/g, '');
         }
         frm.append("maintenance_start_date", start_date);
         frm.append("maintenances_end_date", end_date);
@@ -52,15 +52,7 @@ function Add(props) {
                     props.history.push('/maintenance');
                 } else {
                     var obj = res.payload.message;
-                    if (typeof obj === 'object') {
-                        for (const key in obj) {
-                            for (const k in obj[key]) {
-                                alert.error(`${key}: ${obj[key][k]}`)
-                            }
-                        }
-                    } else {
-                        alert.error(res.payload.message);
-                    }
+                    messageFaild(obj);
                 }
             })
         } else {
@@ -70,19 +62,23 @@ function Add(props) {
                     props.history.push('/maintenance');
                 } else {
                     var obj = res.payload.message;
-                    if (typeof obj === 'object') {
-                        for (const key in obj) {
-                            for (const k in obj[key]) {
-                                alert.error(`${key}: ${obj[key][k]}`)
-                            }
-                        }
-                    } else {
-                        alert.error(res.payload.message);
-                    }
+                    messageFaild(obj);
                 }
             });
         }
 
+    }
+
+    function messageFaild(obj) {
+        if (typeof obj === 'object') {
+            for (const key in obj) {
+                for (const k in obj[key]) {
+                    alert.error(`${obj[key][k]}`);
+                }
+            }
+        } else {
+            alert.error(obj);
+        }
     }
 
     useEffect(() => {
@@ -96,7 +92,6 @@ function Add(props) {
 
     function getMaintenance() {
         MaintenanceView.MaintenanceView(props.match.params.id).then(res => {
-            console.log(res.payload.maintenance);
             let maintenance = res.payload.maintenance;
             setMaintenance_id(maintenance.id);
             devices_id.onChange({ target: { value: maintenance.devices_id } });
@@ -144,6 +139,8 @@ function Add(props) {
 
     function handleOnchange(e) {
         let money = e.target.value;
+        money = money.toString().replace(/,/g, '');
+        money = Number(money);
         setTotal_payment(formatMoney(money));
     }
 
@@ -151,15 +148,15 @@ function Add(props) {
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <form>
-                    <legend className="pl-30">{maintenance_id ? 'Update maintenance' : 'Add new maintenance'}</legend><hr />
+                    <legend className="pl-30">{maintenance_id ? 'Cập nhập thông tin bảo trì' : 'Thêm mới bảo trì'}</legend><hr />
 
                     <div className="form-group">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            <label>Devices:</label>
+                            <label>Thiết bị:</label>
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <select className="form-control" {...devices_id} >
-                                { optionDevice }
+                                {optionDevice}
                             </select>
                         </div>
                     </div>
@@ -167,20 +164,23 @@ function Add(props) {
 
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                         <div className="radio">
-                            <label><input type="radio" name="status" {...status} value="1" checked={status.value === "1"} />&nbsp;Waiting for repair</label>
-                            <label className="ml-10"><input type="radio" name="status"  {...status} value="2" checked={status.value === "2"} />&nbsp;Repairing</label>
+                            <label className="ml-10"><input type="radio" name="status" {...status} value="1" checked={status.value === "1"} />&nbsp;Đợi bảo trì</label>
+                            <br /><label className="ml-10"><input type="radio" name="status"  {...status} value="2" checked={status.value === "2"} />&nbsp;Đang bảo trì</label>
+                            <br /><label className="ml-10"><input type="radio" name="status"  {...status} value="3" checked={status.value === "3"} />&nbsp;Bảo trì thành công</label>
+                            <br /><label className="ml-10"><input type="radio" name="status"  {...status} value="4" checked={status.value === "4"} />&nbsp;Bảo trì thất bại</label>
+                            <br /><label className="ml-10"><input type="radio" name="status"  {...status} value="5" checked={status.value === "5"} />&nbsp;Thông báo hủy bị hỏng</label>
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Broken reason:</label>
+                        <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Ghi chú hỏng:</label>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <textarea className="form-control" rows="1" {...note}></textarea>
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <label className="col-sm-2 control-label">Broken date:</label>
+                        <label className="col-sm-2 control-label">Ngày bị hỏng:</label>
                         <div className="col-sm-4">
                             <input type="date" className="form-control" required="required" title="Borrow date" {...broken_date} />
                         </div>
@@ -188,21 +188,21 @@ function Add(props) {
                     {status.value !== "0" && status.value !== "1" &&
                         <React.Fragment>
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">Maintenance start date:</label>
+                                <label className="col-sm-2 control-label">Ngày bắt đầu bảo trì</label>
                                 <div className="col-sm-4">
                                     <input type="date" className="form-control" required="required" title="Return date expected" {...maintenance_start_date} />
                                 </div>
                             </div>
 
                             <div className="form-group">
-                                <label className="col-sm-2 control-label">Maintenance end date:</label>
+                                <label className="col-sm-2 control-label">Ngày kết thúc bảo trì:</label>
                                 <div className="col-sm-4">
                                     <input type="date" className="form-control" required="required" title="Return date expected" {...maintenances_end_date} />
                                 </div>
                             </div>
 
                             <div className="form-group">
-                                <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Maintenance address:</label>
+                                <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Địa chỉ bảo trì:</label>
                                 <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                     <textarea className="form-control" rows="1" {...maintenances_address}></textarea>
                                 </div>
@@ -210,7 +210,7 @@ function Add(props) {
 
 
                             <div className="form-group">
-                                <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Total pay (vnđ):</label>
+                                <label className="col-xs-2 col-sm-2 col-md-2 col-lg-2">Tổng số tiền thanh toán (vnđ):</label>
                                 <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                                     <input type="text" className="form-control" title="Total pay" onChange={handleOnchange} value={total_payment} />
                                 </div>
@@ -220,8 +220,8 @@ function Add(props) {
 
                     <div className="row">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
-                            <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Save</button>
-                            <Link to="/maintenance" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</Link>
+                            <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Lưu</button>
+                            <Link to="/maintenance" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Hủy</Link>
                         </div>
                     </div>
 

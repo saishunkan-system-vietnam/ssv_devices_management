@@ -8,6 +8,7 @@ import MaintenanceDelete from '../../../api/maintenanceDelete';
 import MaintenanceConfirmNotification from '../../../api/maintenanceConfirmNotification';
 import MaintenanceNoConfirmNotification from '../../../api/maintenanceNoConfirmNotification';
 import MaintenanceFilter from '../../../api/maintenanceFilter';
+import NoData from '../../../common/NoData';
 
 function ListBorrow() {
 
@@ -66,8 +67,7 @@ function ListBorrow() {
                 frm.append('id', id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to delete this maintenance?</p>
+                        <h1>Bạn đang xóa thông tin bảo trì?</h1>
                         <button onClick={() => MaintenanceDelete.MaintenanceDelete(frm).then(res => {
                             if (res['0'] === 200) {
                                 alert.success(res.payload.message);
@@ -78,8 +78,8 @@ function ListBorrow() {
                                 alert.error(res.payload.message);
                                 onClose();
                             }
-                        })}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        })}>Xóa</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -93,8 +93,7 @@ function ListBorrow() {
                 frm.append('id', id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to confirm this notification broken?</p>
+                        <h1>Bạn đang xác nhận thông tin báo hỏng?</h1>
                         <button onClick={() => MaintenanceConfirmNotification.MaintenanceConfirmNotification(frm).then(res => {
                             if (res['0'] === 200) {
                                 alert.success(res.payload.message);
@@ -105,8 +104,8 @@ function ListBorrow() {
                                 alert.error(res.payload.message);
                                 onClose();
                             }
-                        })}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        })}>Xác nhận</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -120,8 +119,7 @@ function ListBorrow() {
                 frm.append('id', id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want not to confirm this notification broken?</p>
+                        <h1>Bạn đang xóa thông tin bảo trì?</h1>
                         <button onClick={() => MaintenanceNoConfirmNotification.MaintenanceNoConfirmNotification(frm).then(res => {
                             if (res['0'] === 200) {
                                 alert.success(res.payload.message);
@@ -132,8 +130,8 @@ function ListBorrow() {
                                 alert.error(res.payload.message);
                                 onClose();
                             }
-                        })}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        })}>Xóa</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -155,38 +153,44 @@ function ListBorrow() {
 
     return (
         <div>
-            <div className="row mt-10 filter">
-                <Link to="/maintenance/add" className="btn btn-primary add ml-10"><i className="fa fa-plus"></i></Link>
-                <p><span onClick={() => handleChange(1, "notification_broken")} className="label label-primary ml-10">{status === 1 ? <i className="fas fa-check"></i> : ""}Notification broken</span><span className="quantity">    {lstCountStatus ? lstCountStatus.notification_broken : ''}  </span></p>
-                <p><span onClick={() => handleChange(2, "waiting_for_repair")} className="label label-success ml-10">{status === 2 ? <i className="fas fa-check"></i> : ""}Waiting for repair</span><span className="quantity">           {lstCountStatus ? lstCountStatus.waiting_for_repair : ''}  </span></p>
-                <p><span onClick={() => handleChange(3, "repairing")} className="label label-default ml-10">{status === 3 ? <i className="fas fa-check"></i> : ""}Repairing</span><span className="quantity">                 {lstCountStatus ? lstCountStatus.repairing : ''}  </span></p>
-                <p><span onClick={() => handleChange(4, "repaired")} className="label label-warning ml-10">{status === 4 ? <i className="fas fa-check"></i> : ""}Repaired</span><span className="quantity">                {lstCountStatus ? lstCountStatus.repaired : ''}  </span></p>
-                <p><span onClick={() => handleChange(5, "repair_fail")} className="label label-danger ml-10">{status === 5 ? <i className="fas fa-check"></i> : ""}Repair fail</span><span className="quantity">                    {lstCountStatus ? lstCountStatus.repair_fail : ''}  </span></p>
-                <p><span onClick={() => handleChange(6, "no_confirm_notification")} className="label label-info ml-10">{status === 6 ? <i className="fas fa-check"></i> : ""}No confirm notification</span><span className="quantity">          {lstCountStatus ? lstCountStatus.no_confirm_notification : ''}  </span></p>
+            <div className="row filter">
+
+                <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+                    <span onClick={() => handleChange(1, "notification_broken")} className="label label-primary ml-10">{status === 1 ? <i className="fas fa-check"></i> : ""}Thông báo hỏng</span><span className="quantity">{lstCountStatus ? lstCountStatus.notification_broken : ''}  </span>
+                    <span onClick={() => handleChange(2, "waiting_for_repair")} className="label label-success ml-10">{status === 2 ? <i className="fas fa-check"></i> : ""}Đang đợi bảo trì</span><span className="quantity">{lstCountStatus ? lstCountStatus.waiting_for_repair : ''}  </span>
+                    <span onClick={() => handleChange(3, "repairing")} className="label label-default ml-10">{status === 3 ? <i className="fas fa-check"></i> : ""}Đang bảo trì</span><span className="quantity">{lstCountStatus ? lstCountStatus.repairing : ''}  </span>
+                    <span onClick={() => handleChange(4, "repaired")} className="label label-warning ml-10">{status === 4 ? <i className="fas fa-check"></i> : ""}Bảo trì thành công</span><span className="quantity">{lstCountStatus ? lstCountStatus.repaired : ''}  </span>
+                    <span onClick={() => handleChange(5, "repair_fail")} className="label label-danger ml-10">{status === 5 ? <i className="fas fa-check"></i> : ""}Bảo trì thất bại</span><span className="quantity">{lstCountStatus ? lstCountStatus.repair_fail : ''}  </span>
+                    <span onClick={() => handleChange(6, "no_confirm_notification")} className="label label-info ml-10">{status === 6 ? <i className="fas fa-check"></i> : ""}Thông báo hỏng bị hủy</span><span className="quantity">{lstCountStatus ? lstCountStatus.no_confirm_notification : ''}  </span>
+                </div>
+
+                <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                    <Link to="/maintenance/add" className="btn btn-primary mr-10 mt-10"><i className="fa fa-plus"></i> Thêm mới</Link>
+                </div>
+
             </div>
             <div className="row mt-10">
                 <div className="table-responsive table-data">
-                    <table className="table text-center">
+                    <table className="table ">
                         <thead>
                             <tr>
-                                <th>STT</th>
-                                <th>ID</th>
-                                <th>Device</th>
-                                <th>Status</th>
-                                <th>Broken date</th>
-                                <th>Notificationer broken</th>
-                                <th>Total payment (vnđ)</th>
-                                <th>created_user</th>
-                                <th>update_user</th>
-                                <th>created_time</th>
-                                <th>update_time</th>
-                                <th>Action</th>
+                                <th className="text-center">Mã bảo trì</th>
+                                <th>Thiết bị</th>
+                                <th>Trạng thái</th>
+                                <th>Ngày hỏng</th>
+                                <th>Người báo hỏng</th>
+                                <th>Tổng chi phí bảo trì (vnđ)</th>
+                                <th>Công cụ</th>
                             </tr>
                         </thead>
                         <tbody>
                             {maintenanceItem}
                         </tbody>
                     </table>
+                    {
+                        maintenances.length === 0 &&
+                        <NoData />
+                    }
                 </div>
 
             </div>
