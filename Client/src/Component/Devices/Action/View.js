@@ -30,8 +30,7 @@ function View(props) {
                 frm.append('id', device.id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to delete this device?</p>
+                        <h1>Bạn đang xóa Thiết bị?</h1>
                         <button onClick={() => DeviceDelete.DeviceDelete(frm).then(responseJson => {
                             if (responseJson['0'] === 200) {
                                 alert.success("The device has been delete!");
@@ -41,8 +40,8 @@ function View(props) {
                                 alert.error("The device could not be delete. Please, try again.");
                                 onClose();
                             }
-                        })}>Yes!</button>
-                        <button onClick={onClose}>No</button>
+                        })}>Xóa</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -53,7 +52,7 @@ function View(props) {
         <div className="row p-20">
 
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <legend className="pl-30">View Device</legend>
+                <legend className="pl-30">Chi tiết thiết bị: <strong>{device ? device.name : ''}</strong></legend>
                 <hr />
             </div>
 
@@ -61,7 +60,7 @@ function View(props) {
 
                 <div className="row mt-20" >
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        ID:
+                        Mã thiết bị:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device ? device.id : ''}
@@ -70,16 +69,7 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Category:
-                     </div>
-                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {device && device.Categories ? device.Categories.category_name : ''}
-                    </div>
-                </div>
-
-                <div className="row  mt-20">
-                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Brand:
+                        Thương hiệu:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device && device.Brands ? device.Brands.brand_name : ''}
@@ -88,7 +78,16 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Image
+                        Danh mục:
+                     </div>
+                    <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                        {device && device.Categories ? device.Categories.category_name : ''}
+                    </div>
+                </div>
+
+                <div className="row  mt-20">
+                    <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                        Hình ảnh:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device ? <img style={{ 'maxWidth': '100px', 'padding': '4px' }} src={`${baseUrl}/${device.image ? device.image : '../../../img/not-available.jpg'}`} alt="Image" /> : ''}
@@ -97,7 +96,7 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Name
+                        Tên:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device ? device.name : ''}
@@ -124,7 +123,7 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Status:
+                        Trạng thái:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device ? status(device.status) : ''}
@@ -133,7 +132,7 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Sepecifications:
+                        Thông số:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device ? device.specifications : ''}
@@ -142,25 +141,25 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Purchase date:
+                        Ngày mua:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {device ? toShortDate(device.purchase_date) : ''}
+                        {device && device.purchase_date ? toShortDate(device.purchase_date) : ''}
                     </div>
                 </div>
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Warranty period date:
+                        Hạn bảo hành:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                        {device ? toShortDate(device.warranty_period) : ''}
+                        {device && device.warranty_period ? toShortDate(device.warranty_period) : ''}
                     </div>
                 </div>
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Created user:
+                        Người tạo:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device ? device.created_user : ''}
@@ -169,7 +168,7 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Update user:
+                       Người cập nhập:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device ? device.update_user : ''}
@@ -178,7 +177,7 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Created time:
+                        Thời gian tạo:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device ? toShortDate(device.created_time) : ''}
@@ -187,7 +186,7 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Update Time:
+                        Thời gian cập nhập:
                     </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {device ? toShortDate(device.update_time) : ''}
@@ -197,11 +196,11 @@ function View(props) {
 
                 <div className="row  mt-20">
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                        {device ? <Link to={`/devices/edit/${device.id}`} className="btn btn-primary">Edit</Link> : ''}
+                        {device ? <Link to={`/devices/edit/${device.id}`} className="btn btn-primary">Cập nhập</Link> : ''}
 
-                        <button type="button" className="btn btn-danger ml-10" onClick={handleDelete}>Delete</button>
+                        <button type="button" className="btn btn-danger ml-10" onClick={handleDelete}>Xóa</button>
 
-                        <Link to="/devices" className="btn btn-warning ml-10">Cancel</Link>
+                        <Link to="/devices" className="btn btn-warning ml-10">Hủy</Link>
                     </div>
                 </div>
             </div>

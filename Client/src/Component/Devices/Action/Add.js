@@ -7,7 +7,7 @@ import GetBrands from '../../../api/brandsList';
 import DeviceAdd from '../../../api/deviceAdd';
 import DeviceEdit from '../../../api/deviceEdit';
 import GetDevice from '../../../api/deviceView';
-
+import FilterCategory from '../../../api/filtercategory';
 import { toShortDate } from '../../../common/date';
 
 function Add(props) {
@@ -19,7 +19,7 @@ function Add(props) {
     const serial_number = useFormInput('');
     const product_number = useFormInput('');
     const name = useFormInput('');
-    const brand_id = useFormInput('');
+    const [brand_id, setBrand_id] = useState('');
     const specifications = useFormInput('');
     const purchase_date = useFormInput('');
     const warranty_period = useFormInput('');
@@ -33,16 +33,14 @@ function Add(props) {
         e.preventDefault();
         var frm = new FormData();
         frm.append('categories_id', categories_id.value);
-        frm.append('serial_number', serial_number.value);
-        frm.append('product_number', product_number.value);
-        frm.append('name', name.value);
-        frm.append('brand_id', brand_id.value);
+        frm.append('serial_number', serial_number.value.trim());
+        frm.append('product_number', product_number.value.trim());
+        frm.append('name', name.value.trim());
+        frm.append('brand_id', brand_id);
         frm.append('specifications', specifications.value);
         frm.append('purchase_date', purchase_date.value);
         frm.append('warranty_period', warranty_period.value);
-        frm.append('file', image ? image.file : '');
-
-
+        frm.append('file', image ? image.file : '');console.log(purchase_date.value);
 
         if (device) {
             frm.append('id', device.id);
@@ -52,15 +50,7 @@ function Add(props) {
                     props.history.push('/devices');
                 } else {
                     var obj = res.payload.message;
-                    if (typeof obj === 'object') {
-                        for (const key in obj) {
-                            for (const k in obj[key]) {
-                                alert.error(`${key}: ${obj[key][k]}`)
-                            }
-                        }
-                    } else {
-                        alert.error(res.payload.message);
-                    }
+                    messageFaild(obj);
                 }
             })
         } else {
@@ -70,17 +60,21 @@ function Add(props) {
                     props.history.push('/devices');
                 } else {
                     var obj = res.payload.message;
-                    if (typeof obj === 'object') {
-                        for (const key in obj) {
-                            for (const k in obj[key]) {
-                                alert.error(`${key}: ${obj[key][k]}`)
-                            }
-                        }
-                    } else {
-                        alert.error(res.payload.message);
-                    }
+                    messageFaild(obj);
                 }
             })
+        }
+    }
+
+    function messageFaild(obj) {
+        if (typeof obj === 'object') {
+            for (const key in obj) {
+                for (const k in obj[key]) {
+                    alert.error(`${obj[key][k]}`);
+                }
+            }
+        } else {
+            alert.error(obj);
         }
     }
 
@@ -97,12 +91,12 @@ function Add(props) {
         }
         if (!device && props.match.params.id) {
             GetDevice.DeviceView(props.match.params.id).then(res => {
-                console.log(res);
                 let _device = res.payload;
                 setBaseUrl(_device.baseUrl);
                 setDevice(_device.device);
                 categories_id.onChange({ target: { value: _device.device.categories_id } })
-                brand_id.onChange({ target: { value: _device.device.brand_id } })
+                findCategoryParent(_device.device.brand_id);
+                setBrand_id(_device.device.brand_id);
                 serial_number.onChange({ target: { value: _device.device.serial_number } })
                 product_number.onChange({ target: { value: _device.device.product_number } })
                 name.onChange({ target: { value: _device.device.name } })
@@ -116,7 +110,6 @@ function Add(props) {
 
             })
         }
-        console.log('a');
     }, [])
 
     function useFormInput(initValue) {
@@ -167,18 +160,32 @@ function Add(props) {
         setImage(null);
     }
 
+    function findCategoryParent(brands_id = '') {
+        var frm = new FormData();
+        frm.append('brands_id', brands_id);
+        FilterCategory.filterCategory(frm).then(res => {
+            setCategories(res['payload']['lstFilter']);
+        });
+    }
+
+    function hanldeOnChangeBrand(e) {
+        setBrand_id(e.target.value);
+        findCategoryParent(e.target.value);
+    }
+
+
     function showTemplate() {
         return (
             <div className="row p-20">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <form>
-                        <legend className="pl-30">{device ? 'Update device' : 'Add new device'}</legend><hr />
+                        <legend className="pl-30">{device ? 'Cập nhập Thông tin thiết bị' : 'Thêm mới thiết bị'}</legend><hr />
 
                         <div className="row">
                             <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                                 <div className="form-group">
                                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                        <label>Name:</label>
+                                        <label>Tên thiết bị:</label>
                                     </div>
                                     <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                                         <input type="text" className="form-control" {...name} />
@@ -187,11 +194,11 @@ function Add(props) {
 
                                 <div className="form-group">
                                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                        <label>Brand:</label>
+                                        <label>Thương hiệu:</label>
                                     </div>
                                     <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                        <select className="form-control" {...brand_id} >
-                                            <option value="" disabled hidden>Select one Brand</option>
+                                        <select className="form-control" onChange={hanldeOnChangeBrand} value={brand_id} >
+                                            <option value="" hidden>---Chọn thương hiệu---</option>
                                             {brands ? showOptionBrands() : ''}
                                         </select>
                                     </div>
@@ -199,11 +206,11 @@ function Add(props) {
 
                                 <div className="form-group">
                                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                        <label>Category:</label>
+                                        <label>Danh mục:</label>
                                     </div>
                                     <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                                        <select className="form-control" {...categories_id} >
-                                            <option value="" disabled hidden >Select one category</option>
+                                        <select className="form-control" disabled={!brand_id ? "disabled" : ''} {...categories_id} >
+                                            <option value="" disabled hidden >---Chọn danh mục---</option>
                                             {categories ? showOptionCategories() : ''}
                                         </select>
                                     </div>
@@ -211,7 +218,7 @@ function Add(props) {
 
                                 <div className="form-group">
                                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                                        <label>Image:</label>
+                                        <label>Hình ảnh:</label>
                                     </div>
                                     <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 ">
                                         <input type="file" className="form-control" onChange={onChangeImage} />
@@ -243,7 +250,7 @@ function Add(props) {
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Specifications:</label>
+                                    <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Thông số:</label>
                                     <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                                         <textarea className="form-control" rows="2" {...specifications} ></textarea>
                                     </div>
@@ -251,14 +258,14 @@ function Add(props) {
 
 
                                 <div className="form-group">
-                                    <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Purchase date:</label>
+                                    <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Ngày mua:</label>
                                     <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                                         <input type="date" className="form-control" required="required" title="Purchase date" {...purchase_date} />
                                     </div>
                                 </div>
 
                                 <div className="form-group">
-                                    <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Warranty period:</label>
+                                    <label className="col-xs-4 col-sm-4 col-md-4 col-lg-4">Hạn bảo hành:</label>
                                     <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
                                         <input type="date" className="form-control" required="required" title="Warranty period date" {...warranty_period} />
                                     </div>
@@ -268,8 +275,8 @@ function Add(props) {
 
                         <div className="row">
                             <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4 pl-30">
-                                <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Save</button>
-                                <Link to="/devices" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Cancel</Link>
+                                <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Lưu</button>
+                                <Link to="/devices" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Hủy</Link>
                             </div>
                         </div>
 

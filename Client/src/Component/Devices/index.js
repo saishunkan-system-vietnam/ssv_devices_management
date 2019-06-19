@@ -10,7 +10,7 @@ function index(props) {
     return (
         <div className="mt-70 p-20">
             <div className="container-fluid layout">
-                <h1 className="text-center" >QUẢN LÝ THIẾT BỊ</h1>
+                <h1 className="text-center pt-30" >QUẢN LÝ THIẾT BỊ</h1>
                 <hr/>    
                 {renderContent()}
             </div>

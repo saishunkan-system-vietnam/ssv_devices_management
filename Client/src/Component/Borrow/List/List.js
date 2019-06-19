@@ -44,6 +44,9 @@ function ListBorrow() {
     function handleGetFilter(_status_name) {
         var frm = new FormData();
         frm.append('status', _status_name);
+        let user=JSON.parse(localStorage.getItem("newUser"));
+        frm.append('user_role', user.role);
+        frm.append('user_', user.role);
         BorrowFilter.BorrowFilter(frm).then(res => {
             if (res && res.payload) {
                 setFilter(res.payload);
@@ -59,8 +62,7 @@ function ListBorrow() {
                 frm.append('id', id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to delete this borrow?</p>
+                        <h1>Bạn đang xóa thông tin mượn đồ?</h1>
                         <button onClick={() => BorrowDelete.BorrowDelete(frm).then(responseJson => {
                             if (responseJson['0'] === 200) {
                                 alert.success("The infomation borrow has been delete!");
@@ -71,8 +73,8 @@ function ListBorrow() {
                                 alert.error("The infomation borrow could not be delete. Please, try again.");
                                 onClose();
                             }
-                        })}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        })}>Xóa</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -84,9 +86,7 @@ function ListBorrow() {
             customUI: ({ onClose }) => {
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to approve this borrow?</p>
-
+                        <h1>Bạn đang phê duyệt thông tin mượn đồ?</h1>
                         <button onClick={() => {
                             var frm = new FormData();
                             frm.append('id', id);
@@ -100,8 +100,8 @@ function ListBorrow() {
                                 }
                             })
                             onClose()
-                        }}>Yes, approve borrow!</button>
-                        <button onClick={onClose}>No</button>
+                        }}>Phê duyệt</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -113,9 +113,7 @@ function ListBorrow() {
             customUI: ({ onClose }) => {
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want not to approve this borrow?</p>
-
+                        <h1>Bạn đang không phê duyệt thông tin mượn đồ?</h1>
                         <div className="form-group">
                             <label className="col-sm-2">Reason:</label>
                             <div className="col-sm-12">
@@ -137,8 +135,8 @@ function ListBorrow() {
                                 }
                             })
                             onClose()
-                        }}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        }}>Đồng ý</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -150,11 +148,9 @@ function ListBorrow() {
             customUI: ({ onClose }) => {
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to return device this borrow?</p>
-
+                        <h1>Bạn đang yêu cầu trả thiết bị?</h1>
                         <div className="form-group">
-                            <label className="col-sm-2">Return reason:</label>
+                            <label className="col-sm-2">Lý do trả:</label>
                             <div className="col-sm-12">
                                 <textarea ref={return_reason} className="form-control" rows="2" required="required"></textarea>
                             </div>
@@ -174,8 +170,8 @@ function ListBorrow() {
                                 }
                             })
                             onClose()
-                        }}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        }}>Xác nhận</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -187,9 +183,7 @@ function ListBorrow() {
             customUI: ({ onClose }) => {
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to return device this borrow?</p>
-
+                        <h1>Bạn đang xác nhận trả thiết bị?</h1>
                         <button onClick={() => {
                             var frm = new FormData();
                             frm.append('id', id);
@@ -203,8 +197,8 @@ function ListBorrow() {
                                 }
                             })
                             onClose()
-                        }}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        }}>Xác nhận</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -213,6 +207,7 @@ function ListBorrow() {
 
     var listItem = lstBorrow.map((borrow, index) => {
         let staust_name = '';
+        let result = "";
         if (Number(borrow.BorrowDevicesDetail.status) === 0) {
             staust_name = <span className="label label-primary">Yêu cầu mượn</span>;
         } else if (Number(borrow.BorrowDevicesDetail.status) === 1) {
@@ -225,8 +220,7 @@ function ListBorrow() {
             staust_name = <span className="label label-danger">Đã trả</span>;
         }
         let status_code = borrow.BorrowDevicesDetail.status;
-
-        return <BorrowItem
+        return result = <BorrowItem
             key={index}
             id={borrow.id}
             borrower={borrow.Users.full_name}
@@ -247,7 +241,7 @@ function ListBorrow() {
             onNoApprove={onNoApproveItem}
             returnDevice={returnDevice}
             confirmReturnDevice={confirmReturnDevice}
-        />
+        />;
     });
 
     function handleChange(_status, _status_name) {
@@ -278,7 +272,7 @@ function ListBorrow() {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th>Mã</th>
+                                <th className="text-center">Mã</th>
                                 <th>Người mượn</th>
                                 <th>Thiết bị</th>
                                 <th>Trạng thái</th>

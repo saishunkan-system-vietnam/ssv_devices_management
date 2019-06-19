@@ -25,7 +25,8 @@ class BorrowController extends ApiController {
         $this->BorrowDevicesDetail = TableRegistry::getTableLocator()->get('BorrowDevicesDetail');
         $this->Devices = TableRegistry::getTableLocator()->get('Devices');
         $this->Users = TableRegistry::getTableLocator()->get('Users');
-        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+        $this->login = ['id' => 61, 'user_name' => 'Test','level'=>2, 'full_name' => "Nguyễn Thị test", 'position' => 'Programmer', 'email' => 'hoangnguyenit98@gmail.com'];
         $this->conn = ConnectionManager::get('default');
         $this->message = Configure::read('Message');
         $this->messageBorrow = Configure::read('Borrow');
@@ -33,7 +34,10 @@ class BorrowController extends ApiController {
 
     //get list BorrowDevices
     public function borrowDevices() {
-
+        $condition = ['BorrowDevices.is_deleted' => 0];
+        if ($this->login['level'] !== 5) {
+            $condition = array_merge($condition, ["BorrowDevices.borrower_id" => $this->login['id']]);
+        }
         $borrowDevices = $this->where_list(['BorrowDevices.is_deleted' => 0]);
         $args = array(
             'lstBorrowDevices' => $borrowDevices
@@ -190,10 +194,10 @@ class BorrowController extends ApiController {
             $borrowDevicesDetailUpdate->update_user = $this->login['user_name'];
             if ($this->BorrowDevicesDetail->save($borrowDevicesDetailUpdate)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(200, ['message' => printf($this->message['edit_success'], "thông tin mượn đồ")]);
+                $this->returnResponse(200, ['message' => sprintf($this->message['edit_success'], "thông tin mượn đồ")]);
             } else {
                 // Set return response (response code, api response)
-                $this->returnResponse(901, ['message' => printf($this->message['edit_error'], "thông tin mượn đồ")]);
+                $this->returnResponse(901, ['message' => sprintf($this->message['edit_error'], "thông tin mượn đồ")]);
             }
         } else {
             // Set return response (response code, api response)
@@ -261,7 +265,7 @@ class BorrowController extends ApiController {
             //check borrowing
             $borrowing = $this->Devices->find('all')->where(['id' => $getBorrowDevicesDetail['device_id'], 'status' => 1])->toArray();
             if (count($borrowing) > 0) {
-            $this->returnResponse(903, ['message' => $this->messageBorrow['borrowed']]);
+                $this->returnResponse(903, ['message' => $this->messageBorrow['borrowed']]);
                 return;
             }
 
@@ -439,6 +443,9 @@ class BorrowController extends ApiController {
         if ($this->getRequest()->is('post')) {
             $request = $this->getRequest()->getData();
             $condition = ['BorrowDevices.is_deleted' => 0];
+            if ($this->login['level'] !== 5) {
+                $condition = array_merge($condition, ["BorrowDevices.borrower_id" => $this->login['id']]);
+            }
             if (isset($request['status']) && !empty($request['status'])) {
                 switch ($request['status']) {
                     case 'borrow_request':

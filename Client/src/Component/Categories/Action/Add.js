@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import lstBrands from '../../../api/listbrands';
-import lstCategory from '../../../api/listcategories';
 import Option from './Option';
 import getCategory from '../../../api/category';
 import addCategory from '../../../api/addcategory';
 import editCategory from '../../../api/editcategory';
 import { useAlert } from "react-alert";
+import FilterCategory from '../../../api/filtercategory';
 
 
 function Add(props) {
@@ -13,7 +13,7 @@ function Add(props) {
     const name = useFormInput('');
     const isParent = useFormInput(false);
     const id_parent = useFormInput('');
-    const id_brand = useFormInput('');
+    const [id_brand, setID_brand] = useState('');
     const [listBrands, setLstBrands] = useState([]);
     const [lstCategories, setLstCategories] = useState([]);
     const alert = useAlert();
@@ -27,8 +27,8 @@ function Add(props) {
             idparent = id_parent.value;
         }
         frm.append('id_parent', idparent);
-        frm.append('brands_id', id_brand.value);
-        frm.append('category_name', name.value);
+        frm.append('brands_id', id_brand);
+        frm.append('category_name', name.value.trim());
         if (id) {
             frm.append('id', id);
             editCategory.editCategory(frm).then(response => {
@@ -70,18 +70,14 @@ function Add(props) {
             setLstBrands(responseJson['payload']['lstBrands']);
         });
     }
-    function handleGetLstCategories() {
-        lstCategory.lstCategory().then(responseJson => {
-            setLstCategories(responseJson['payload']['lstCategories']);
-        });
-    }
 
     function get_category() {
         getCategory.getCategory(props.match.params.id).then(responseJson => {
             let category = responseJson['payload']['category'];
             setID(category.id);
             name.onChange({ target: { type: 'text', value: category.category_name } });
-            id_brand.onChange({ target: { type: 'text', value: category.brands_id } });
+            setID_brand(category.brands_id);
+            findCategoryParent(category.brands_id);
             if (category.id_parent === 0) {
                 isParent.onChange({ target: { type: 'checkbox', checked: true } });
             } else {
@@ -90,18 +86,14 @@ function Add(props) {
 
         });
     }
-
     useEffect(() => {
         if (id === '' && props.match.params.id) {
             get_category();
         }
 
-        if (lstCategories.length === 0) {
-            handleGetLstCategories();
-        }
         if (listBrands.length === 0) {
             handleGetLstBrands();
-        }
+        }   
     }, []);
 
     var option_brand = listBrands.map((brand, index) => {
@@ -131,6 +123,19 @@ function Add(props) {
         };
     }
 
+    function findCategoryParent(brands_id='') {
+        var frm =new FormData();
+        frm.append('brands_id',brands_id);
+        FilterCategory.filterCategory(frm).then(res => {
+            setLstCategories(res['payload']['lstFilter']);
+        });
+    }
+
+    function hanldeOnChangeBrand(e) {
+        setID_brand(e.target.value);
+        findCategoryParent(e.target.value);
+    }
+
     return (
         <div className="row p-20">
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -154,8 +159,8 @@ function Add(props) {
                                 <label>Thương hiệu:</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                                <select className="form-control" {...id_brand} >
-                                    <option value="" disabled hidden >---chọn thương hiệu---</option>
+                                <select className="form-control" onChange={hanldeOnChangeBrand} value={id_brand}>
+                                    <option hidden >---chọn thương hiệu---</option>
                                     {option_brand}
                                 </select>
                             </div>
@@ -168,7 +173,7 @@ function Add(props) {
                                 <label>Danh mục cha</label>
                             </div>
                             <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
-                                <select className="form-control" {...id_parent} >
+                                <select className="form-control" disabled={!id_brand ? "disabled" : ''} {...id_parent} >
                                     <option value="" disabled hidden >---chọn danh mục cha---</option>
                                     {option_category_parent}
                                 </select>

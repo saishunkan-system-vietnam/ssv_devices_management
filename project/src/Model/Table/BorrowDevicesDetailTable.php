@@ -59,8 +59,8 @@ class BorrowDevicesDetailTable extends Table {
 
         $validator
                 ->integer('device_id')
-                ->requirePresence('device_id', 'create')
-                ->allowEmptyString('device_id', false);
+                ->requirePresence('device_id', 'create','Chọn thiết bị để tiếp tục.')
+                ->allowEmptyString('device_id', false,'Chọn thiết bị để tiếp tục.');
 
         $validator
                 ->scalar('borrow_reason')
@@ -76,8 +76,8 @@ class BorrowDevicesDetailTable extends Table {
 
         $validator
                 ->dateTime('borrow_date')
-                ->requirePresence('borrow_date', 'create')
-                ->allowEmptyDateTime('borrow_date', false);
+                ->requirePresence('borrow_date', 'create', 'Chọn ngày mượn để tiếp tục.')
+                ->allowEmptyDateTime('borrow_date', false, 'Chọn ngày mượn để tiếp tục.');
 
         $validator
                 ->dateTime('approved_date')
@@ -85,8 +85,8 @@ class BorrowDevicesDetailTable extends Table {
 
         $validator
                 ->dateTime('return_date_expected')
-                ->requirePresence('return_date_expected', 'create')
-                ->allowEmptyDateTime('return_date_expected', false);
+                ->requirePresence('return_date_expected', 'create', 'Chọn ngày trả để tiếp tục.')
+                ->allowEmptyDateTime('return_date_expected', false, 'Chọn ngày trả để tiếp tục.');
 
         $validator
                 ->scalar('created_user')

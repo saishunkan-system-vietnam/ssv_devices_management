@@ -17,7 +17,8 @@ class MaintenancesController extends ApiController {
 
     public function initialize() {
         parent::initialize();
-        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+//        $this->login = $this->getRequest()->getSession()->read('Auth.User');
+        $this->login = ['id' => 61, 'user_name' => 'Test', 'full_name' => "Nguyễn Thị test", 'position' => 'Programmer', 'email' => 'hoangnguyenit98@gmail.com'];
         $this->Maintenances = TableRegistry::getTableLocator()->get('Maintenances');
         $this->conn = ConnectionManager::get('default');
         $this->loadComponent('Maintenance');
@@ -135,7 +136,7 @@ class MaintenancesController extends ApiController {
                     $maintenanceUpdate->maintenances_address = htmlentities($request['maintenances_address']);
                 }
                 $result = $this->Maintenances->save($maintenanceUpdate);
-                if ($result && $result->status == 5) {
+                if ($result && $result->status == 5 or $result->status==3) {
                     $devices = $this->setStatusDevice(['id' => $result->devices_id], 0);
                     if ($devices === FALSE) {
                         $this->conn->rollback();
@@ -275,6 +276,7 @@ class MaintenancesController extends ApiController {
                         $borrowDetail->status = 4;
                         $borrowDetail->update_user = $this->login['user_name'];
                         $borrowDetail->update_time = $this->dateNow;
+                        $borrowDetail->return_date = $this->dateNow;
                         $borrowDetail->return_reason = $result->note;
                         $result = $this->Borrow->saveBorrowDevicesDetail($borrowDetail);
                         if ($result == FALSE) {

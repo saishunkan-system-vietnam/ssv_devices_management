@@ -62,13 +62,13 @@ class MaintenancesTable extends Table
 
         $validator
                 ->integer('devices_id')
-                ->allowEmptyString('devices_id', False)
-                ->requirePresence('devices_id', 'create');
+                ->allowEmptyString('devices_id', False,'Chọn thiết bị để tiếp tục.')
+                ->requirePresence('devices_id', 'create','Chọn thiết bị để tiếp tục.');
 
         $validator
                 ->date('broken_date')
-                ->requirePresence('broken_date', 'create')
-                ->allowEmptyDate('broken_date',FALSE);
+                ->requirePresence('broken_date', 'create','Chọn ngày hỏng để tiếp tục')
+                ->allowEmptyDate('broken_date',FALSE,'Chọn ngày hỏng để tiếp tục.');
 
         $validator
                 ->date('maintenance_start_date')

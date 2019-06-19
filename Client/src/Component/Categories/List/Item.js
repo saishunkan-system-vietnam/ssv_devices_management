@@ -10,7 +10,7 @@ function Item(p) {
       customUI: ({ onClose }) => {
         return (
           <div className='custom-ui'>
-            <h1>Đang tiến hàng xóa Loại thiết bị?</h1>
+            <h1>Bạn đang xóa Danh mục?</h1>
             <button onClick={() => {
               p.onDelete(p.id);
               onClose();
@@ -25,7 +25,7 @@ function Item(p) {
 
   return (
     <tr>
-      <td>{p.id}</td>
+      <td className="text-center">{p.id}</td>
       <td>{p.brands_id}</td>
       <td>{p.parent_id}</td>
       <td>{p.name}</td>

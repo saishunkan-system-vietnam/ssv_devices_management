@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Model\Table;
 
 use Cake\ORM\Query;
@@ -23,16 +24,15 @@ use Cake\Validation\Validator;
  * @method \App\Model\Entity\Device[] patchEntities($entities, array $data, array $options = [])
  * @method \App\Model\Entity\Device findOrCreate($search, callable $callback = null, $options = [])
  */
-class DevicesTable extends Table
-{
+class DevicesTable extends Table {
+
     /**
      * Initialize method
      *
      * @param array $config The configuration for the Table.
      * @return void
      */
-    public function initialize(array $config)
-    {
+    public function initialize(array $config) {
         parent::initialize($config);
 
         $this->setTable('devices');
@@ -62,87 +62,86 @@ class DevicesTable extends Table
      * @param \Cake\Validation\Validator $validator Validator instance.
      * @return \Cake\Validation\Validator
      */
-    public function validationDefault(Validator $validator)
-    {
+    public function validationDefault(Validator $validator) {
         $validator
-            ->allowEmptyString('id', 'create');
+                ->allowEmptyString('id', 'create');
 
         $validator
-            ->integer('categories_id')
-            ->requirePresence('categories_id', 'create')
-            ->allowEmptyString('categories_id', false);
+                ->integer('categories_id')
+                ->requirePresence('categories_id', 'create', 'Chọn Danh mục để tiếp tục.')
+                ->allowEmptyString('categories_id', false, 'Chọn Danh mục để tiếp tục.');
 
         $validator
-            ->scalar('serial_number')
-            ->maxLength('serial_number', 50)
-            ->requirePresence('serial_number', 'create')
-            ->allowEmptyString('serial_number', false);
+                ->scalar('serial_number')
+                ->maxLength('serial_number', 50, 'Serial number không cho phép nhập quá 50 ký tự.')
+                ->requirePresence('serial_number', 'create', 'Serial number không được để trống.')
+                ->allowEmptyString('serial_number', false, 'Serial number không được để trống.');
 
         $validator
-            ->scalar('product_number')
-            ->maxLength('product_number', 50)
-            ->requirePresence('product_number', 'create')
-            ->allowEmptyString('product_number', false);
-
-         $validator
-            ->scalar('brand_id')
-            ->requirePresence('brand_id', 'create');
-        
-        $validator
-            ->scalar('name')
-            ->maxLength('name', 100)
-            ->requirePresence('name', 'create')
-            ->allowEmptyString('name', false);
+                ->scalar('product_number')
+                ->maxLength('product_number', 50, 'Product number không cho phép nhập quá 50 ký tự.')
+                ->requirePresence('product_number', 'create', 'Product number không được để trống.')
+                ->allowEmptyString('product_number', false, 'Product number không được để trống.');
 
         $validator
-            ->scalar('specifications')
-            ->allowEmptyString('specifications');
+                ->scalar('brand_id')
+                ->requirePresence('brand_id', 'create', 'Chọn thương hiệu để tiếp tục.');
 
         $validator
-            ->allowEmptyString('status');
+                ->scalar('name')
+                ->maxLength('name', 100, 'Tên thiết bị không cho phép nhập quá 100 ký tự.')
+                ->requirePresence('name', 'create', 'Tên thiết bị không được để trống.')
+                ->allowEmptyString('name', false, 'Tên thiết bị không được để trống.');
 
         $validator
-            ->dateTime('stock_date')
-            ->allowEmptyDateTime('stock_date');
-        
-         $validator
-            ->date('purchase_date')
-            ->allowEmptyDate('purchase_date');
-        
-        $validator
-            ->date('warranty_period')
-            ->allowEmptyDate('warranty_period');
+                ->scalar('specifications')
+                ->allowEmptyString('specifications');
 
         $validator
-            ->scalar('created_user')
-            ->maxLength('created_user', 100)
-            ->allowEmptyString('created_user');
+                ->allowEmptyString('status');
 
         $validator
-            ->scalar('update_user')
-            ->maxLength('update_user', 100)
-            ->allowEmptyString('update_user');
+                ->dateTime('stock_date')
+                ->allowEmptyDateTime('stock_date');
 
         $validator
-            ->dateTime('created_time')
-            ->allowEmptyDateTime('created_time');
+                ->date('purchase_date')
+                ->allowEmptyDate('purchase_date');
 
         $validator
-            ->dateTime('update_time')
-            ->allowEmptyDateTime('update_time');
+                ->date('warranty_period')
+                ->allowEmptyDate('warranty_period');
 
         $validator
-            ->boolean('is_deleted')
-            ->allowEmptyString('is_deleted', false);
+                ->scalar('created_user')
+                ->maxLength('created_user', 100)
+                ->allowEmptyString('created_user');
+
+        $validator
+                ->scalar('update_user')
+                ->maxLength('update_user', 100)
+                ->allowEmptyString('update_user');
+
+        $validator
+                ->dateTime('created_time')
+                ->allowEmptyDateTime('created_time');
+
+        $validator
+                ->dateTime('update_time')
+                ->allowEmptyDateTime('update_time');
+
+        $validator
+                ->boolean('is_deleted')
+                ->allowEmptyString('is_deleted', false);
 
         return $validator;
     }
-    
-     public function validationSerialnumber(Validator $validator){
-         $this->validationDefault($validator);
-         $validator->add('serial_number', 'unique', ['rule' => 'validateUnique', 'provider' => 'table','message'=>'serial number is exits']);
-         return $validator;
-     }
+
+    public function validationSerialnumber(Validator $validator) {
+        $this->validationDefault($validator);
+        $validator->add('serial_number', 'unique', ['rule' => 'validateUnique', 'provider' => 'table', 'message' => 'serial number đã tồn tại.']);
+        return $validator;
+    }
 
     /**
      * Returns a rules checker object that will be used for validating
@@ -151,11 +150,11 @@ class DevicesTable extends Table
      * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
      * @return \Cake\ORM\RulesChecker
      */
-    public function buildRules(RulesChecker $rules)
-    {
+    public function buildRules(RulesChecker $rules) {
         $rules->add($rules->existsIn(['parent_id'], 'ParentDevices'));
         $rules->add($rules->existsIn(['brand_id'], 'Brands'));
 
         return $rules;
     }
+
 }

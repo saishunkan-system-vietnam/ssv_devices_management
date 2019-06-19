@@ -13,7 +13,7 @@ function Item(props) {
 
   return (
     <tr>
-      <td>{props.brand.id} </td>
+      <td className="text-center">{props.brand.id} </td>
       <td>{props.brand.brand_name} </td>
       <td>{props.brand.created_user} </td>
       <td>{props.brand.update_user} </td>

@@ -70,10 +70,10 @@ class DevicesController extends ApiController {
             $brand->created_user = $this->login['user_name'];
             if ($this->Brands->save($brand)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(200, ['message' => sprintf($this->message["add_success"], "hãng sản xuất")]);
+                $this->returnResponse(200, ['message' => sprintf($this->message["add_success"], "thương hiệu")]);
             } else {
                 // Set return response (response code, api response)
-                $this->returnResponse(901, ['message' => sprintf($this->message["add_error"], "hãng sản xuất")]);
+                $this->returnResponse(901, ['message' => sprintf($this->message["add_error"], "thương hiệu")]);
             }
         } else {
             // Set return response (response code, api response)
@@ -110,10 +110,10 @@ class DevicesController extends ApiController {
             $brandUpdate->update_time = $this->dateNow;
             if ($this->Brands->save($brandUpdate)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(200, ['message' => sprintf($this->message["edit_success"], "hãng sản xuất")]);
+                $this->returnResponse(200, ['message' => sprintf($this->message["edit_success"], "thương hiệu")]);
             } else {
                 // Set return response (response code, api response)
-                $this->returnResponse(901, ['message' => sprintf($this->message["edit_error"], "hãng sản xuất")]);
+                $this->returnResponse(901, ['message' => sprintf($this->message["edit_error"], "thương hiệu")]);
             }
         } else {
             // Set return response (response code, api response)
@@ -141,10 +141,10 @@ class DevicesController extends ApiController {
             $brand->update_time = $this->dateNow;
             if ($this->Brands->save($brand)) {
                 // Set return response (response code, api response)
-                $this->returnResponse(200, ['message' => sprintf($this->message["delete_success"], "hãng sản xuất")]);
+                $this->returnResponse(200, ['message' => sprintf($this->message["delete_success"], "thương hiệu")]);
             } else {
                 // Set return response (response code, api response)
-                $this->returnResponse(901, ['message' => sprintf($this->message["delete_error"], "hãng sản xuất")]);
+                $this->returnResponse(901, ['message' => sprintf($this->message["delete_error"], "thương hiệu")]);
             }
         } else {
             // Set return response (response code, api response)
@@ -221,7 +221,7 @@ class DevicesController extends ApiController {
             $deviceNewEntity = $this->Devices->newEntity();
             if (!isset($_FILES) || empty($_FILES)) {
                 //set return response (response code, api response)
-                $this->returnResponse(200, ['message' => sprintf($this->message["no_img"])]);
+                $this->returnResponse(901, ['message' => sprintf($this->message["no_img"])]);
                 return;
             }
 
@@ -234,7 +234,7 @@ class DevicesController extends ApiController {
                 return;
             }
             if (!in_array($file_ext, $allowed_file_types)) {
-                $this->returnResponse(903, ['message' => sprintf($this->message["img_large"], implode(', ', $allowed_file_types))]);
+                $this->returnResponse(903, ['message' => sprintf($this->message["img_invaild"], implode(', ', $allowed_file_types))]);
                 return;
             }
             $newfilename = $this->rand_string(50) . $file_ext;
@@ -265,7 +265,7 @@ class DevicesController extends ApiController {
             $request = $this->getRequest()->getData();
             if (!isset($request['id']) || empty($request['id'])) {
                 //set return response (response code, api response)
-                $this->returnResponse(903, ['message' => $this->message['no_id']]);
+                $this->returnResponse(901, ['message' => $this->message['no_id']]);
                 return;
             }
 
@@ -305,7 +305,7 @@ class DevicesController extends ApiController {
                     return;
                 }
                 if (!in_array($file_ext, $allowed_file_types)) {
-                    $this->returnResponse(903, ['message' => sprintf($this->message["img_large"], implode(', ', $allowed_file_types))]);
+                    $this->returnResponse(903, ['message' => sprintf($this->message["img_invaild"], implode(', ', $allowed_file_types))]);
                     return;
                 }
                 $newfilename = $this->rand_string(50) . $file_ext;
@@ -319,7 +319,7 @@ class DevicesController extends ApiController {
                 $deviceUpdate->specifications = htmlentities($device->specifications);
             }
             $deviceUpdate->update_user = $this->login['user_name'];
-            $deviceUpdate->update_time = $this->dateNow;
+            $deviceUpdate->update_time = $this->dateNow;          
             if ($this->Devices->save($deviceUpdate)) {
                 if (!empty($imageOld)) {
                     $this->deleteImg($imageOld, $this->nameController);

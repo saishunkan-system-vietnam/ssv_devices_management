@@ -56,8 +56,7 @@ function List() {
                 frm.append("id", id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to delete this device?</p>
+                        <h1>Bạn đang xóa thiết bị?</h1>
                         <button onClick={() => DeviceDelete.DeviceDelete(frm).then(res => {
                             if (res['0'] === 200) {
                                 alert.success(res.payload.message);
@@ -67,8 +66,8 @@ function List() {
                                 alert.error(res.payload.message);
                                 onClose();
                             }
-                        })}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        })}>Xóa</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }

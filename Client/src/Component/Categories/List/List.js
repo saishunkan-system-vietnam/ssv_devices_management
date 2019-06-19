@@ -24,7 +24,7 @@ function List() {
 
     function handleGetLstBrands() {
         lstBrands.lstBrands().then(responseJson => {
-            setLstBrands(responseJson['payload']['lstBrands']);
+            setLstBrands(responseJson['payload']['lstBrands']?responseJson['payload']['lstBrands']:[]);
         });
     }
 
@@ -92,7 +92,7 @@ function List() {
     return (
         <div>
 
-            <div class="row">
+            <div className="row">
                 <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 form-inline">
 
                     <div className="btn-group ml-10 mt-10">
@@ -127,10 +127,10 @@ function List() {
             <hr />
             <div className="row mt-10">
                 <div className="table-responsive table-data">
-                    <table className="table text-center">
+                    <table className="table">
                         <thead>
                             <tr>
-                                <th>Mã danh mục</th>
+                                <th className="text-center">Mã danh mục</th>
                                 <th>Thương hiệu</th>
                                 <th>Danh mục cha</th>
                                 <th>Tên danh mục</th>

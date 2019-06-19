@@ -19,8 +19,8 @@ function Add(props) {
     const [lstDevice, setLstDevice] = useState([]);
     const [lstCategories, setLstCategories] = useState([]);
     const [lstBrands, setLstBrands] = useState([]);
-    const [brand_id, setBrand_id] = useState(null);
-    const [category_id, setCategory_id] = useState(null);
+    const [brand_id, setBrand_id] = useState('');
+    const [category_id, setCategory_id] = useState('');
 
     const alert = useAlert();
 
@@ -29,9 +29,8 @@ function Add(props) {
         var frm = new FormData();
         frm.append('device_id', device_id.value);
         frm.append('borrow_reason', borrow_reason.value);
-        frm.append('borrow_date', borrow_date.value);
-        frm.append('return_date_expected', return_date_expected.value);
-        console.log(return_date_expected);
+        frm.append('borrow_date', toShortDate(borrow_date.value, true, true));
+        frm.append('return_date_expected', toShortDate(return_date_expected.value, true, true));
         if (borrow.length !== 0) {
             frm.append('id', borrow.id);
             if (borrow.BorrowDevicesDetail.status === '0') {
@@ -41,11 +40,7 @@ function Add(props) {
                         props.history.push('/borrow');
                     } else {
                         let obj = res['payload']['message'];
-                        for (const key in obj) {
-                            for (const k in obj[key]) {
-                                alert.error(`${key}: ${obj[key][k]}`)
-                            }
-                        }
+                        messageFaild(obj);
                     }
                 })
             } else {
@@ -58,15 +53,23 @@ function Add(props) {
                     props.history.push('/borrow');
                 } else {
                     let obj = res['payload']['message'];
-                    for (const key in obj) {
-                        for (const k in obj[key]) {
-                            alert.error(`${key}: ${obj[key][k]}`)
-                        }
-                    }
+                    messageFaild(obj);
                 }
             })
         }
 
+    }
+
+    function messageFaild(obj) {
+        if (typeof obj === 'object') {
+            for (const key in obj) {
+                for (const k in obj[key]) {
+                    alert.error(`${obj[key][k]}`);
+                }
+            }
+        } else {
+            alert.error(obj);
+        }
     }
 
     useEffect(() => {
@@ -90,10 +93,13 @@ function Add(props) {
             BorrowView.BorrowView(props.match.params.id).then(res => {
                 let borrow = res.payload.borrowDevices;
                 setBorrow(borrow);
+                setBrand_id(borrow.Devices.brand_id);
+                findCategories(borrow.Devices.brand_id);
+                setCategory_id(borrow.Devices.categories_id);
                 device_id.onChange({ target: { type: 'text', value: borrow.BorrowDevicesDetail.device_id } });
                 borrow_reason.onChange({ target: { type: 'text', value: borrow.BorrowDevicesDetail.borrow_reason } });
-                return_date_expected.onChange({ target: { type: 'text', value: borrow.BorrowDevicesDetail.return_date_expected } });
-                borrow_date.onChange({ target: { type: 'text', value: toShortDate(borrow.BorrowDevicesDetail.borrow_date) } });
+                return_date_expected.onChange({ target: { type: 'text', value: toShortDate(borrow.BorrowDevicesDetail.return_date_expected, false, false, true) } });
+                borrow_date.onChange({ target: { type: 'text', value: toShortDate(borrow.BorrowDevicesDetail.borrow_date, false, false, true) } });
             });
         }
     }, []);
@@ -101,7 +107,6 @@ function Add(props) {
     function useFormInput(initialValue) {
         const [value, setValue] = useState(initialValue);
         function hanldeChange(e) {
-            console.log(e.target.value);
             setValue(e.target.type === 'checkbox' ? e.target.checked : e.target.value);
         }
         return {
@@ -167,11 +172,11 @@ function Add(props) {
 
                     <div className="form-group">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            <label>Hãng: </label>
+                            <label>Thương hiệu: </label>
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <select className="form-control" onChange={onHandleChangeBrand}>
-                            <option value="" disabled hidden >---Chọn hãng---</option>
+                            <select className="form-control" onChange={onHandleChangeBrand} value={brand_id}>
+                                <option value="" disabled hidden >---Chọn thương hiệu---</option>
                                 {optionBrands}
                             </select>
                         </div>
@@ -179,11 +184,11 @@ function Add(props) {
 
                     <div className="form-group">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                            <label>Loại: </label>
+                            <label>Danh mục: </label>
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                            <select className="form-control" disabled={!brand_id ? "disabled" : ''} onChange={onHandleChangeCategory} >
-                            <option value="" disabled hidden >---Chọn Loại---</option>
+                            <select className="form-control" disabled={!brand_id ? "disabled" : ''} onChange={onHandleChangeCategory} value={category_id} >
+                                <option value="" hidden >---Chọn danh mục---</option>
                                 {optionCategories}
                             </select>
                         </div>
@@ -195,7 +200,7 @@ function Add(props) {
                         </div>
                         <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                             <select className="form-control" disabled={!category_id ? "disabled" : ''}  {...device_id}>
-                                <option value="" disabled hidden >---Chọn thiết bị---</option>
+                                <option value="" hidden >---Chọn thiết bị---</option>
                                 {optionDevice}
                             </select>
                         </div>

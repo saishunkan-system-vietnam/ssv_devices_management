@@ -28,7 +28,7 @@ function View(props) {
                 formdata.append('id', category.id);
                 return (
                     <div className='custom-ui'>
-                       <h1>Đang tiến hàng xóa Loại thiết bị?</h1>
+                        <h1>Bạn đang xóa Danh mục?</h1>
                         <button onClick={() => DeleteCategory.deleteCategory(formdata).then(responseJson => {
                             if (responseJson['0'] === 200) {
                                 alert.success(responseJson.payload.message);
@@ -50,7 +50,7 @@ function View(props) {
         <div className="row p-20">
 
             <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <legend className="pl-30">Chi tiết Loại: <strong>{category.category_name}</strong></legend>
+                <legend className="pl-30">Chi tiết danh mục: <strong>{category.category_name}</strong></legend>
                 <hr />
             </div>
 
@@ -59,7 +59,7 @@ function View(props) {
 
                 <div className="row mt-10" >
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Tên loại:
+                        Tên Danh mục:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category.category_name}
@@ -68,7 +68,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Loại bố:
+                        Danh mục cha:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category && category.Category_parent ? category.Category_parent.category_name : ''}
@@ -77,7 +77,7 @@ function View(props) {
 
                 <div className="row  mt-10">
                     <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                        Hãng sản xuất:
+                        Thương hiệu:
                      </div>
                     <div className="col-xs-8 col-sm-8 col-md-8 col-lg-8">
                         {category && category.Brands ? category.Brands.brand_name : ''}

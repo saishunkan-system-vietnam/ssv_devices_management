@@ -36,7 +36,7 @@ function Add(props) {
     function onSave(e) {
         e.preventDefault();
         var frm = new FormData();
-        frm.append("brand_name", brand_name);
+        frm.append("brand_name", brand_name.trim());
         if (brand) {
             frm.append("id", brand.id);
             BrandEdit.BrandsEdit(frm).then(res => {

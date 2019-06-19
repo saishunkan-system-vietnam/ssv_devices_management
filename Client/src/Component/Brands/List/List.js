@@ -53,8 +53,7 @@ function List() {
                 frm.append("id", id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Are you sure?</h1>
-                        <p>You want to delete this brand?</p>
+                        <h1>Bạn đang xóa Thương hiệu?</h1>                       
                         <button onClick={() => BrandDelete.BrandDelete(frm).then(res => {
                             if (res['0'] === 200) {
                                 alert.success(res.payload.message);
@@ -65,8 +64,8 @@ function List() {
                                 onClose();
                                 getLstBrand();
                             }
-                        })}>Yes</button>
-                        <button onClick={onClose}>No</button>
+                        })}>Xóa</button>
+                        <button onClick={onClose}>Hủy</button>
                     </div>
                 )
             }
@@ -95,10 +94,10 @@ function List() {
             </div>
             <div className="row mt-10">
                 <div className="table-responsive table-data">
-                    <table className="table text-center">
+                    <table className="table">
                         <thead>
                             <tr>
-                                <th>Mã Thương hiệu</th>
+                                <th className="text-center">Mã Thương hiệu</th>
                                 <th>Tên thương hiệu</th>
                                 <th>Người tạo</th>
                                 <th>Người cập nhập</th>

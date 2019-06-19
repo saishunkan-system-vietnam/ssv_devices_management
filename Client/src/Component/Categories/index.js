@@ -10,9 +10,10 @@ function Categories(props) {
     return (
         <div className="mt-70 p-20">
         	<div className="container-fluid layout">
-        		<div className="text-center p-20">
+        		<div className="text-center pt-30">
         			<h1>QUẢN LÝ DANH MỤC</h1>
         		</div>       	
+                <hr/>
             	{renderContent()}            	
             </div>
         </div>
