@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import brandsAdd from '../../api/Brand/brandsAdd';
+import brandsAdd from '../../../api/Brand/brandsAdd';
 import { useAlert } from 'react-alert';
-import BrandsView from '../../api/Brand/brandsView';
-import BrandEdit from '../../api/Brand/brandEdit';
+import BrandsView from '../../../api/Brand/brandsView';
+import BrandEdit from '../../../api/Brand/brandEdit';
 
 function Add(props) {
 

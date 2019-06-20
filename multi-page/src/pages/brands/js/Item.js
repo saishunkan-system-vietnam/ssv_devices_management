@@ -1,5 +1,5 @@
 import React from 'react';
-import { toShortDate } from '../../common/date';
+import { toShortDate } from '../../../common/date';
 
 function Item(props) {
 

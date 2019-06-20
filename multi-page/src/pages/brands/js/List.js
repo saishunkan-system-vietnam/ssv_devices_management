@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import BrandItem from './Item';
 import BrandAction from './add';
-import BrandList from '../../api/Brand/brandsList';
+import BrandList from '../../../api/Brand/brandsList';
 import { confirmAlert } from 'react-confirm-alert';
-import BrandDelete from '../../api/Brand/brandDelete';
-import BrandFilter from '../../api/Brand/brandFilter';
+import BrandDelete from '../../../api/Brand/brandDelete';
+import BrandFilter from '../../../api/Brand/brandFilter';
 import { useAlert } from 'react-alert';
-import './index.css';
-import '../../components/common.css';
 
 function List() {
     console.log(confirmAlert);
@@ -60,6 +58,7 @@ function List() {
                         <button onClick={() => BrandDelete.BrandDelete(frm).then(res => {
                             if (res['0'] === 200) {
                                 onClose();
+                                alert.success(res.payload.message);
                                 getLstBrand();
                             } else {
                                 alert.error(res.payload.message);

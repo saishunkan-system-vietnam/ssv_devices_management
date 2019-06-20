@@ -1,8 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import List from './List';
+import TemplateBrand from './js/template';
+import Layout from '../../components/Master/index';
+import { Provider as AlertProvider, positions } from 'react-alert'
+import AlertTemplate from "react-alert-template-basic";
+
+
+const options = {
+  position: positions.TOP_RIGHT,
+  timeout: 5000,
+  transition: 'scale'
+}
+
+const Root = () => (
+  <AlertProvider template={AlertTemplate} {...options}>
+    <Layout content={<TemplateBrand />} />
+  </AlertProvider>
+)
 
 ReactDOM.render(
-  <List />,
+  <Root />,
   document.getElementById('root')
 );
