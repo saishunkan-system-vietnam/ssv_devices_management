@@ -1,8 +1,8 @@
-import constants from '../constants/contants';
+import constants from '../../config/contants';
 import axios from 'axios';
 
-function BrandsEdit(formData) {
-    const url = constants.Url + constants.endpoint.brand_edit;
+function BrandDelete(formData) {
+    const url = constants.Url + constants.endpoint.brand_delete;
     let token = localStorage.getItem('Token') || '';
     const config = {
         headers: {
@@ -20,5 +20,5 @@ function BrandsEdit(formData) {
 }
 
 export default {
-    BrandsEdit
+    BrandDelete
 }

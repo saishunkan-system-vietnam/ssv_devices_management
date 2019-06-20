@@ -20,3 +20,4 @@ export function toShortDate(dateTime, format_date = true, format_time = false, f
     }
     return date.trim();
 }
+

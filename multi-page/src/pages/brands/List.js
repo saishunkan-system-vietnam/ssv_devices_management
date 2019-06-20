@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import BrandItem from './Item';
-// import BrandAction from '../Action/Add';
-import BrandList from '../../api/brandsList';
+import BrandAction from './add';
+import BrandList from '../../api/Brand/brandsList';
 import { confirmAlert } from 'react-confirm-alert';
-import BrandDelete from '../../api/brandDelete';
-import BrandFilter from '../../api/brandFilter';
+import BrandDelete from '../../api/Brand/brandDelete';
+import BrandFilter from '../../api/Brand/brandFilter';
 import { useAlert } from 'react-alert';
+import './index.css';
+import '../../components/common.css';
+import '../../components/jquery-3.2.1.min.js';
+import '../../components/assets/vendor/animsition/animsition.min.js';
 
 function List() {
     const [showForm, setShowForm] = useState(false);
@@ -13,6 +17,7 @@ function List() {
     const [brand_id, setBrand_id] = useState('');
 
     var alert = useAlert();
+
 
     function handleOnChangeShowForm() {
         setBrand_id(null);
@@ -52,10 +57,9 @@ function List() {
                 frm.append("id", id);
                 return (
                     <div className='custom-ui'>
-                        <h1>Bạn đang xóa Thương hiệu?</h1>                       
+                        <h1>Bạn đang xóa Thương hiệu?</h1>
                         <button onClick={() => BrandDelete.BrandDelete(frm).then(res => {
                             if (res['0'] === 200) {
-                                alert.success(res.payload.message);
                                 onClose();
                                 getLstBrand();
                             } else {

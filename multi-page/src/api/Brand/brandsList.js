@@ -1,10 +1,12 @@
-import constants from '../constants/contants';
+import constants from '../../config/contants';
 
-function BrandsView(id) {
-    const url = constants.Url + constants.endpoint.brand_view + id;
+function BrandList() {
+    const url = constants.Url + constants.endpoint.brand_list;
+    //get data local Storage
     let token = localStorage.getItem('Token') || '';
+
     return fetch(url, {
-        method: 'GET',
+        method: 'POST',
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -19,5 +21,5 @@ function BrandsView(id) {
 }
 
 export default {
-    BrandsView
+    BrandList
 }

@@ -1,4 +1,4 @@
-import constants from '../constants/contants';
+import constants from '../../config/contants';
 import axios from 'axios';
 
 function BrandsAdd(formData) {
