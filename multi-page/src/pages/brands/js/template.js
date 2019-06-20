@@ -1,6 +1,6 @@
 import React from 'react';
 import '../css/index.css';
-import List from '../js/List';
+import List from './List';
 
 function index() {
 

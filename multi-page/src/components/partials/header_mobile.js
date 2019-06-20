@@ -1,6 +1,5 @@
 import React from 'react';
 import {UncontrolledCollapse, Button, CardBody, Card} from 'reactstrap';
-import logo from '../images/icon/logo.png';
 
 function HeaderMobile() {
     return (
@@ -9,7 +8,7 @@ function HeaderMobile() {
                 <div className="container-fluid">
                     <div className="header-mobile-inner">
                         <a className="logo" href="index.html">
-                            <img src={logo} alt="CoolAdmin"/>
+                            <img src={require('../images/icon/logo.png')} alt="CoolAdmin"/>
                         </a>
                         <button className="hamburger hamburger--slider" type="button" id="toggler">
                             <span className="hamburger-box">
