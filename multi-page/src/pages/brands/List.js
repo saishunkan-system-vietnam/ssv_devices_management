@@ -8,10 +8,9 @@ import BrandFilter from '../../api/Brand/brandFilter';
 import { useAlert } from 'react-alert';
 import './index.css';
 import '../../components/common.css';
-import '../../components/jquery-3.2.1.min.js';
-import '../../components/assets/vendor/animsition/animsition.min.js';
 
 function List() {
+    console.log(confirmAlert);
     const [showForm, setShowForm] = useState(false);
     const [lstBrands, setLstBrands] = useState([])
     const [brand_id, setBrand_id] = useState('');

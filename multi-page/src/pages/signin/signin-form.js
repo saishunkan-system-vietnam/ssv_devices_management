@@ -2,11 +2,10 @@ import React, {useEffect} from 'react';
 import {Formik, Field, Form, ErrorMessage} from 'formik';
 import * as Yup from 'yup';
 import {authenticationService} from '../../_services';
-import './signin.css';
 
 
 function LoginForm(props) {
-    console.log(props);
+  console.log(props);
   useEffect(() => {
     // redirect to home if already logged in
     if (authenticationService.currentUserValue) {
@@ -38,8 +37,8 @@ function LoginForm(props) {
                     authenticationService.login(username, password)
                       .then(
                         user => {
-                          const {from} = this.props.location.state || {from: {pathname: "/"}};
-                          this.props.history.push(from);
+                          const {from} = props.location.state || {from: {pathname: "/"}};
+                          props.history.push(from);
                         },
                         error => {
                           setSubmitting(false);
