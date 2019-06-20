@@ -1,7 +1,6 @@
-import constants from '../../config/contants';
-
+import config from 'config';
 function BrandList() {
-    const url = constants.Url + constants.endpoint.brand_list;
+    const url = config.apiUrl + config.apiEndpoint.brand_list;
     //get data local Storage
     let token = localStorage.getItem('Token') || '';
 

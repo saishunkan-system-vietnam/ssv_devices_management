@@ -1,8 +1,8 @@
-import constants from '../constants/contants';
+import _config from 'config';
 import axios from 'axios';
 
 function editCategory(formData) {
-    const url = constants.Url + constants.endpoint.edit_category;
+    const url = _config.apiUrl + _config.apiEndpoint.edit_category;
     let token = localStorage.getItem('Token') || '';
     const config = {
         headers: {

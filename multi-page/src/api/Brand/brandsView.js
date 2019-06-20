@@ -1,7 +1,7 @@
-import constants from '../../config/contants';
+import config from 'config';
 
 function BrandsView(id) {
-    const url = constants.Url + constants.endpoint.brand_view + id;
+    const url = config.apiUrl + config.apiEndpoint.brand_view + id;
     let token = localStorage.getItem('Token') || '';
     return fetch(url, {
         method: 'GET',

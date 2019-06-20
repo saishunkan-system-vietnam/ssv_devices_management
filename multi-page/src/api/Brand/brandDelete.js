@@ -1,8 +1,8 @@
-import constants from '../../config/contants';
+import _config from 'config';
 import axios from 'axios';
 
 function BrandDelete(formData) {
-    const url = constants.Url + constants.endpoint.brand_delete;
+    const url = _config.apiUrl + _config.apiEndpoint.brand_delete;
     let token = localStorage.getItem('Token') || '';
     const config = {
         headers: {

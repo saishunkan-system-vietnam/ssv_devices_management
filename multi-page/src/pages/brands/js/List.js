@@ -8,7 +8,6 @@ import BrandFilter from '../../../api/Brand/brandFilter';
 import { useAlert } from 'react-alert';
 
 function List() {
-    console.log(confirmAlert);
     const [showForm, setShowForm] = useState(false);
     const [lstBrands, setLstBrands] = useState([])
     const [brand_id, setBrand_id] = useState('');

@@ -1,8 +1,8 @@
-import constants from '../../config/contants';
+import _config from 'config';
 import axios from 'axios';
 
 function BrandsEdit(formData) {
-    const url = constants.Url + constants.endpoint.brand_edit;
+    const url = _config.apiUrl + _config.apiEndpoint.brand_edit;
     let token = localStorage.getItem('Token') || '';
     const config = {
         headers: {

@@ -1,6 +1,6 @@
-import constants from '../constants/contants';
+import _config from 'config';
 function lstCategory() {
-    const url = constants.Url + constants.endpoint.list_category;
+    const url = _config.apiUrl + _config.apiEndpoint.list_category;
     //get data local Storage
     let token = localStorage.getItem('Token') || '';
 

@@ -1,7 +1,7 @@
-import constants from '../constants/contants';
+import _config from 'config';
 
 function getCategory(id) {
-    const url = constants.Url + constants.endpoint.get_category + id;
+    const url = _config.apiUrl + _config.apiEndpoint.get_category + id;
     let token = localStorage.getItem('Token') || '';
     return fetch(url, {
         method: 'GET',

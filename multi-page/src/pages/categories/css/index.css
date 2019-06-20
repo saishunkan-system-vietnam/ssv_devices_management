@@ -14,20 +14,12 @@
     margin-left: 10px;
 }
 
-.ml-5 {
-    margin-left: 5px !important;
-}
-
 .p-20 {
     padding: 20px;
 }
 
 .pl-30 {
     padding-left: 30px;
-}
-
-.pt-30 {
-    padding-top: 30px;
 }
 
 .pt-30 {
@@ -66,8 +58,10 @@
     color: green;
 }
 
-.form{
-    box-shadow: 1px 1px 5px silver;
-    background-color: lightblue;
-    padding: 10px 40px;
+.hide {
+    display: none;
+}
+
+.dropdown-menu{
+    cursor: pointer;
 }

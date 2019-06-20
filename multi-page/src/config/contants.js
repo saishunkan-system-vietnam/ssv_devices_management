@@ -36,7 +36,6 @@ let api = {
         'brand_delete': '/api/v1/brand/delete',
         'brand_filter': '/api/v1/brand/filter',
 
-
         'list_device': '/api/v1/device',
         'view_device': '/api/v1/device/view/',
         'add_device': '/api/v1/device/add',
@@ -51,7 +50,7 @@ let api = {
         'maintenance_view': '/api/v1/maintenance/view/',
         'maintenance_comfirm_notification_broken': '/api/v1/maintenance/comfirm_notification_broken',
         'maintenance_no_comfirm_notification_broken': '/api/v1/maintenance/no_comfirm_notification_broken',
-        'maintenance_filter': '/api/v1/maintenance/filter',
+        'maintenance_filter': '/api/v1/maintenance/filter',             
 
     }
 }

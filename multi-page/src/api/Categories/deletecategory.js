@@ -1,8 +1,7 @@
-import constants from '../constants/contants';
-import axios from 'axios';
+import _config from 'config';import axios from 'axios';
 
 function deleteCategory(formData) {
-    const url = constants.Url + constants.endpoint.delete_category;
+    const url = _config.apiUrl + _config.apiEndpoint.delete_category;
     let token = localStorage.getItem('Token') || '';
     const config = {
         headers: {
