@@ -18,7 +18,7 @@ function MenuSidebar() {
                 {
                     icon: 'fa fa-shopping-bag',
                     label: 'Thương hiệu',
-                    to: '/brand',
+                    to: '/brands/index.html',
                 },
                 {
                     icon: 'fa fa-tasks',

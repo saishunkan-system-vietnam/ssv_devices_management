@@ -54,7 +54,11 @@ module.exports = (env, argv) => ({
       {
         test: /\.css$/,
         use: [
-          'style-loader',
+          // 'style-loader',
+          {
+            loader: 'style-loader',
+            options: { sourceMap: true }
+          },
           {loader: "css-loader", options: {url: true, sourceMap: true}},
         ]
       },

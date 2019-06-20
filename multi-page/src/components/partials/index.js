@@ -1,7 +1,7 @@
 import React from 'react';
-import HeaderMobile from '../Master/header_mobile';
-import HeaderDesktop from '../Master/header_desktop';
-import MenuSidebar from '../Master/menu_sidebar';
+import HeaderMobile from './/header_mobile';
+import HeaderDesktop from './/header_desktop';
+import MenuSidebar from './/menu_sidebar';
 import '../common.css';
 
 function MasterPage(props) {

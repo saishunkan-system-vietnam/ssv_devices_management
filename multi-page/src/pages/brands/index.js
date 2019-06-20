@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import TemplateBrand from './js/template';
-import Layout from '../../components/Master/index';
+import Layout from '../../components/partials/index';
 import { Provider as AlertProvider, positions } from 'react-alert'
 import AlertTemplate from "react-alert-template-basic";
 
