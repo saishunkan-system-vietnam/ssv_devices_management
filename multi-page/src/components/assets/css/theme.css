@@ -1657,6 +1657,15 @@ section {
     right: 0;
 }
 
+.header-mobile .card{
+    border: 0 !important;
+    margin: 0 !important;
+    top: -67px;
+}
+.header-mobile .card .card-body{
+    padding: 0 !important;
+}
+
 .header-mobile .header-mobile__bar {
     padding: 15px 0;
 }
@@ -1729,7 +1738,7 @@ section {
 }
 
 .header-mobile .navbar-mobile {
-    display: none;
+    display: block;
     position: absolute;
     width: 100%;
     top: 88px;
