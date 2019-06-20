@@ -23,7 +23,7 @@ function MenuSidebar() {
                 {
                     icon: 'fa fa-tasks',
                     label: 'Danh mục',
-                    to: '/categories',
+                    to: '/categories/index.html',
                 },
             ],
         },
