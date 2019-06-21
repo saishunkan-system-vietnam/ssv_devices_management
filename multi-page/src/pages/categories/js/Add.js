@@ -66,7 +66,7 @@ function Add(props) {
     }
 
     function handleGetLstBrands() {
-        lstBrands.lstBrands().then(responseJson => {
+        lstBrands.BrandList().then(responseJson => {
             setLstBrands(responseJson['payload']['lstBrands']);
         });
     }
@@ -87,7 +87,7 @@ function Add(props) {
         });
     }
     useEffect(() => {
-        if (id === '' && props.match.params.id) {
+        if (id === '' && props.match) {
             get_category();
         }
 

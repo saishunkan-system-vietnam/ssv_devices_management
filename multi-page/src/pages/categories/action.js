@@ -4,7 +4,7 @@ import TemplateCategories from './js/Template';
 import Layout from '../../components/partials/index';
 import { Provider as AlertProvider, positions } from 'react-alert'
 import AlertTemplate from "react-alert-template-basic";
-import CategoriesList from './js/List';
+import CategoriesAction from './js/add';
 
 const options = {
   position: positions.TOP_RIGHT,
@@ -14,7 +14,7 @@ const options = {
 
 const Root = () => (
   <AlertProvider template={AlertTemplate} {...options}>
-    <Layout content={<TemplateCategories content={<CategoriesList />} />} />
+    <Layout content={<TemplateCategories content={<CategoriesAction />} />} />
   </AlertProvider>
 )
 
