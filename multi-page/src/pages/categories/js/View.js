@@ -15,7 +15,7 @@ function View(props) {
     }, []);
 
     function get_category() {
-        getCategory.getCategory(props.match.params.id).then(responseJson => {
+        getCategory.getCategory(props.id).then(responseJson => {
             let category = responseJson['payload']['category'];
             setCategory(category);
         });
@@ -33,7 +33,7 @@ function View(props) {
                             if (responseJson['0'] === 200) {
                                 alert.success(responseJson.payload.message);
                                 onClose();
-                                props.history.push('/categories');
+                                props.set_Show(1)
                             } else {
                                 alert.error(responseJson.payload.message);
                                 onClose();
@@ -117,9 +117,9 @@ function View(props) {
                 </div>
                 <div className="row  mt-10">
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                        <a href={`/categories/edit/${category.id}`} className="btn btn-primary">Cập nhập</a>
+                        <button className="btn btn-primary" onClick={()=>{props.set_Show(3,category.id)}} >Cập nhập</button>
                         <button type="button" className="btn btn-danger ml-10" onClick={handleDelete}>Xóa</button>
-                        <Link to="/categories" className="btn btn-warning ml-10">Hủy</Link>
+                        <button className="btn btn-warning ml-10" onClick={()=>{props.set_Show(1)}}>Hủy</button>
                     </div>
                 </div>
             </div>

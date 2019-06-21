@@ -6,13 +6,12 @@ import { useAlert } from "react-alert";
 import lstCategory from '../../../api/Categories/listcategories';
 import lstBrands from '../../../api/Brand/brandsList';
 import NoData from '../../../common/NoData';
-import { Link } from 'react-router-dom';
 
-function List() {
+function List(props) {
     const [lstCategories, setLstCategories] = useState([]);
     const alert = useAlert();
-    const [findCateParent, setFindCateParent] = useState({ name: 'Tất cả danh mục', leve: -1 }); //-1 all , 1 parent, 2 children
-    const [findBrand, setFindBrand] = useState({ name: 'Tất cả thương hiệu', id: -1 }); //-1 all , id brandid
+    const [findCateParent, setFindCateParent] = useState(-1); //-1 all , 1 parent, 2 children
+    const [findBrand, setFindBrand] = useState(-1); //-1 all , id brandid
     const [findCateName, setCateName] = useState(''); //CateName
     const [listBrands, setLstBrands] = useState([]);
 
@@ -24,7 +23,7 @@ function List() {
 
     function handleGetLstBrands() {
         lstBrands.BrandList().then(responseJson => {
-            setLstBrands(responseJson['payload']['lstBrands']?responseJson['payload']['lstBrands']:[]);
+            setLstBrands(responseJson['payload']['lstBrands'] ? responseJson['payload']['lstBrands'] : []);
         });
     }
 
@@ -36,6 +35,8 @@ function List() {
             handleGetLstBrands();
         }
     }, []);
+
+
 
     function onDelete(id) {
         var formdata = new FormData();
@@ -50,8 +51,8 @@ function List() {
         });
     }
 
-    var ListBrandItem = listBrands.map((brand, index) => {
-        return <li key={index} onClick={() => handleChangeBrand(brand.brand_name, brand.id)} >{brand.brand_name}</li>
+    var ListOptionBrand = listBrands.map((brand, index) => {
+        return <option key={index} value={brand.id} >{brand.brand_name}</option>
     });
 
 
@@ -63,6 +64,8 @@ function List() {
             parent_id={category.Category_parent && category.Category_parent.category_name ? category.Category_parent.category_name : category.category_name}
             name={category.category_name}
             onDelete={onDelete}
+            set_Edit={set_Edit}
+            set_View={set_View}
         />
     });
 
@@ -76,17 +79,31 @@ function List() {
         });
     }
 
-    function handleChangeCateParent(name, level) {
-        setFindCateParent({ name, level })
-        find(level, findBrand.id, findCateName);
+    function handleChangeCateParent(e) {
+        let level = e.target.value;
+        setFindCateParent(level)
+        find(level, findBrand, findCateName);
     }
     function handleOnChangeCateName(e) {
         setCateName(e.target.value);
-        find(findCateParent.level, findBrand.id, e.target.value);
+        find(findCateParent, findBrand, e.target.value);
     }
-    function handleChangeBrand(name, id) {
-        setFindBrand({ name, id })
-        find(findCateParent.level, id, findCateName);
+    function handleChangeBrand(e) {
+        let id = e.target.value;
+        setFindBrand(id)
+        find(findCateParent, id, findCateName);
+    }
+
+    function AddNew() {
+        props.set_Show(2);
+    }
+
+    function set_Edit(category_id) {
+        props.set_Show(3, category_id)
+    }
+
+    function set_View(category_id) {
+        props.set_Show(4, category_id)
     }
 
     return (
@@ -96,44 +113,38 @@ function List() {
                 <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 form-inline">
 
                     <div className="btn-group ml-10 mt-10">
-                        <button type="button" className="btn btn-primary dropdown-toggle" data-toggle="dropdown" id="btnCategory">
-                            {findCateParent.name} <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            <li onClick={() => handleChangeCateParent('Tất cả danh mục', -1)} >Tất cả danh mục</li>
-                            <li onClick={() => handleChangeCateParent('Danh mục cha', 1)} >Danh mục cha</li>
-                            <li onClick={() => handleChangeCateParent('Danh mục con', 2)} >Danh mục con</li>
-                        </ul>
+                        <select className="form-control" onChange={handleChangeCateParent} value={findCateParent}>
+                            <option value={-1}>Tất cả danh mục</option>
+                            <option value={1}>Danh mục cha</option>
+                            <option value={2}>Danh mục con</option>
+                        </select>
                     </div>
 
                     <div className="btn-group ml-10 mt-10">
-                        <button type="button" className="btn btn-info dropdown-toggle" data-toggle="dropdown" id="btnCategory">
-                            {findBrand.name} <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            <li onClick={() => handleChangeBrand('Tất cả thương hiệu', -1)} >Tất cả thương hiệu</li>
-                            {ListBrandItem}
-                        </ul>
+                        <select className="form-control" onChange={handleChangeBrand} value={findBrand}>
+                            <option value={-1} >Tất cả thương hiệu</option>
+                            {ListOptionBrand}
+                        </select>
                     </div>
 
                     <input type="text" className="form-control ml-10 mt-10" placeholder="Nhập tên danh mục..." value={findCateName} onChange={handleOnChangeCateName} />
 
                 </div>
                 <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2">
-                    <a href='/categories/add' className="btn btn-primary mr-10 mt-10"><i className="fa fa-plus"></i> Thêm mới</a>
+                    <button onClick={AddNew} className="btn btn-primary mr-10 mt-10"><i className="fa fa-plus"></i> Thêm mới</button>
                 </div>
             </div>
 
             <hr />
             <div className="row mt-10">
-                <div className="table-responsive table-data">
+                <div className="table-responsive">
                     <table className="table">
                         <thead>
                             <tr>
                                 <th className="text-center">Mã danh mục</th>
+                                <th>Tên danh mục</th>
                                 <th>Thương hiệu</th>
                                 <th>Danh mục cha</th>
-                                <th>Tên danh mục</th>
                                 <th>Công cụ</th>
                             </tr>
                         </thead>

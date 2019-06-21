@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TemplateCategories from './js/Template';
+import TemplateDevice from './js/Template';
 import Layout from '../../components/partials/index';
 import { Provider as AlertProvider, positions } from 'react-alert'
 import AlertTemplate from "react-alert-template-basic";
@@ -13,7 +13,7 @@ const options = {
 
 const Root = () => (
   <AlertProvider template={AlertTemplate} {...options}>
-    <Layout content={<TemplateCategories />} />
+    <Layout content={<TemplateDevice />} />
   </AlertProvider>
 )
 

@@ -1,8 +1,8 @@
 import _config from 'config';
 import axios from 'axios';
 
-function deleteCategory(formData) {
-    const url = _config.apiUrl + _config.apiEndpoint.delete_category;
+function MaintenanceNoConfirmNotification(formData) {
+    const url = _config.apiUrl + _config.apiEndpoint.maintenance_no_comfirm_notification_broken;
     let token = localStorage.getItem('Token') || '';
     const config = {
         headers: {
@@ -20,5 +20,5 @@ function deleteCategory(formData) {
 }
 
 export default {
-    deleteCategory
+    MaintenanceNoConfirmNotification
 }

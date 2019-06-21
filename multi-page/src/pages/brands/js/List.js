@@ -93,7 +93,7 @@ function List() {
                 <hr />
             </div>
             <div className="row mt-10">
-                <div className="table-responsive table-data">
+                <div className="table-responsive">
                     <table className="table">
                         <thead>
                             <tr>

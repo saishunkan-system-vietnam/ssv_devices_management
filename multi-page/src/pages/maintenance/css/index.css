@@ -1,0 +1,186 @@
+.mt-70 {
+    margin-top: 70px;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-5 {
+    margin-top: 5px;
+}
+
+.ml-10 {
+    margin-left: 10px;
+}
+
+.p-20 {
+    padding: 20px;
+}
+
+.pl-30 {
+    padding-left: 30px;
+}
+
+.layout {
+    background-color: white;
+}
+
+.fa, .fas {
+    padding: 0 5px;
+}
+
+.fa-plus {
+    padding: 0;
+}
+
+.fa-edit {
+    color: rgb(51, 154, 240);
+}
+
+.fa-edit:hover {
+    color: blue;
+}
+
+.fa-eye {
+    color: #04B431;
+}
+
+.fa-eye:hover {
+    color: green;
+}
+
+.fa-trash {
+    color: rgb(233, 87, 63);
+}
+
+.fa-trash:hover {
+    color: red;
+}
+
+.fa-check-circle {
+    color: blue;
+}
+
+.fa-check-circle:hover {
+    color: darkblue;
+}
+
+.fa-times-circle {
+    color: red;
+}
+
+.fa-times-circle:hover {
+    color: darkred;
+}
+
+.fa-undo {
+    color: orange;
+}
+
+.fa-undo:hover {
+    color: darkorange;
+}
+
+.fa-calendar-check {
+    color: green;
+}
+
+.fa-calendar-check:hover {
+    color: darkgreen;
+}
+
+.hide {
+    display: none;
+}
+
+.dropdown-menu {
+    cursor: pointer;
+}
+
+.table-data {
+    height: 700px;
+}
+
+.w-100 thead tr th {
+    padding: 20px;
+}
+
+.add {
+    border-radius: 50px;
+}
+
+.label {
+    display: inline;
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+}
+
+.label-primary {
+    background-color: #428bca;
+}
+
+.label-default {
+    background-color: #999;
+}
+
+.label-success {
+    background-color: #5cb85c;
+}
+
+.label-warning {
+    background-color: #f0ad4e;
+}
+
+.label-danger {
+    background-color: #d9534f;
+}
+.label-info {
+    background-color: #5bc0de;
+}
+
+.link {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.show {
+    box-shadow: 1px 1px 5px silver;
+    background-color: #fff;
+    border-radius: 7px;
+}
+.dropdown-menu.show li{
+    padding: 2px 7px;
+}
+.filter .quantity{
+    position: absolute;
+    display: inline-block;
+    top: -10px;
+    right: 10px;
+    height: 15px;
+    width: 15px;
+    line-height: 15px;
+    text-align: center;
+    background: #ff4b5a;
+    color: #fff;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+    font-size: 12px;
+    box-shadow: 1px 1px 4px silver;
+}
+.filter .quantity{
+    position: relative;
+    display: inline-block;
+}
+
+.filter span{
+    cursor: pointer;
+}

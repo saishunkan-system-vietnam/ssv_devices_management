@@ -1,8 +1,8 @@
 import _config from 'config';
 import axios from 'axios';
 
-function deleteCategory(formData) {
-    const url = _config.apiUrl + _config.apiEndpoint.delete_category;
+function MaintenanceDelete(formData) {
+    const url = _config.apiUrl + _config.apiEndpoint.maintenance_delete;
     let token = localStorage.getItem('Token') || '';
     const config = {
         headers: {
@@ -20,5 +20,5 @@ function deleteCategory(formData) {
 }
 
 export default {
-    deleteCategory
+    MaintenanceDelete
 }

@@ -7,9 +7,8 @@ import editCategory from '../../../api/Categories/editcategory';
 import { useAlert } from "react-alert";
 import FilterCategory from '../../../api/Categories/filtercategory';
 
-
 function Add(props) {
-    const [id, setID] = useState('');
+    const id = props.id;
     const name = useFormInput('');
     const isParent = useFormInput(false);
     const id_parent = useFormInput('');
@@ -34,7 +33,7 @@ function Add(props) {
             editCategory.editCategory(frm).then(response => {
                 if (response['0'] === 200) {
                     alert.success(response.payload.message);
-                    props.history.push('/categories');
+                    props.set_Show(1);
                 } else {
                     let obj = response.payload.message;
                     messageFaild(obj);
@@ -44,7 +43,7 @@ function Add(props) {
             addCategory.addCategory(frm).then(res => {
                 if (res['0'] === 200) {
                     alert.success(res.payload.message);
-                    props.history.push('/categories');
+                    props.set_Show(1);
                 } else {
                     let obj = res.payload.message;
                     messageFaild(obj);
@@ -72,9 +71,8 @@ function Add(props) {
     }
 
     function get_category() {
-        getCategory.getCategory(props.match.params.id).then(responseJson => {
+        getCategory.getCategory(id).then(responseJson => {
             let category = responseJson['payload']['category'];
-            setID(category.id);
             name.onChange({ target: { type: 'text', value: category.category_name } });
             setID_brand(category.brands_id);
             findCategoryParent(category.brands_id);
@@ -87,13 +85,13 @@ function Add(props) {
         });
     }
     useEffect(() => {
-        if (id === '' && props.match) {
+        if (id) {
             get_category();
         }
 
         if (listBrands.length === 0) {
             handleGetLstBrands();
-        }   
+        }
     }, []);
 
     var option_brand = listBrands.map((brand, index) => {
@@ -123,9 +121,9 @@ function Add(props) {
         };
     }
 
-    function findCategoryParent(brands_id='') {
-        var frm =new FormData();
-        frm.append('brands_id',brands_id);
+    function findCategoryParent(brands_id = '') {
+        var frm = new FormData();
+        frm.append('brands_id', brands_id);
         FilterCategory.filterCategory(frm).then(res => {
             setLstCategories(res['payload']['lstFilter']);
         });
@@ -134,6 +132,11 @@ function Add(props) {
     function hanldeOnChangeBrand(e) {
         setID_brand(e.target.value);
         findCategoryParent(e.target.value);
+    }
+
+    function onclose(e) {
+        e.preventDefault();
+        props.set_Show(1);
     }
 
     return (
@@ -197,7 +200,7 @@ function Add(props) {
                     <div className="row">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
                             <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Lưu</button>
-                            <a href="/categories" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Hủy</a>
+                            <button onClick={onclose} className="btn btn-danger ml-10"><i className="fa fa-times"></i> Hủy</button>
                         </div>
                     </div>
 

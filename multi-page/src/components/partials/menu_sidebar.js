@@ -18,12 +18,12 @@ function MenuSidebar() {
                 {
                     icon: 'fa fa-shopping-bag',
                     label: 'Thương hiệu',
-                    to: '/brands/index.html',
+                    to: '/brands',
                 },
                 {
                     icon: 'fa fa-tasks',
                     label: 'Danh mục',
-                    to: '/categories/index.html',
+                    to: '/categories',
                 },
             ],
         },
