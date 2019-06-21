@@ -5,7 +5,7 @@ import {authenticationService} from '../../_services';
 
 
 function LoginForm(props) {
-  console.log(props);
+
   useEffect(() => {
     // redirect to home if already logged in
     if (authenticationService.currentUserValue) {

@@ -57,9 +57,11 @@
     "react-dom": "^16.8.6",
     "react-metismenu": "^1.4.0",
     "react-metismenu-router-link": "^2.1.0",
+    "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
     "react-transition-group": "^4.1.0",
     "reactstrap": "^8.0.0",
+    "redux": "^4.0.1",
     "yup": "^0.27.0"
   }
 }
