@@ -1,9 +1,9 @@
-import constants from '../constants/contants';
+import _config from 'config';
 
 function delete_user(user_id) {
-    const url = constants.Url + constants.endpoint.delete_user;
+    const url = _config.apiUrl + _config.apiEndpoint.delete_user;
     let token = localStorage.getItem('Token') || '';
-   return   fetch(url, {
+    return fetch(url, {
         method: 'POST',
         headers: {
             Accept: 'application/json',

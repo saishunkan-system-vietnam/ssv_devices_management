@@ -1,8 +1,8 @@
-import constants from '../constants/contants';
+import _config from 'config';
 
 function signin(params) {
-    const url = constants.Url + constants.endpoint.login;
-   return   fetch(url, {
+    const url = _config.apiUrl + _config.apiEndpoint.login;
+    return fetch(url, {
         method: 'POST',
         headers: {
             Accept: 'application/json',

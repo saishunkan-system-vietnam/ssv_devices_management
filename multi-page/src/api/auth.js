@@ -1,8 +1,8 @@
-import constants from '../constants/contants';
+import _config from 'config';
 
 function AuthServer(params) {
-    const url = constants.Url + constants.endpoint.auth;
-   return   fetch(url, {
+    const url = _config.apiUrl + _config.apiEndpoint.auth;
+    return fetch(url, {
         method: 'POST',
         headers: {
             Accept: 'application/json',

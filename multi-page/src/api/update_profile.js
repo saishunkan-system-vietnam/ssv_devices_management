@@ -1,8 +1,8 @@
-import constants from '../constants/contants';
+import _config from 'config';
 import axios from 'axios';
 
 function UpdateProfile(formData) {
-    const url = constants.Url + constants.endpoint.update_profile;
+    const url = _config.apiUrl + _config.apiEndpoint.update_profile;
     let token = localStorage.getItem('Token') || '';
     const config = {
         headers: {

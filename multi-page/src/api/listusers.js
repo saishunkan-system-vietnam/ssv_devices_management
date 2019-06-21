@@ -1,9 +1,9 @@
-import constants from '../constants/contants';
+import _config from 'config';
 
 function LstUsers() {
-    const url = constants.Url + constants.endpoint.lstusers;
+    const url = _config.apiUrl + _config.apiEndpoint.lstusers;
     //get data local Storage
-    let token = localStorage.getItem('Token') || '';
+    let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imh1bmdodEBzYWlzeXN0ZW0udm4iLCJuYW1lIjoiSHVuZ0hUIn0.g-VMUtNtB7rYrLzQi0Bl8Cys21GHQXlY4tPJw4OC9YQ";
 
     return fetch(url, {
         method: 'POST',

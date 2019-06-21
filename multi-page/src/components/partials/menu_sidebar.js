@@ -51,7 +51,7 @@ function MenuSidebar() {
         {
             icon: 'fas fa-user',
             label: 'Người dùng',
-            to: '/user',
+            to: '/users',
         },
         // {
         //     icon: 'external-link',

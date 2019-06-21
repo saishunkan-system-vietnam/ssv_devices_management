@@ -1,7 +1,7 @@
-import constants from '../constants/contants';
+import _config from 'config';
 
 function ShowUser(user_id) {
-    const url = constants.Url + constants.endpoint.show_user + user_id;
+    const url = _config.apiUrl + _config.apiEndpoint.show_user + user_id;
     let token = localStorage.getItem('Token') || '';
     return fetch(url, {
         method: 'GET',

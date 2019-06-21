@@ -1,8 +1,8 @@
-import constants from '../constants/contants';
+import _config from 'config';
 
 function restock(user_id) {
-    const url = constants.Url + constants.endpoint.restock_user;
-   return   fetch(url, {
+    const url = _config.apiUrl + _config.apiEndpoint.restock_user;
+    return fetch(url, {
         method: 'POST',
         headers: {
             Accept: 'application/json',
