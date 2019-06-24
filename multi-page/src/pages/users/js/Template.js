@@ -17,7 +17,8 @@ function index() {
                 <h1 className="text-center pt-30" >QUẢN LÝ NGƯỜI DÙNG</h1>
                 <hr />
                 {
-                    show === 1 ? <List set_show={set_show} /> : ""
+                    show === 1 ? <List set_show={set_show} /> :
+                    show === 3 ? <Edit set_show={set_show} id={userID} /> : ""
                 }
             </div>
         </div>

@@ -18,6 +18,7 @@ var bgColors = {
 
 
 function ListUsers(props) {
+
     const alert = useAlert();
     const [lstUsers, setLstUsers] = useState([]);
     const [baseUrl, setBaseUrl] = useState([]);
@@ -26,13 +27,12 @@ function ListUsers(props) {
 
     function handleGetLstUsers() {
         LstUsers.LstUsers().then(responseJson => {
-            console.log(responseJson);
             setLstUsers(responseJson['payload']['lstUser']);
             setBaseUrl(responseJson['payload']['baseUrl']);
         });
     }
     useEffect(() => {
-        if (lstUsers.length == 0) {
+        if (lstUsers.length === 0) {
             handleGetLstUsers();
         }
     });
@@ -112,7 +112,7 @@ function ListUsers(props) {
     function getAction(status, id) {
         if (status == 0) {
             return <div>
-                <i onClick={props.set_show(3, id)} className="fa fa-edit fa-lg" style={{ color: bgColors.Edit }}></i>
+                <i onClick={() => { props.set_show(3) }} className="fa fa-edit fa-lg" style={{ color: bgColors.Edit }}></i>
                 <span onClick={(event) => {
                     handleDeletedUser(id);
                 }} style={{ 'cursor': 'pointer' }}>
@@ -134,11 +134,11 @@ function ListUsers(props) {
     function imgUser(baseUrl, img) {
         if (img) {
             var url = baseUrl + '/' + img;
-            return <img src={url} style={{ "width": "70px", "height": "70px", 'max-width': '70px', 'padding': '4px' }} />;
+            return <img src={url} style={{ "width": "70px", "height": "70px", 'maxWidth': '70px', 'padding': '4px' }} />;
         } else {
             var baseUrl = baseUrl + "/img/not-available.jpg";
             var url = baseUrl.replace('/uploads/files/users', '');
-            return <img src={url} style={{ "width": "70px", "height": "70px", 'max-width': '70px', 'padding': '4px' }} />;
+            return <img src={url} style={{ "width": "70px", "height": "70px", 'maxWidth': '70px', 'padding': '4px' }} />;
         }
     }
 
@@ -151,24 +151,6 @@ function ListUsers(props) {
                             <div className="user-data m-b-30">
                                 <h3 className="title-3 m-b-30">
                                     <i className="fa fa-user"></i>user data</h3>
-                                {/*<div className="filters m-b-45">*/}
-                                {/*<div className="rs-select2--dark rs-select2--md rs-select2--border">*/}
-                                {/*<select className="js-select2" name="property">*/}
-                                {/*<option value="1" selected="selected">Manegemenet</option>*/}
-                                {/*<option value="2">System Engineer</option>*/}
-                                {/*<option value="3">Customer</option>*/}
-                                {/*</select>*/}
-                                {/*<div className="dropDownSelect2"></div>*/}
-                                {/*</div>*/}
-                                {/*<div className="rs-select2--dark rs-select2--md rs-select2--border">*/}
-                                {/*<select className="js-select2 au-select-dark" name="time">*/}
-                                {/*<option value="4" selected="selected">Administrator</option>*/}
-                                {/*<option value="1">Staff</option>*/}
-                                {/*<option value="2">Customer</option>*/}
-                                {/*</select>*/}
-                                {/*<div className="dropDownSelect2"></div>*/}
-                                {/*</div>*/}
-                                {/*</div>*/}
 
                                 <div className="table-responsive table-data">
                                     <table className="table">
@@ -186,7 +168,7 @@ function ListUsers(props) {
                                         </thead>
                                         <tbody>
 
-                                            {lstUsers.map(function (value, key) {
+                                            {lstUsers && lstUsers.map(function (value, key) {
                                                 return <tr key={value.id}>
                                                     <td>
                                                         {imgUser(baseUrl, value.img)}
@@ -211,63 +193,6 @@ function ListUsers(props) {
                                                     </td>
                                                 </tr>;
                                             })}
-                                            {/*<tr>*/}
-                                            {/*<td>*/}
-                                            {/*<img src="/images/icon/avatar-02.jpg" style={{"width": "50px", "height": "50px"}} />*/}
-                                            {/*</td>*/}
-                                            {/*<td>Linh123</td>*/}
-                                            {/*<td>*/}
-                                            {/*Linh Nguyen*/}
-                                            {/*</td>*/}
-                                            {/*<td>Leader</td>*/}
-                                            {/*<td>*/}
-                                            {/*<span className="role member">member</span>*/}
-                                            {/*</td>*/}
-                                            {/*<td>*/}
-                                            {/*Admin*/}
-                                            {/*</td>*/}
-                                            {/*<td>*/}
-                                            {/*<span className="status--process">Ready</span>*/}
-                                            {/*</td>*/}
-                                            {/*<td>*/}
-                                            {/*<a href="edit-user.html">*/}
-                                            {/*<i className="fa fa-edit fa-lg" style={{color: bgColors.Edit}}></i>*/}
-                                            {/*</a>&nbsp;*/}
-                                            {/*<a href="#" onClick={e =>*/}
-                                            {/*window.confirm("You want to delete this user?") &&*/}
-                                            {/*this.deleteItem(e)*/}
-                                            {/*}>*/}
-                                            {/*<i className="fa fa-trash fa-lg" style={{color: bgColors.Red}}></i>*/}
-                                            {/*</a>*/}
-                                            {/*</td>*/}
-                                            {/*</tr>*/}
-                                            {/*<tr>*/}
-                                            {/*<td>*/}
-                                            {/*<img src="/images/icon/avatar-03.jpg" style={{"width": "50px", "height": "50px"}} />*/}
-                                            {/*</td>*/}
-                                            {/*<td>Nam</td>*/}
-                                            {/*<td>*/}
-                                            {/*Nam Duong*/}
-                                            {/*</td>*/}
-                                            {/*<td>Customer</td>*/}
-                                            {/*<td>*/}
-                                            {/*<span className="role user">customer</span>*/}
-                                            {/*</td>*/}
-                                            {/*<td>*/}
-                                            {/*Admin*/}
-                                            {/*</td>*/}
-                                            {/*<td>*/}
-                                            {/*<span className="status--denied">Denied</span>*/}
-                                            {/*</td>*/}
-                                            {/*<td>*/}
-                                            {/*<a href={'#'} onClick={e =>*/}
-                                            {/*window.confirm("You want to restock this user?") &&*/}
-                                            {/*this.deleteItem(e)*/}
-                                            {/*} style={{color: bgColors.Confirm}}>*/}
-                                            {/*<i className="fa fa-undo fa-lg"></i>*/}
-                                            {/*</a>*/}
-                                            {/*</td>*/}
-                                            {/*</tr>*/}
                                         </tbody>
                                     </table>
                                 </div>
