@@ -5,7 +5,7 @@ import List from './List';
 import Add from './add';
 import View from './View';
 
-function Categories(props) {
+function Categories() {
     const [show, setShow] = useState(1) // 1-List 2-Add 3-Edit 4-View
     const [categoryID, setCategoryID] = useState(null)
     function set_Show(_show, category_id = null) {

@@ -1,10 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TemplateBrand from './js/template';
+import TemplateBrand from './components/template';
 import Layout from '../../components/partials/index';
-import { Provider as AlertProvider, positions } from 'react-alert'
+import { Provider as Alert_provider, positions } from 'react-alert'
 import AlertTemplate from "react-alert-template-basic";
+import { createStore, applyMiddleware } from 'redux';
+import appReducers from './reducers';
+import { Provider as Redux_provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
+const store = createStore(
+  appReducers,applyMiddleware(thunk)
+);
 
 const options = {
   position: positions.TOP_RIGHT,
@@ -13,12 +20,14 @@ const options = {
 }
 
 const Root = () => (
-  <AlertProvider template={AlertTemplate} {...options}>
+  <Alert_provider template={AlertTemplate} {...options}>
     <Layout content={<TemplateBrand />} />
-  </AlertProvider>
+  </Alert_provider>
 )
 
 ReactDOM.render(
-  <Root />,
+  <Redux_provider store={store}>
+    <Root />
+  </Redux_provider>,
   document.getElementById('root')
 );

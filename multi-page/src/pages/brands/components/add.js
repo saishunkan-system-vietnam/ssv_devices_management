@@ -41,7 +41,7 @@ function Add(props) {
             frm.append("id", brand.id);
             BrandEdit.BrandsEdit(frm).then(res => {
                 if (res['0'] === 200) {
-                    props.changeData();
+                    // props.changeData();
                     alert.success(res.payload.message);
                     handleOnClose();
                 } else {
@@ -52,7 +52,7 @@ function Add(props) {
         } else {
             brandsAdd.BrandsAdd(frm).then(res => {
                 if (res['0'] === 200) {
-                    props.changeData();
+                    // props.changeData();
                     alert.success(res.payload.message);
                     handleOnClose();
                 } else {
@@ -88,9 +88,7 @@ function Add(props) {
                             <input type="text" className="form-control" placeholder="Nhập tên thương hiệu...." onChange={handleOnChange} value={brand_name} />
                             <div className='mt-10'>
                                 <button type="button" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i>Lưu</button>
-
                                 <button onClick={handleOnClose} type="button" className="btn btn-danger ml-10"><i className="fa fa-times"></i>Hủy</button>
-
                             </div>
                         </div>
                     </div>

@@ -1,70 +1,55 @@
 import React, { useState, useEffect } from 'react';
 import BrandItem from './Item';
 import BrandAction from './add';
-import BrandList from '../../../api/Brand/brandsList';
 import { confirmAlert } from 'react-confirm-alert';
-import BrandDelete from '../../../api/Brand/brandDelete';
 import BrandFilter from '../../../api/Brand/brandFilter';
 import { useAlert } from 'react-alert';
+import { connect } from 'react-redux';
+import { actionFetchBrandsRequest, actionDeleteBrandsRequest } from '../actions';
 
-function List() {
+function List(props) {
     const [showForm, setShowForm] = useState(false);
-    const [lstBrands, setLstBrands] = useState([])
     const [brand_id, setBrand_id] = useState('');
-
     var alert = useAlert();
-
 
     function handleOnChangeShowForm() {
         setBrand_id(null);
         setShowForm(!showForm);
     }
 
-    function getLstBrand() {
-        BrandList.BrandList().then(res => {
-            setLstBrands(res.payload.lstBrands);
-        })
-    }
-
     useEffect(() => {
-        if (lstBrands.length === 0) {
-            getLstBrand();
-        }
-    })
+        props.fetchAllBrands();
+    }, [])
 
     function onEdit(id) {
         setShowForm(true);
         setBrand_id(id)
     }
 
-    var brandItem = lstBrands.map((brand, index) => {
-        return <BrandItem
-            key={index}
-            brand={brand}
-            edit={onEdit}
-            delete={handleDeleteBrand}
-        />
-    });
+    const brandItem = () => {
+        let lstBrands = props.brands;
+        let result = null;
+        result = lstBrands? lstBrands.map((brand, index) => {
+            return <BrandItem
+                key={index}
+                brand={brand}
+                edit={onEdit}
+                delete={handleDeleteBrand}
+            />
+        }):null;
+        return result;
+    }
 
     function handleDeleteBrand(id) {
         confirmAlert({
             customUI: ({ onClose }) => {
-                var frm = new FormData();
-                frm.append("id", id);
                 return (
                     <div className='custom-ui'>
                         <h1>Bạn đang xóa Thương hiệu?</h1>
-                        <button onClick={() => BrandDelete.BrandDelete(frm).then(res => {
-                            if (res['0'] === 200) {
-                                onClose();
-                                alert.success(res.payload.message);
-                                getLstBrand();
-                            } else {
-                                alert.error(res.payload.message);
-                                onClose();
-                                getLstBrand();
-                            }
-                        })}>Xóa</button>
+                        <button onClick={() => {
+                            props.deleteBrand(id);
+                            onClose();
+                        }}>Xóa</button>
                         <button onClick={onClose}>Hủy</button>
                     </div>
                 )
@@ -81,8 +66,8 @@ function List() {
     }
 
     return (
-        <div>
-            {showForm ? <BrandAction changeShowForm={handleOnChangeShowForm} id={brand_id} changeData={getLstBrand} /> : ""}
+        <>
+            {showForm ? <BrandAction changeShowForm={handleOnChangeShowForm} id={brand_id} /> : ""}
             <div className="row mt-10">
                 <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 form-inline">
                     <input type="text" className="form-control ml-10" title="Search name" placeholder="Nhập brand name..." onChange={handleOnchangeInputSearch} />
@@ -107,12 +92,31 @@ function List() {
                             </tr>
                         </thead>
                         <tbody>
-                            {brandItem}
+                            {brandItem()}
                         </tbody>
                     </table>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
-export default List;
+
+const mapStateToProps = state => {
+    console.log(state);
+    return {
+        brands: state.brands[0] ? state.brands[0].data : ''
+    }
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchAllBrands: () => {
+            dispatch(actionFetchBrandsRequest());
+        },
+        deleteBrand: (id) => {
+            dispatch(actionDeleteBrandsRequest(id))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(List);
