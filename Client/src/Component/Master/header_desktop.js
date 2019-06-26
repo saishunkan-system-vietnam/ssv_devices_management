@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom'
 
 function HeaderDesktop() {
     return (
@@ -8,7 +9,7 @@ function HeaderDesktop() {
                     <div className="header-wrap">
                         <form className="form-header" action="" method="POST">
                             <input className="au-input au-input--xl" type="text" name="search"
-                                   placeholder="Search for datas &amp; reports..."/>
+                                placeholder="Search for datas &amp; reports..." />
                             <button className="au-btn--submit" type="submit">
                                 <i className="fas fa-search"></i>
                             </button>
@@ -24,7 +25,7 @@ function HeaderDesktop() {
                                         </div>
                                         <div className="mess__item">
                                             <div className="image img-cir img-40">
-                                                <img src="../../../images/icon/avatar-06.jpg" alt="Michelle Moreno"/>
+                                                <img src="../../../images/icon/avatar-06.jpg" alt="Michelle Moreno" />
                                             </div>
                                             <div className="content">
                                                 <h6>Michelle Moreno</h6>
@@ -34,7 +35,7 @@ function HeaderDesktop() {
                                         </div>
                                         <div className="mess__item">
                                             <div className="image img-cir img-40">
-                                                <img src="../../../images/icon/avatar-04.jpg" alt="Diane Myers"/>
+                                                <img src="../../../images/icon/avatar-04.jpg" alt="Diane Myers" />
                                             </div>
                                             <div className="content">
                                                 <h6>Diane Myers</h6>
@@ -43,7 +44,7 @@ function HeaderDesktop() {
                                             </div>
                                         </div>
                                         <div className="mess__footer">
-                                            <a href={"/"}>View all messages</a>
+                                            <Link to={"/"}>View all messages</Link>
                                         </div>
                                     </div>
                                 </div>
@@ -56,7 +57,7 @@ function HeaderDesktop() {
                                         </div>
                                         <div className="email__item">
                                             <div className="image img-cir img-40">
-                                                <img src="../../../images/icon/avatar-06.jpg" alt="Cynthia Harvey"/>
+                                                <img src="../../../images/icon/avatar-06.jpg" alt="Cynthia Harvey" />
                                             </div>
                                             <div className="content">
                                                 <p>Meeting about new dashboard...</p>
@@ -65,7 +66,7 @@ function HeaderDesktop() {
                                         </div>
                                         <div className="email__item">
                                             <div className="image img-cir img-40">
-                                                <img src="../../../images/icon/avatar-05.jpg" alt="Cynthia Harvey"/>
+                                                <img src="../../../images/icon/avatar-05.jpg" alt="Cynthia Harvey" />
                                             </div>
                                             <div className="content">
                                                 <p>Meeting about new dashboard...</p>
@@ -74,7 +75,7 @@ function HeaderDesktop() {
                                         </div>
                                         <div className="email__item">
                                             <div className="image img-cir img-40">
-                                                <img src="../../../images/icon/avatar-04.jpg" alt="Cynthia Harvey"/>
+                                                <img src="../../../images/icon/avatar-04.jpg" alt="Cynthia Harvey" />
                                             </div>
                                             <div className="content">
                                                 <p>Meeting about new dashboard...</p>
@@ -82,7 +83,7 @@ function HeaderDesktop() {
                                             </div>
                                         </div>
                                         <div className="email__footer">
-                                            <a href={"/"}>See all emails</a>
+                                            <Link to={"/"}>See all emails</Link>
                                         </div>
                                     </div>
                                 </div>
@@ -121,7 +122,7 @@ function HeaderDesktop() {
                                             </div>
                                         </div>
                                         <div className="notifi__footer">
-                                            <a href={"/"}>All notifications</a>
+                                            <Link to={"/"}>All notifications</Link>
                                         </div>
                                     </div>
                                 </div>
@@ -129,42 +130,42 @@ function HeaderDesktop() {
                             <div className="account-wrap">
                                 <div className="account-item clearfix js-item-menu">
                                     <div className="image">
-                                        <img src="../../../images/icon/avatar-01.jpg" alt="John Doe"/>
+                                        <img src="../../../images/icon/avatar-01.jpg" alt="John Doe" />
                                     </div>
                                     <div className="content">
-                                        <a className="js-acc-btn" href={"/"}>john doe</a>
+                                        <Link className="js-acc-btn" to={"/"}>john doe</Link>
                                     </div>
                                     <div className="account-dropdown js-dropdown">
                                         <div className="info clearfix">
                                             <div className="image">
-                                                <a href={"/"}>
-                                                    <img src="../../../images/icon/avatar-01.jpg" alt="John Doe"/>
-                                                </a>
+                                                <Link to={"/"}>
+                                                    <img src="../../../images/icon/avatar-01.jpg" alt="John Doe" />
+                                                </Link>
                                             </div>
                                             <div className="content">
                                                 <h5 className="name">
-                                                    <a href={"/"}>john doe</a>
+                                                    <Link to={"/"}>john doe</Link>
                                                 </h5>
                                                 <span className="email">johndoe@example.com</span>
                                             </div>
                                         </div>
                                         <div className="account-dropdown__body">
                                             <div className="account-dropdown__item">
-                                                <a href={"/"}>
-                                                    <i className="zmdi zmdi-account"></i>Account</a>
+                                                <Link to={"/"}>
+                                                    <i className="zmdi zmdi-account"></i>Account</Link>
                                             </div>
                                             <div className="account-dropdown__item">
-                                                <a href={"/"}>
-                                                    <i className="zmdi zmdi-settings"></i>Setting</a>
+                                                <Link to={"/"}>
+                                                    <i className="zmdi zmdi-settings"></i>Setting</Link>
                                             </div>
                                             <div className="account-dropdown__item">
-                                                <a href={"/"}>
-                                                    <i className="zmdi zmdi-money-box"></i>Billing</a>
+                                                <Link to={"/"}>
+                                                    <i className="zmdi zmdi-money-box"></i>Billing</Link>
                                             </div>
                                         </div>
                                         <div className="account-dropdown__footer">
-                                            <a href={"/"}>
-                                                <i className="zmdi zmdi-power"></i>Logout</a>
+                                            <Link to={"/"}>
+                                                <i className="zmdi zmdi-power"></i>Logout</Link>
                                         </div>
                                     </div>
                                 </div>
