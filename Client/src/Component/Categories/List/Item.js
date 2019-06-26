@@ -1,5 +1,6 @@
 import React from 'react';
 import { confirmAlert } from 'react-confirm-alert';
+import { Link } from 'react-router-dom';
 
 function Item(p) {
   let urlEdit = `/categories/edit/${p.id}`;
@@ -30,8 +31,8 @@ function Item(p) {
       <td>{p.parent_id}</td>
       <td>{p.name}</td>
       <td>
-        <a href={urlView}><i className="fa fa-eye fa-lg"></i></a>
-        <a href={urlEdit}><i className="fa fa-edit fa-lg"></i></a>
+        <Link to={urlView}><i className="fa fa-eye fa-lg"></i></Link>
+        <Link to={urlEdit}><i className="fa fa-edit fa-lg"></i></Link>
         <i className="fa fa-trash fa-lg" onClick={handleDelete}></i>
       </td>
     </tr>

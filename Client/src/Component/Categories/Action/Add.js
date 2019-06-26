@@ -6,6 +6,7 @@ import addCategory from '../../../api/addcategory';
 import editCategory from '../../../api/editcategory';
 import { useAlert } from "react-alert";
 import FilterCategory from '../../../api/filtercategory';
+import { Link } from 'react-router-dom';
 
 
 function Add(props) {
@@ -197,7 +198,7 @@ function Add(props) {
                     <div className="row">
                         <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 pl-30">
                             <button type="submit" className="btn btn-primary" onClick={onSave}><i className="fa fa-save"></i> Lưu</button>
-                            <a href="/categories" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Hủy</a>
+                            <Link to="/categories" className="btn btn-danger ml-10"><i className="fa fa-times"></i> Hủy</Link>
                         </div>
                     </div>
 

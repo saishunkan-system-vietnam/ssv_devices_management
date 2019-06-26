@@ -1,6 +1,7 @@
 import React from 'react';
 import MetisMenu from 'react-metismenu';
 import RouterLink from 'react-metismenu-router-link';
+import { Link } from 'react-router-dom';
 
 function MenuSidebar() {
     const menu = [
@@ -62,9 +63,9 @@ function MenuSidebar() {
     return (
         <aside className="menu-sidebar d-none d-lg-block">
             <div className="logo">
-                <a href="brand.html">
+                <Link to="brand.html">
                     <img src="../../../images/icon/logo.png" alt="Cool Admin" />
-                </a>
+                </Link>
             </div>
         <MetisMenu
             content={menu}
