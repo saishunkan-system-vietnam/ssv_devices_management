@@ -29,14 +29,14 @@ function List(props) {
     const brandItem = () => {
         let lstBrands = props.brands;
         let result = null;
-        result = lstBrands? lstBrands.map((brand, index) => {
+        result = lstBrands ? lstBrands.map((brand, index) => {
             return <BrandItem
                 key={index}
                 brand={brand}
                 edit={onEdit}
                 delete={handleDeleteBrand}
             />
-        }):null;
+        }) : null;
         return result;
     }
 
@@ -103,8 +103,9 @@ function List(props) {
 
 const mapStateToProps = state => {
     console.log(state);
+    
     return {
-        brands: state.brands[0] ? state.brands[0].data : ''
+        brands: state.brands
     }
 }
 
