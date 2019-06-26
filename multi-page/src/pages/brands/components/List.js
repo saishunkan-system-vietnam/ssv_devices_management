@@ -105,7 +105,7 @@ const mapStateToProps = state => {
     console.log(state);
     
     return {
-        brands: state.brands
+        brands: state.brands.data
     }
 }
 
