@@ -117,7 +117,7 @@ function View(props) {
                 </div>
                 <div className="row  mt-10">
                     <div className="col-xs-4 col-sm-4 col-md-4 col-lg-4">
-                        <a href={`/categories/edit/${category.id}`} className="btn btn-primary">Cập nhập</a>
+                        <Link to={`/categories/edit/${category.id}`} className="btn btn-primary">Cập nhập</Link>
                         <button type="button" className="btn btn-danger ml-10" onClick={handleDelete}>Xóa</button>
                         <Link to="/categories" className="btn btn-warning ml-10">Hủy</Link>
                     </div>
