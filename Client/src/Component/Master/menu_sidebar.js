@@ -69,6 +69,7 @@ function MenuSidebar() {
         <MetisMenu
             content={menu}
             //LinkComponent={RouterLink}
+            activeLinkFromLocation
         />
         </aside>
     )

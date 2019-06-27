@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {UncontrolledCollapse, Button, CardBody, Card} from 'reactstrap';
+import {Link} from 'react-router-dom';
 
 function HeaderMobile() {
     return (
@@ -8,9 +9,9 @@ function HeaderMobile() {
                 <div className="container-fluid">
                     <div className="header-mobile-inner">
                         <Link className="logo" to="index.html">
-                            <img src="../../../images/icon/logo.png" alt="CoolAdmin" />
+                            <img src={'../images/icon/logo.png'} alt="CoolAdmin"/>
                         </Link>
-                        <button className="hamburger hamburger--slider" type="button">
+                        <button className="hamburger hamburger--slider" type="button" id="toggler">
                             <span className="hamburger-box">
                                 <span className="hamburger-inner"></span>
                             </span>
@@ -18,36 +19,42 @@ function HeaderMobile() {
                     </div>
                 </div>
             </div>
-            <nav className="navbar-mobile">
-                <div className="container-fluid">
-                    <ul className="navbar-mobile__list list-unstyled">
-                        <li className="active">
-                            <Link to="index.html">
-                                <i className="fas fa-tachometer-alt"></i>Dashboard</Link>
-                        </li>
-                        <li>
-                            <Link to="category.html">
-                                <i className="fas fa-chart-bar"></i>Category</Link>
-                        </li>
-                        <li>
-                            <Link to="device.html">
-                                <i className="fas fa-table"></i>Devices</Link>
-                        </li>
-                        <li>
-                            <Link to="borrow.html">
-                                <i className="fas fa-chart-bar"></i>Borrow Device</Link>
-                        </li>
-                        <li>
-                            <Link to="brand.html">
-                                <i className="far fa-check-square"></i>Brand</Link>
-                        </li>
-                        <li>
-                            <Link to="user.html">
-                                <i className="fas fa-user"></i>User</Link>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            <UncontrolledCollapse toggler="#toggler">
+                <Card>
+                    <CardBody>
+                        <nav className="navbar-mobile">
+                            <div className="container-fluid">
+                                <ul className="navbar-mobile__list list-unstyled">
+                                    <li className="active">
+                                        <Link to="index.html">
+                                            <i className="fas fa-tachometer-alt"></i>Dashboard</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="category.html">
+                                            <i className="fas fa-chart-bar"></i>Category</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="device.html">
+                                            <i className="fas fa-table"></i>Devices</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="borrow.html">
+                                            <i className="fas fa-chart-bar"></i>Borrow Device</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="brand.html">
+                                            <i className="far fa-check-square"></i>Brand</Link>
+                                    </li>
+                                    <li>
+                                        <Link to="user.html">
+                                            <i className="fas fa-user"></i>User</Link>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </CardBody>
+                </Card>
+            </UncontrolledCollapse>
         </header>
     )
 }

@@ -974,7 +974,7 @@ section {
 .select2-container--default.select2-container--open.select2-container--below .select2-selection--multiple {
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
- }
+}
 
 .rs-select2--border .select2-container--default .select2-selection--single,
 
@@ -1214,15 +1214,15 @@ section {
 }
 
 .header-desktop .mess-dropdown {
-    top: 51px;
+    top: 73px;
 }
 
 .header-desktop .email-dropdown {
-    top: 51px;
+    top: 73px;
 }
 
 .header-desktop .notifi-dropdown {
-    top: 51px;
+    top: 73px;
 }
 
 @media (max-width: 991px) {
@@ -1280,6 +1280,23 @@ section {
 
     .header-wrap .notifi-dropdown::before {
         left: 79px;
+    }
+    .header-desktop .mess-dropdown,
+    .header-desktop .email-dropdown,
+    .header-desktop .notifi-dropdown,
+    .header-desktop .account-dropdown{
+        top: 168px;
+    }
+
+    .header-desktop .email-dropdown,
+    .header-desktop .notifi-dropdown{
+        left: 0px;
+    }
+    .notifi-dropdown:before {
+        left: 93px !important;
+    }
+    .mess-dropdown:before {
+        left: 15px !important;;
     }
 }
 
@@ -1444,7 +1461,7 @@ section {
 .account-dropdown {
     min-width: 305px;
     position: absolute;
-    top: 58px;
+    top: 73px;
     right: 0;
     background: #fff;
     -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.1);
@@ -1657,6 +1674,15 @@ section {
     right: 0;
 }
 
+.header-mobile .card{
+    border: 0 !important;
+    margin: 0 !important;
+    top: -82px;
+}
+.header-mobile .card .card-body{
+    padding: 0 !important;
+}
+
 .header-mobile .header-mobile__bar {
     padding: 15px 0;
 }
@@ -1729,7 +1755,7 @@ section {
 }
 
 .header-mobile .navbar-mobile {
-    display: none;
+    display: block;
     position: absolute;
     width: 100%;
     top: 88px;
@@ -1882,7 +1908,6 @@ section {
     -o-transform-origin: left top;
     transform-origin: left top;
     top: 100%;
-    left: 0;
 }
 
 .mess-dropdown:before, .email-dropdown:before, .notifi-dropdown:before, .setting-dropdown:before {
@@ -1929,7 +1954,7 @@ section {
 
 .mess-dropdown {
     top: 49px;
-    left: -55px;
+    right: 55px;
 }
 
 .mess__item {
@@ -1984,7 +2009,7 @@ section {
 
 .email-dropdown {
     top: 49px;
-    left: -53px;
+    right: 15px;
 }
 
 .email__item {
@@ -2031,12 +2056,12 @@ section {
 }
 
 .notifi-dropdown {
-    left: -117px;
+    right: 20px;
     top: 49px;
 }
 
 .notifi-dropdown::before {
-    left: 63px;
+    left: 118px;
 }
 
 .notifi__item {
@@ -2096,12 +2121,24 @@ section {
     color: #999;
 }
 
-.show-dropdown .js-dropdown {
+.card-body .js-dropdown {
     -webkit-transform: scale(1);
     -moz-transform: scale(1);
     -ms-transform: scale(1);
     -o-transform: scale(1);
     transform: scale(1);
+}
+.accounttg .card,
+.commenttg .card,
+.notitg .card {
+    border: 0 !important;
+    margin: 0 !important;
+}
+
+.accounttg .card .card-body,
+.commenttg .card .card-body,
+.notitg .card .card-body{
+    padding: 0 !important;
 }
 
 .menu-sidebar-min {
@@ -4348,7 +4385,7 @@ section {
 }
 
 .table-data {
-    height: 472px;
+    height: 100%;
     overflow-y: auto;
 }
 
@@ -4362,14 +4399,14 @@ section {
 .table-data .table td {
     border-top: none;
     border-bottom: 1px solid #f2f2f2;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    padding-left: 4px;
-    padding-right: 4px;
+    padding-top: 23px;
+    padding-bottom: 33px;
+    padding-left: 40px;
+    padding-right: 10px;
 }
 
 .table-data .table tr td:last-child {
-    padding-right: 4px;
+    padding-right: 24px;
 }
 
 .table-data tbody tr:hover td .more {
@@ -5319,7 +5356,7 @@ section {
 }
 
 .switch.switch-text .switch-label::before,
-  .switch.switch-text .switch-label::after {
+.switch.switch-text .switch-label::after {
     position: absolute;
     top: 50%;
     width: 50%;
@@ -5465,7 +5502,7 @@ section {
 }
 
 .switch.switch-icon .switch-label::before,
-  .switch.switch-icon .switch-label::after {
+.switch.switch-icon .switch-label::after {
     position: absolute;
     top: 50%;
     width: 50%;
@@ -14694,4 +14731,91 @@ section {
 
 .btn-rmv:hover {
     background: rgba(255, 0, 0, 0.5);
+}
+
+
+body.react-confirm-alert-body-element {
+    overflow: hidden;
+}
+
+.react-confirm-alert-blur {
+    filter: url(#gaussian-blur);
+    filter: blur(2px);
+    -webkit-filter: blur(2px);
+}
+
+.react-confirm-alert-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 99;
+    background: rgba(255, 255, 255, 0.9);
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    justify-content: center;
+    -ms-align-items: center;
+    align-items: center;
+    opacity: 0;
+    animation: react-confirm-alert-fadeIn 0.5s 0.2s forwards;
+}
+
+.react-confirm-alert-body {
+    font-family: Arial, Helvetica, sans-serif;
+    width: 400px;
+    padding: 30px;
+    text-align: left;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
+    color: #666;
+}
+
+.react-confirm-alert-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.react-confirm-alert-body > h1 {
+    margin-top: 0;
+}
+
+.react-confirm-alert-body > h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.react-confirm-alert-button-group {
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+
+.react-confirm-alert-button-group > button {
+    outline: none;
+    background: #333;
+    border: none;
+    display: inline-block;
+    padding: 6px 18px;
+    color: #eee;
+    margin-right: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+@keyframes react-confirm-alert-fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
